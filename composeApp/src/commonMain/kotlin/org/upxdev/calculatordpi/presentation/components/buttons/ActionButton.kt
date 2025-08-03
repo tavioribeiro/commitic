@@ -36,7 +36,7 @@ fun ActionButton(
         Text(
             text = text,
             modifier = Modifier.padding(0.dp),
-            color = Color(0xFF000000),
+            color = AppTheme.colors.onColor7,
             style = MaterialTheme.typography.labelLarge.copy(
                 fontWeight = FontWeight.Bold
             )
