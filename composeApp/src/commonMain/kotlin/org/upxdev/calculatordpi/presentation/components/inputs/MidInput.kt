@@ -1,11 +1,10 @@
 package org.upxdev.calculatordpi.presentation.components.inputs
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -44,8 +43,15 @@ fun MidInput(
                 width = 1.dp,
                 color = AppTheme.colors.color4,
                 shape = RoundedCornerShape(8.dp)
-            ),
-        placeholder = { Text(text = placeholderText, color = AppTheme.colors.color6) },
+            )
+            .widthIn(min = 300.dp, max = 600.dp)
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = placeholderText,
+                color = AppTheme.colors.color6,
+            )
+        },
         shape = RoundedCornerShape(8.dp),
         colors = TextFieldDefaults.colors(
             focusedTextColor = AppTheme.colors.onColor1,
