@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.upxdev.calculatordpi.theme.AppTheme
 
 @Composable
 fun ActionButton(
@@ -21,8 +22,8 @@ fun ActionButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFb1db18),
-            contentColor = Color.Black
+            containerColor = AppTheme.colors.color7,
+            contentColor = AppTheme.colors.onColor7
         ),
         contentPadding = PaddingValues(
             start = 20.dp,

@@ -15,14 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.upxdev.calculatordpi.presentation.components.buttons.ActionButton
+import org.upxdev.calculatordpi.theme.AppTheme
+import org.upxdev.calculatordpi.theme.ThemeState
 
 @Composable
 fun CalculatorScreen() {
     Column(
         modifier = Modifier
-            .background(
-                color = Color(0xFF000000)
-            )
+            .background(AppTheme.colors.color1)
             .safeContentPadding()
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -30,14 +30,14 @@ fun CalculatorScreen() {
     ){
         Text(
             text = "Calculadora de DPI",
-            color = Color(0xFFFFFFFF),
+            color = AppTheme.colors.onColor1,
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(top = 36.dp)
         )
         ActionButton(
             text = "Clicarrrr",
             onClick = {
-
+                ThemeState.toggleTheme()
             }
         )
     }
