@@ -19,7 +19,7 @@ fun main() = application {
 
     Window(
         onCloseRequest = ::exitApplication,
-        title = "CalculatorDPI",
+        title = "Commitic",
         icon = painterResource(Res.drawable.logo3),
         state = windowInitialState,
         resizable = false
