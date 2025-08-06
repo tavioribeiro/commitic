@@ -63,7 +63,7 @@ compose.desktop {
             packageVersion = "1.0.0"
 
             linux {
-                iconFile.set(project.file("composeApp/src/commonMain/composeResources/drawable/logo.png"))
+                iconFile.set(project.file("composeApp/src/commonMain/composeResources/drawable/logo3.png"))
             }
         }
     }

@@ -6,20 +6,21 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import calculatordpi.composeapp.generated.resources.Res
 import calculatordpi.composeapp.generated.resources.logo
+import calculatordpi.composeapp.generated.resources.logo3
 import org.jetbrains.compose.resources.painterResource
 import java.awt.Dimension // Importe novamente a classe Dimension
 
 fun main() = application {
 
     val windowInitialState = rememberWindowState(
-        width = 500.dp,
-        height = 400.dp
+        width = 1440.dp,
+        height = 804.dp
     )
 
     Window(
         onCloseRequest = ::exitApplication,
         title = "CalculatorDPI",
-        icon = painterResource(Res.drawable.logo),
+        icon = painterResource(Res.drawable.logo3),
         state = windowInitialState,
         resizable = false
     ) {
