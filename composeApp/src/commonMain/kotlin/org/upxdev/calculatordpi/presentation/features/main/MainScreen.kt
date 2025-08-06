@@ -1,6 +1,11 @@
-package org.upxdev.calculatordpi.presentation.features.calculator
+package org.upxdev.calculatordpi.presentation.features.main
 
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +35,6 @@ import org.upxdev.calculatordpi.presentation.components.inputs.MidInput
 import org.upxdev.calculatordpi.theme.AppTheme
 import org.upxdev.calculatordpi.theme.ThemeState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import calculatordpi.composeapp.generated.resources.Res
 import calculatordpi.composeapp.generated.resources.icon_clear
@@ -41,6 +45,8 @@ import calculatordpi.composeapp.generated.resources.icon_robot
 import org.jetbrains.compose.resources.painterResource
 import org.upxdev.calculatordpi.presentation.components.buttons.IconTextButton
 import org.upxdev.calculatordpi.presentation.components.buttons.UnderlineButton
+import org.upxdev.calculatordpi.presentation.features.main.tabs.AiAgentsTab
+import org.upxdev.calculatordpi.presentation.features.main.tabs.ProjectsTab
 
 
 @Composable
@@ -77,7 +83,7 @@ fun CalculatorScreen() {
                 )
 
                 Text(
-                    text = "CalculatorDPI",
+                    text = "Commitic",
                     color = AppTheme.colors.onColor1,
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.padding(start = 8.dp)
@@ -86,7 +92,9 @@ fun CalculatorScreen() {
 
             IconTextButton(
                 text = "Novo Projeto",
-                onClick = {  },
+                onClick = {
+                    ThemeState.toggleTheme()
+                },
                 icon = painterResource(Res.drawable.icon_plus),
                 modifier = Modifier.padding(16.dp)
             )
@@ -128,21 +136,41 @@ fun CalculatorScreen() {
             .background(AppTheme.colors.color5)
         )
 
+        Spacer(modifier = Modifier.height(32.dp))
 
-        MidInput(
+
+
+        AnimatedContent(
+            targetState = selectedButton,
+            modifier = Modifier
+                .width(1232.dp),
+            transitionSpec = {
+                val exit = fadeOut(animationSpec = tween(300))
+
+                val enter = fadeIn(animationSpec = tween(durationMillis = 300, delayMillis = 300))
+
+                enter togetherWith exit
+            },
+            label = "TabContentAnimation"
+        ){ targetState ->
+            when (targetState) {
+                "Projetos" -> ProjectsTab()
+                "AI Agentes" -> AiAgentsTab()
+                "Histórico" -> ProjectsTab()
+            }
+        }
+
+
+
+
+
+        /*MidInput(
             initialValue = text,
             onValueChange = { newText ->
                 text = newText
             },
             placeholderText = "Digite algo..."
-        )
+        )*/
 
-
-        ActionButton(
-            text = "Clicarrrr",
-            onClick = {
-                ThemeState.toggleTheme()
-            }
-        )
     }
 }
