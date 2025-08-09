@@ -43,7 +43,6 @@ import org.upxdev.calculatordpi.presentation.components.buttons.UnderlineButton
 
 @Composable
 fun ProjectsTab() {
-
     Row(
         modifier = Modifier
             .background(AppTheme.colors.color1)
@@ -54,6 +53,17 @@ fun ProjectsTab() {
         Column(
             Modifier.height(391.dp)
                 .width(394.dp)
+                .background(AppTheme.colors.color2)
+                .padding(horizontal = 25.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+        }
+
+        Column(
+            Modifier.height(391.dp)
+                .fillMaxWidth()
                 .background(AppTheme.colors.color2)
                 .padding(horizontal = 25.dp),
             verticalArrangement = Arrangement.Center,

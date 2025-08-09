@@ -22,7 +22,7 @@ fun main() = application {
         title = "Commitic",
         icon = painterResource(Res.drawable.logo3),
         state = windowInitialState,
-        resizable = false
+        //resizable = false
     ) {
         //window.minimumSize = Dimension(400, 350)
         //window.maximumSize = Dimension(1200, 900)
