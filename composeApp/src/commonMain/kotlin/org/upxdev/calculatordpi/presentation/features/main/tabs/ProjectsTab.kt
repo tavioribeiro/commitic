@@ -46,7 +46,7 @@ fun ProjectsTab() {
     Row(
         modifier = Modifier
             .background(AppTheme.colors.color1)
-            .width(1232.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -60,11 +60,14 @@ fun ProjectsTab() {
         ) {
 
         }
+        Spacer(
+            modifier = Modifier.width(30.dp)
+        )
 
         Column(
             Modifier.height(391.dp)
-                .fillMaxWidth()
-                .background(AppTheme.colors.color2)
+                .weight(1f)
+                .background(AppTheme.colors.color3)
                 .padding(horizontal = 25.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally

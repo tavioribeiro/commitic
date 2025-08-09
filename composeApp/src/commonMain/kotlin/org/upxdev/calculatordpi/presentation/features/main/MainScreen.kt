@@ -51,7 +51,6 @@ import org.upxdev.calculatordpi.presentation.features.main.tabs.ProjectsTab
 
 @Composable
 fun CalculatorScreen() {
-    var text by remember { mutableStateOf("") }
     var selectedButton by remember { mutableStateOf("Projetos") }
 
     Column(
@@ -102,75 +101,66 @@ fun CalculatorScreen() {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
+        Column(
             modifier = Modifier
                 .width(1232.dp)
-        ) {
-            UnderlineButton(
-                text = "Projetos",
-                icon = painterResource(Res.drawable.icon_folder),
-                isSelected = (selectedButton == "Projetos"),
-                onClick = { selectedButton = "Projetos" }
+                .background(AppTheme.colors.color1)
+                .padding(horizontal = 20.dp),
+        ){
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                UnderlineButton(
+                    text = "Projetos",
+                    icon = painterResource(Res.drawable.icon_folder),
+                    isSelected = (selectedButton == "Projetos"),
+                    onClick = { selectedButton = "Projetos" }
+                )
+
+                UnderlineButton(
+                    text = "AI Agentes",
+                    icon = painterResource(Res.drawable.icon_robot),
+                    isSelected = (selectedButton == "AI Agentes"),
+                    onClick = { selectedButton = "AI Agentes" }
+                )
+
+                UnderlineButton(
+                    text = "Histórico",
+                    icon = painterResource(Res.drawable.icon_history),
+                    isSelected = (selectedButton == "Histórico"),
+                    onClick = { selectedButton = "Histórico" }
+                )
+            }
+
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(AppTheme.colors.color5)
             )
 
-            UnderlineButton(
-                text = "AI Agentes",
-                icon = painterResource(Res.drawable.icon_robot),
-                isSelected = (selectedButton == "AI Agentes"),
-                onClick = { selectedButton = "AI Agentes" }
-            )
-
-            UnderlineButton(
-                text = "Histórico",
-                icon = painterResource(Res.drawable.icon_history),
-                isSelected = (selectedButton == "Histórico"),
-                onClick = { selectedButton = "Histórico" }
-            )
-        }
-
-        Box(modifier = Modifier
-            .width(1232.dp)
-            .height(1.dp)
-            .background(AppTheme.colors.color5)
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
 
+            AnimatedContent(
+                targetState = selectedButton,
+                modifier = Modifier.fillMaxWidth(),
+                transitionSpec = {
+                    val exit = fadeOut(animationSpec = tween(300))
 
-        AnimatedContent(
-            targetState = selectedButton,
-            modifier = Modifier
-                .width(1232.dp),
-            transitionSpec = {
-                val exit = fadeOut(animationSpec = tween(300))
+                    val enter = fadeIn(animationSpec = tween(durationMillis = 300, delayMillis = 300))
 
-                val enter = fadeIn(animationSpec = tween(durationMillis = 300, delayMillis = 300))
-
-                enter togetherWith exit
-            },
-            label = "TabContentAnimation"
-        ){ targetState ->
-            when (targetState) {
-                "Projetos" -> ProjectsTab()
-                "AI Agentes" -> AiAgentsTab()
-                "Histórico" -> ProjectsTab()
+                    enter togetherWith exit
+                },
+                label = "TabContentAnimation"
+            ){ targetState ->
+                when (targetState) {
+                    "Projetos" -> ProjectsTab()
+                    "AI Agentes" -> AiAgentsTab()
+                    "Histórico" -> ProjectsTab()
+                }
             }
         }
-
-
-
-
-
-        /*MidInput(
-            initialValue = text,
-            onValueChange = { newText ->
-                text = newText
-            },
-            placeholderText = "Digite algo..."
-        )*/
-
     }
 }
