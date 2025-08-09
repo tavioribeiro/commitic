@@ -29,7 +29,7 @@ fun getWindowSize(): WindowSize {
 
     val windowWidthType = when {
         widthDp < 600.dp -> WindowType.Compact
-        widthDp < 840.dp -> WindowType.Medium
+        widthDp < 900.dp -> WindowType.Medium
         else -> WindowType.Expanded
     }
 
@@ -38,6 +38,8 @@ fun getWindowSize(): WindowSize {
         heightDp < 900.dp -> WindowType.Medium
         else -> WindowType.Expanded
     }
+
+    println("Window size: $widthDp x $heightDp")
 
     return WindowSize(windowWidthType, windowHeightType)
 }
