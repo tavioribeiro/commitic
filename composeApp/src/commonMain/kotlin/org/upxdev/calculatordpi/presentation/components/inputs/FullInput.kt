@@ -20,7 +20,6 @@ fun FullInput(
 ) {
     var text by remember { mutableStateOf(initialValue) }
 
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -54,6 +53,13 @@ fun FullInput(
                 unfocusedBorderColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
                 focusedBorderColor = AppTheme.colors.color7
             )
+        )
+
+        Text(
+            text = title,
+            color = AppTheme.colors.color10,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(top = 4.dp)
         )
     }
 }
