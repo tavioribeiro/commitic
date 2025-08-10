@@ -17,10 +17,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import org.upxdev.calculatordpi.presentation.components.inputs.FullInput
 import org.upxdev.calculatordpi.theme.AppTheme
 import org.upxdev.calculatordpi.screen_utils.WindowType
 import org.upxdev.calculatordpi.screen_utils.getWindowSize
@@ -29,8 +34,10 @@ import org.upxdev.calculatordpi.screen_utils.getWindowSize
 @Composable
 fun ProjectsTab() {
     val windowSize = getWindowSize()
-
     val isMedium = windowSize.width == WindowType.Medium
+
+
+    var projectName by remember { mutableStateOf("") }
 
     if (isMedium) {
         Column(
@@ -100,8 +107,28 @@ fun ProjectsTab() {
                 Text(
                     text = "Adicionar Novo Projeto",
                     color = AppTheme.colors.onColor5,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(start = 8.dp)
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                FullInput(
+                    modifier = Modifier.padding(top = 20.dp),
+                    title = "Nome do Projeto",
+                    placeholder = "Meu Projeto Maravilhoso",
+                    initialValue = "",
+                    onValueChange = { newName ->
+                        projectName = newName
+                    },
+                    isBackgroudColorDark = true
+                )
+
+                FullInput(
+                    title = "Pasta Git do Projeto",
+                    placeholder = "/caminho/para/o/git/do/seu/projeto",
+                    initialValue = "",
+                    onValueChange = { newName ->
+                        projectName = newName
+                    },
+                    isBackgroudColorDark = true
                 )
             }
             Spacer(modifier = Modifier.width(30.dp))
