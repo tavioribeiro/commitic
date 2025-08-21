@@ -26,8 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import commitc.composeapp.generated.resources.Res
-import commitc.composeapp.generated.resources.icon_plus
+import commitic.composeapp.generated.resources.Res
+import commitic.composeapp.generated.resources.icon_folder
+import commitic.composeapp.generated.resources.icon_plus
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitc.general_utils.DirectoryPicker
 import org.tavioribeiro.commitc.presentation.components.buttons.IconTextButton
@@ -134,7 +135,7 @@ fun ProjectsTab() {
                 FileInput(
                     title = "Git Repository Path",
                     placeholder = "/endereco/do/repositorio",
-                    icon = painterResource(Res.drawable.icon_plus),
+                    icon = painterResource(Res.drawable.icon_folder),
                     initialValue = filePath,
                     onValueChange = { newPath ->
                         filePath = newPath

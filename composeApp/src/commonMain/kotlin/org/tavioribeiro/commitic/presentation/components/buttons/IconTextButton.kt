@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import commitc.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitc.theme.AppTheme
 

@@ -4,9 +4,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import commitc.composeapp.generated.resources.Res
-import commitc.composeapp.generated.resources.logo
-import commitc.composeapp.generated.resources.logo3
+import commitic.composeapp.generated.resources.Res
+import commitic.composeapp.generated.resources.logo3
 import org.jetbrains.compose.resources.painterResource
 import java.awt.Dimension // Importe novamente a classe Dimension
 
