@@ -105,6 +105,7 @@ fun ProjectsTab() {
         ) {
             Column(
                 Modifier
+                    .height(425.dp)
                     .width(394.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(AppTheme.colors.color3)
@@ -132,7 +133,7 @@ fun ProjectsTab() {
 
                 FileInput(
                     title = "Git Repository Path",
-                    placeholder = "/path/to/your/repo",
+                    placeholder = "/endereco/do/repositorio",
                     icon = painterResource(Res.drawable.icon_plus),
                     initialValue = filePath,
                     onValueChange = { newPath ->
@@ -178,6 +179,7 @@ fun ProjectsTab() {
 
             Column(
                 Modifier
+                    .height(425.dp)
                     .height(391.dp)
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
