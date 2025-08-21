@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi.presentation.features.main.tabs
+package org.tavioribeiro.calculatordpi.presentation.features.main.tabs
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,10 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.upxdev.calculatordpi.presentation.components.buttons.ActionButton
-import org.upxdev.calculatordpi.presentation.components.inputs.MidInput
-import org.upxdev.calculatordpi.theme.AppTheme
-import org.upxdev.calculatordpi.theme.ThemeState
+import org.tavioribeiro.calculatordpi.presentation.components.buttons.ActionButton
+import org.tavioribeiro.calculatordpi.presentation.components.inputs.MidInput
+import org.tavioribeiro.calculatordpi.theme.AppTheme
+import org.tavioribeiro.calculatordpi.theme.ThemeState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.layout.ContentScale
 import calculatordpi.composeapp.generated.resources.Res
@@ -37,8 +37,8 @@ import calculatordpi.composeapp.generated.resources.icon_history
 import calculatordpi.composeapp.generated.resources.icon_plus
 import calculatordpi.composeapp.generated.resources.icon_robot
 import org.jetbrains.compose.resources.painterResource
-import org.upxdev.calculatordpi.presentation.components.buttons.IconTextButton
-import org.upxdev.calculatordpi.presentation.components.buttons.UnderlineButton
+import org.tavioribeiro.calculatordpi.presentation.components.buttons.IconTextButton
+import org.tavioribeiro.calculatordpi.presentation.components.buttons.UnderlineButton
 
 
 @Composable

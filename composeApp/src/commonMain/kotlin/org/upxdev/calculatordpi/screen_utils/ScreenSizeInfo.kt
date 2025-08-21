@@ -1,6 +1,6 @@
 @file:JvmName("ScreenSizeInfoJvm")
 
-package org.upxdev.calculatordpi.screen_utils
+package org.tavioribeiro.calculatordpi.screen_utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp

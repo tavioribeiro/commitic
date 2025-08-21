@@ -1,3 +1,3 @@
-package org.upxdev.calculatordpi.core.extension
+package org.tavioribeiro.calculatordpi.core.extension
 
 

@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi.presentation.features.main.tabs
+package org.tavioribeiro.calculatordpi.presentation.features.main.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,14 +29,14 @@ import androidx.compose.ui.unit.dp
 import calculatordpi.composeapp.generated.resources.Res
 import calculatordpi.composeapp.generated.resources.icon_plus
 import org.jetbrains.compose.resources.painterResource
-import org.upxdev.calculatordpi.general_utils.DirectoryPicker
-import org.upxdev.calculatordpi.presentation.components.buttons.IconTextButton
-import org.upxdev.calculatordpi.presentation.components.inputs.FileInput
-import org.upxdev.calculatordpi.presentation.components.inputs.FullInput
-import org.upxdev.calculatordpi.theme.AppTheme
-import org.upxdev.calculatordpi.screen_utils.WindowType
-import org.upxdev.calculatordpi.screen_utils.getWindowSize
-import org.upxdev.calculatordpi.theme.ThemeState
+import org.tavioribeiro.calculatordpi.general_utils.DirectoryPicker
+import org.tavioribeiro.calculatordpi.presentation.components.buttons.IconTextButton
+import org.tavioribeiro.calculatordpi.presentation.components.inputs.FileInput
+import org.tavioribeiro.calculatordpi.presentation.components.inputs.FullInput
+import org.tavioribeiro.calculatordpi.theme.AppTheme
+import org.tavioribeiro.calculatordpi.screen_utils.WindowType
+import org.tavioribeiro.calculatordpi.screen_utils.getWindowSize
+import org.tavioribeiro.calculatordpi.theme.ThemeState
 
 
 @Composable

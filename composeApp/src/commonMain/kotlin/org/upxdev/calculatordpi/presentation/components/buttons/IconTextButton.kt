@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi.presentation.components.buttons
+package org.tavioribeiro.calculatordpi.presentation.components.buttons
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import calculatordpi.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.painterResource
-import org.upxdev.calculatordpi.theme.AppTheme
+import org.tavioribeiro.calculatordpi.theme.AppTheme
 
 @Composable
 fun IconTextButton(

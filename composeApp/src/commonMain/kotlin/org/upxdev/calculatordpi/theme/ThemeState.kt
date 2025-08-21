@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi.theme
+package org.tavioribeiro.calculatordpi.theme
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

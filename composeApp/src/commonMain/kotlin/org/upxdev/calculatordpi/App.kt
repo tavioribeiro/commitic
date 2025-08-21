@@ -1,9 +1,9 @@
-package org.upxdev.calculatordpi
+package org.tavioribeiro.calculatordpi
 
 import androidx.compose.runtime.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.upxdev.calculatordpi.presentation.features.main.CalculatorScreen
-import org.upxdev.calculatordpi.theme.MyAppTheme
+import org.tavioribeiro.calculatordpi.presentation.features.main.CalculatorScreen
+import org.tavioribeiro.calculatordpi.theme.MyAppTheme
 
 
 @Composable

@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi.presentation.components.inputs
+package org.tavioribeiro.calculatordpi.presentation.components.inputs
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.height
@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import org.upxdev.calculatordpi.theme.AppTheme
+import org.tavioribeiro.calculatordpi.theme.AppTheme
 
 
 

@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi.presentation.components.buttons
+package org.tavioribeiro.calculatordpi.presentation.components.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.upxdev.calculatordpi.theme.AppTheme
+import org.tavioribeiro.calculatordpi.theme.AppTheme
 
 @Composable
 fun ActionButton(

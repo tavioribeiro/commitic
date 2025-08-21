@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi.presentation.features.utils
+package org.tavioribeiro.calculatordpi.presentation.features.utils
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.upxdev.calculatordpi.theme.FigtreeFontFamily
+import org.tavioribeiro.calculatordpi.theme.FigtreeFontFamily
 
 @Composable
 fun FontDisplayScreen() {

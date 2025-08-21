@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi
+package org.tavioribeiro.calculatordpi
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window

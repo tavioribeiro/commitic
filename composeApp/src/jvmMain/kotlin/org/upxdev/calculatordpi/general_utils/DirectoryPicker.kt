@@ -1,4 +1,4 @@
-package org.upxdev.calculatordpi.general_utils
+package org.tavioribeiro.calculatordpi.general_utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
