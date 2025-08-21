@@ -28,11 +28,11 @@ data class AppColors(
 
 val darkColors = AppColors(
     color1 = Color(0xFF000000),   // Preto
-    color2 = Color(0xFF161616),   // Cinza quase preto
-    color3 = Color(0xFF202020),   // Cinza bem escuro
-    color4 = Color(0xFF2A2A2A),   // Cinza escuro
-    color5 = Color(0xFF3B3B3B),   // Cinza médio-escuro
-    color6 = Color(0xFF5A5A5A),   // Cinza médio
+    color2 = Color(0xFF181818),   // Cinza quase preto
+    color3 = Color(0xFF303030),   // Cinza bem escuro
+    color4 = Color(0xFF484848),   // Cinza escuro
+    color5 = Color(0xFF606060),   // Cinza médio-escuro
+    color6 = Color(0xFF787878),   // Cinza médio
     color7 = Color(0xFF94E60E),   // Verde vibrante
     color8 = Color(0xFF00B84A),   // Verde escuro
     color9 = Color(0xFF69E09A),   // Verde claro
