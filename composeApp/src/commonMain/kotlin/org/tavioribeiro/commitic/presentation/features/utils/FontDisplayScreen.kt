@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.presentation.features.utils
+package org.tavioribeiro.commitic.presentation.features.utils
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.tavioribeiro.commitc.theme.FigtreeFontFamily
+import org.tavioribeiro.commitic.theme.FigtreeFontFamily
 
 @Composable
 fun FontDisplayScreen() {

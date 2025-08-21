@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.general_utils
+package org.tavioribeiro.commitic.general_utils
 
 import androidx.compose.runtime.Composable
 

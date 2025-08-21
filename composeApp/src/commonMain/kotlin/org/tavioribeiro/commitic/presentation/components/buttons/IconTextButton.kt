@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.presentation.components.buttons
+package org.tavioribeiro.commitic.presentation.components.buttons
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitc.theme.AppTheme
+import org.tavioribeiro.commitic.theme.AppTheme
 
 @Composable
 fun IconTextButton(

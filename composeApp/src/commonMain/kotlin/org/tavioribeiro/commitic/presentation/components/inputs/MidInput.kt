@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.presentation.components.inputs
+package org.tavioribeiro.commitic.presentation.components.inputs
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.height
@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import org.tavioribeiro.commitc.theme.AppTheme
+import org.tavioribeiro.commitic.theme.AppTheme
 
 
 

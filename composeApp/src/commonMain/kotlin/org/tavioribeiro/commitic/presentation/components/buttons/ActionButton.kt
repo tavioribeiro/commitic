@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.presentation.components.buttons
+package org.tavioribeiro.commitic.presentation.components.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.tavioribeiro.commitc.theme.AppTheme
+import org.tavioribeiro.commitic.theme.AppTheme
 
 @Composable
 fun ActionButton(

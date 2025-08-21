@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc
+package org.tavioribeiro.commitic
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport

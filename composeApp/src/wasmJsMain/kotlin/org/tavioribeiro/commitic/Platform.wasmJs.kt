@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc
+package org.tavioribeiro.commitic
 
 class WasmPlatform: Platform {
     override val name: String = "Web with Kotlin/Wasm"

@@ -1,9 +1,9 @@
-package org.tavioribeiro.commitc
+package org.tavioribeiro.commitic
 
 import androidx.compose.runtime.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.tavioribeiro.commitc.presentation.features.main.CalculatorScreen
-import org.tavioribeiro.commitc.theme.MyAppTheme
+import org.tavioribeiro.commitic.presentation.features.main.CalculatorScreen
+import org.tavioribeiro.commitic.theme.MyAppTheme
 
 
 @Composable

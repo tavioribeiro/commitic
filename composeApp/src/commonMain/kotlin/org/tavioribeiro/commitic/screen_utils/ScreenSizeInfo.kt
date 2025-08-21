@@ -1,6 +1,6 @@
 @file:JvmName("ScreenSizeInfoJvm")
 
-package org.tavioribeiro.commitc.screen_utils
+package org.tavioribeiro.commitic.screen_utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp

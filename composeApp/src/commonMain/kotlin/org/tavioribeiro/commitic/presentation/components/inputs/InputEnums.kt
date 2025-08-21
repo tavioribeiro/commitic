@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.presentation.components.inputs
+package org.tavioribeiro.commitic.presentation.components.inputs
 
 enum class InputTypeEnum {
     TEXT,

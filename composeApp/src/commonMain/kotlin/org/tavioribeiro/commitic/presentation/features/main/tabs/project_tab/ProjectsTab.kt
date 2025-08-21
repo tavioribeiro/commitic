@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.presentation.features.main.tabs
+package org.tavioribeiro.commitic.presentation.features.main.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,14 +30,15 @@ import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_folder
 import commitic.composeapp.generated.resources.icon_plus
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitc.general_utils.DirectoryPicker
-import org.tavioribeiro.commitc.presentation.components.buttons.IconTextButton
-import org.tavioribeiro.commitc.presentation.components.inputs.FileInput
-import org.tavioribeiro.commitc.presentation.components.inputs.FullInput
-import org.tavioribeiro.commitc.theme.AppTheme
-import org.tavioribeiro.commitc.screen_utils.WindowType
-import org.tavioribeiro.commitc.screen_utils.getWindowSize
-import org.tavioribeiro.commitc.theme.ThemeState
+import org.tavioribeiro.commitic.general_utils.DirectoryPicker
+import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
+import org.tavioribeiro.commitic.presentation.components.inputs.FileInput
+import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
+import org.tavioribeiro.commitic.theme.AppTheme
+import org.tavioribeiro.commitic.screen_utils.WindowType
+import org.tavioribeiro.commitic.screen_utils.getWindowSize
+import org.tavioribeiro.commitic.theme.ThemeState
+import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item.RegisteredProjectListItem
 
 
 @Composable
@@ -184,13 +185,19 @@ fun ProjectsTab() {
                     .height(391.dp)
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(AppTheme.colors.color9)
+                    .background(AppTheme.colors.color3)
                     .border(1.dp, AppTheme.colors.color4, RoundedCornerShape(10.dp))
-                    .padding(horizontal = 25.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 25.dp, vertical = 25.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
             ) {
+                Text(
+                    text = "Projetos Registrados",
+                    color = AppTheme.colors.onColor5,
+                    style = MaterialTheme.typography.headlineSmall
+                )
 
+                RegisteredProjectListItem()
             }
         }
     }

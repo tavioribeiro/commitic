@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.theme
+package org.tavioribeiro.commitic.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

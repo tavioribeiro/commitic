@@ -1,3 +1,3 @@
-package org.tavioribeiro.commitc.core.extension
+package org.tavioribeiro.commitic.core.extension
 
 

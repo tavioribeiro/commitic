@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.theme
+package org.tavioribeiro.commitic.theme
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

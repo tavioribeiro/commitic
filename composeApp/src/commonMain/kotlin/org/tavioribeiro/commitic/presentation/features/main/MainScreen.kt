@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitc.presentation.features.main
+package org.tavioribeiro.commitic.presentation.features.main
 
 
 import androidx.compose.animation.AnimatedContent
@@ -30,10 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.tavioribeiro.commitc.presentation.components.buttons.ActionButton
-import org.tavioribeiro.commitc.presentation.components.inputs.MidInput
-import org.tavioribeiro.commitc.theme.AppTheme
-import org.tavioribeiro.commitc.theme.ThemeState
+import org.tavioribeiro.commitic.theme.AppTheme
+import org.tavioribeiro.commitic.theme.ThemeState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.layout.ContentScale
 import commitic.composeapp.generated.resources.Res
@@ -43,10 +41,10 @@ import commitic.composeapp.generated.resources.icon_history
 import commitic.composeapp.generated.resources.icon_plus
 import commitic.composeapp.generated.resources.icon_robot
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitc.presentation.components.buttons.IconTextButton
-import org.tavioribeiro.commitc.presentation.components.buttons.UnderlineButton
-import org.tavioribeiro.commitc.presentation.features.main.tabs.AiAgentsTab
-import org.tavioribeiro.commitc.presentation.features.main.tabs.ProjectsTab
+import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
+import org.tavioribeiro.commitic.presentation.components.buttons.UnderlineButton
+import org.tavioribeiro.commitic.presentation.features.main.tabs.ai_agents_tab.AiAgentsTab
+import org.tavioribeiro.commitic.presentation.features.main.tabs.ProjectsTab
 
 
 @Composable

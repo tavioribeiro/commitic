@@ -55,11 +55,11 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "org.tavioribeiro.commitc.MainKt"
+        mainClass = "org.tavioribeiro.commitic.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.tavioribeiro.commitc"
+            packageName = "org.tavioribeiro.commitic"
             packageVersion = "1.0.0"
 
             linux {
