@@ -55,11 +55,11 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "org.tavioribeiro.calculatordpi.MainKt"
+        mainClass = "org.tavioribeiro.commitc.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.tavioribeiro.calculatordpi"
+            packageName = "org.tavioribeiro.commitc"
             packageVersion = "1.0.0"
 
             linux {
