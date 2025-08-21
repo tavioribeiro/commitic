@@ -3,6 +3,7 @@ package org.upxdev.calculatordpi.presentation.features.main.tabs
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,11 +30,13 @@ import calculatordpi.composeapp.generated.resources.Res
 import calculatordpi.composeapp.generated.resources.icon_plus
 import org.jetbrains.compose.resources.painterResource
 import org.upxdev.calculatordpi.general_utils.DirectoryPicker
+import org.upxdev.calculatordpi.presentation.components.buttons.IconTextButton
 import org.upxdev.calculatordpi.presentation.components.inputs.FileInput
 import org.upxdev.calculatordpi.presentation.components.inputs.FullInput
 import org.upxdev.calculatordpi.theme.AppTheme
 import org.upxdev.calculatordpi.screen_utils.WindowType
 import org.upxdev.calculatordpi.screen_utils.getWindowSize
+import org.upxdev.calculatordpi.theme.ThemeState
 
 
 @Composable
@@ -102,7 +105,6 @@ fun ProjectsTab() {
         ) {
             Column(
                 Modifier
-                    .height(391.dp)
                     .width(394.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(AppTheme.colors.color3)
@@ -153,6 +155,23 @@ fun ProjectsTab() {
                         }
                     }
                 )
+
+
+                 Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                 ){
+                     IconTextButton(
+                         text = "Adicionar esse projeto",
+                         onClick = {
+                             ThemeState.toggleTheme()
+                         },
+                         icon = painterResource(Res.drawable.icon_plus),
+                         modifier = Modifier.padding(16.dp)
+                     )
+                }
+
 
             }
             Spacer(modifier = Modifier.width(30.dp))
