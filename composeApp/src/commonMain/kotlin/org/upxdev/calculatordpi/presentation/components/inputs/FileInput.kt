@@ -1,24 +1,32 @@
 package org.upxdev.calculatordpi.presentation.components.inputs
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import org.upxdev.calculatordpi.theme.AppTheme
 
 @Composable
-fun FullInput(
+fun FileInput(
     modifier: Modifier = Modifier,
     title: String,
     placeholder: String,
+    icon: Painter,
     initialValue: String = "",
     onValueChange: (String) -> Unit,
+    onFileSelect: () -> Unit,
     isBackgroudColorDark: Boolean = false
 ) {
     var text by remember { mutableStateOf(initialValue) }
+
+    LaunchedEffect(initialValue) {
+        text = initialValue
+    }
 
     Column(
         modifier = modifier
@@ -47,11 +55,21 @@ fun FullInput(
             },
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
+            trailingIcon = {
+                IconButton(onClick = onFileSelect) {
+                    Icon(
+                        painter = icon,
+                        contentDescription = "Selecionar Pasta"
+                    )
+                }
+            },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
                 unfocusedTextColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
                 unfocusedBorderColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
-                focusedBorderColor = AppTheme.colors.color7
+                focusedBorderColor = AppTheme.colors.color7,
+                focusedTrailingIconColor = AppTheme.colors.color7,
+                unfocusedTrailingIconColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2
             )
         )
 

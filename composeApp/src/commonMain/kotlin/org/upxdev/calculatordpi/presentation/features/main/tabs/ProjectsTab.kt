@@ -25,6 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import calculatordpi.composeapp.generated.resources.Res
+import calculatordpi.composeapp.generated.resources.icon_plus
+import org.jetbrains.compose.resources.painterResource
+import org.upxdev.calculatordpi.general_utils.DirectoryPicker
+import org.upxdev.calculatordpi.presentation.components.inputs.FileInput
 import org.upxdev.calculatordpi.presentation.components.inputs.FullInput
 import org.upxdev.calculatordpi.theme.AppTheme
 import org.upxdev.calculatordpi.screen_utils.WindowType
@@ -38,6 +43,8 @@ fun ProjectsTab() {
 
 
     var projectName by remember { mutableStateOf("") }
+    var filePath by remember { mutableStateOf("") }
+    var showDirPicker by remember { mutableStateOf(false) }
 
     if (isMedium) {
         Column(
@@ -121,15 +128,32 @@ fun ProjectsTab() {
                     isBackgroudColorDark = true
                 )
 
-                FullInput(
-                    title = "Pasta Git do Projeto",
-                    placeholder = "/caminho/para/o/git/do/seu/projeto",
-                    initialValue = "",
-                    onValueChange = { newName ->
-                        projectName = newName
+                FileInput(
+                    title = "Git Repository Path",
+                    placeholder = "/path/to/your/repo",
+                    icon = painterResource(Res.drawable.icon_plus),
+                    initialValue = filePath,
+                    onValueChange = { newPath ->
+                        filePath = newPath
+                    },
+                    onFileSelect = {
+                        println("Botão de selecionar arquivo clicado!")
+                        showDirPicker = true
                     },
                     isBackgroudColorDark = true
                 )
+
+                DirectoryPicker(
+                    show = showDirPicker,
+                    title = "Selecione a pasta do repositório",
+                    onResult = { path ->
+                        showDirPicker = false
+                        path?.let {
+                            filePath = it
+                        }
+                    }
+                )
+
             }
             Spacer(modifier = Modifier.width(30.dp))
 
