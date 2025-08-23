@@ -1,9 +1,7 @@
-package org.tavioribeiro.commitic.general_utils
+package org.tavioribeiro.commitic.core.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.swing.JFileChooser
 import javax.swing.UIManager
 import javax.swing.filechooser.FileSystemView

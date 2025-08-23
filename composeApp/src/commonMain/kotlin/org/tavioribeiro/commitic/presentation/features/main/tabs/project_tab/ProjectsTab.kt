@@ -30,7 +30,7 @@ import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_folder
 import commitic.composeapp.generated.resources.icon_plus
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitic.general_utils.DirectoryPicker
+import org.tavioribeiro.commitic.core.utils.DirectoryPicker
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.components.inputs.FileInput
 import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
