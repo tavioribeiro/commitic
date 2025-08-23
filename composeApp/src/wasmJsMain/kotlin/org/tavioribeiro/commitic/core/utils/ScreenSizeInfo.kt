@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.screen_utils
+package org.tavioribeiro.commitic.core.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State

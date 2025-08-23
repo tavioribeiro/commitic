@@ -35,8 +35,8 @@ import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.components.inputs.FileInput
 import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.theme.AppTheme
-import org.tavioribeiro.commitic.screen_utils.WindowType
-import org.tavioribeiro.commitic.screen_utils.getWindowSize
+import org.tavioribeiro.commitic.core.utils.WindowType
+import org.tavioribeiro.commitic.core.utils.getWindowSize
 import org.tavioribeiro.commitic.theme.ThemeState
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item.RegisteredProjectListItem
 
