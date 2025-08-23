@@ -1,7 +1,6 @@
 package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,16 +22,19 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_code
-import commitic.composeapp.generated.resources.icon_folder
 import org.jetbrains.compose.resources.painterResource
+import org.tavioribeiro.commitic.domain.model.ProjectUiModel
 import org.tavioribeiro.commitic.theme.AppTheme
 
 
 
 @Composable
-fun RegisteredProjectListItem() {
+fun RegisteredProjectListItem(
+    projectUiModel: ProjectUiModel,
+    modifier: Modifier = Modifier
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 20.dp)
             .fillMaxWidth()
             .height(120.dp)
@@ -69,7 +71,7 @@ fun RegisteredProjectListItem() {
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 4.dp),
-                text = "E-commerce Frontend",
+                text = projectUiModel.name,
                 color = AppTheme.colors.onColor5,
                 style = MaterialTheme.typography.bodyLarge,
 
@@ -77,18 +79,18 @@ fun RegisteredProjectListItem() {
 
             Text(
                 modifier = Modifier.padding(vertical = 4.dp),
-                text = "/Users/dev/projects/ecommerce-frontend",
+                text = projectUiModel.path,
                 color = AppTheme.colors.color5,
                 style = MaterialTheme.typography.bodyMedium,
                 fontStyle = FontStyle.Italic
             )
 
-            Text(
+            /*Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = "GPT-4 Agent",
+                text = projectUiModel.agentName,
                 color = AppTheme.colors.color5,
                 style = MaterialTheme.typography.bodySmall
-            )
+            )*/
         }
     }
 }

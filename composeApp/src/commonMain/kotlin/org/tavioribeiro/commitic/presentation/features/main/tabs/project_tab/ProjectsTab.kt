@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,9 +40,15 @@ import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
+import org.tavioribeiro.commitic.domain.model.ProjectUiModel
 import org.tavioribeiro.commitic.theme.ThemeState
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item.RegisteredProjectListItem
-
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 
 @Composable
 fun ProjectsTab() {
@@ -47,9 +56,38 @@ fun ProjectsTab() {
     val isMedium = windowSize.width == WindowType.Medium
 
 
-    var projectName by remember { mutableStateOf("") }
-    var filePath by remember { mutableStateOf("") }
+    var newProjectUiModel by remember { mutableStateOf(
+        ProjectUiModel(
+            id = 0,
+            name = "",
+            path = ""
+        )
+    )}
+
     var showDirPicker by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val projectUiModels = remember {
+        mutableStateListOf(
+            ProjectUiModel(
+                id = 1,
+                name = "Commitic",
+                path = "/home/tavioribeiro/AndroidStudioProjects/Commitic"
+            ),
+            ProjectUiModel(
+                id = 2,
+                name = "Meu App de Finanças",
+                path = "/home/tavioribeiro/Projects/FinanceApp"
+            ),
+            ProjectUiModel(
+                id = 3,
+                name = "Jogo da Velha em Compose",
+                path = "/home/tavioribeiro/Compose/TicTacToe"
+            )
+        )
+    }
+
 
     if (isMedium) {
         Column(
@@ -128,7 +166,7 @@ fun ProjectsTab() {
                     placeholder = "Meu Projeto Maravilhoso",
                     initialValue = "",
                     onValueChange = { newName ->
-                        projectName = newName
+                        newProjectUiModel.name = newName
                     },
                     isBackgroudColorDark = true
                 )
@@ -137,9 +175,9 @@ fun ProjectsTab() {
                     title = "Git Repository Path",
                     placeholder = "/endereco/do/repositorio",
                     icon = painterResource(Res.drawable.icon_folder),
-                    initialValue = filePath,
+                    initialValue = newProjectUiModel.path,
                     onValueChange = { newPath ->
-                        filePath = newPath
+                        newProjectUiModel.path = newPath
                     },
                     onFileSelect = {
                         println("Botão de selecionar arquivo clicado!")
@@ -154,7 +192,7 @@ fun ProjectsTab() {
                     onResult = { path ->
                         showDirPicker = false
                         path?.let {
-                            filePath = it
+                            newProjectUiModel.path = it
                         }
                     }
                 )
@@ -182,7 +220,6 @@ fun ProjectsTab() {
             Column(
                 Modifier
                     .height(425.dp)
-                    .height(391.dp)
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
                     .background(AppTheme.colors.color3)
@@ -197,7 +234,26 @@ fun ProjectsTab() {
                     style = MaterialTheme.typography.headlineSmall
                 )
 
-                RegisteredProjectListItem()
+
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectDragGestures { change, dragAmount ->
+                                change.consume()
+                                coroutineScope.launch {
+                                    listState.scrollBy(-dragAmount.y)
+                                }
+                            }
+                        },
+                    contentPadding = PaddingValues(top = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(projectUiModels.size) { index ->
+                        RegisteredProjectListItem(projectUiModel = projectUiModels[index])
+                    }
+                }
             }
         }
     }
