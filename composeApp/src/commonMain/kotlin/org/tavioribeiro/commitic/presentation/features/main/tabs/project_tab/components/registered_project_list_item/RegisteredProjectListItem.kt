@@ -23,14 +23,14 @@ import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_code
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitic.domain.model.ProjectUiModel
+import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
 import org.tavioribeiro.commitic.theme.AppTheme
 
 
 
 @Composable
 fun RegisteredProjectListItem(
-    projectUiModel: ProjectUiModel,
+    projectDomainModel: ProjectDomainModel,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -71,7 +71,7 @@ fun RegisteredProjectListItem(
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 4.dp),
-                text = projectUiModel.name,
+                text = projectDomainModel.name,
                 color = AppTheme.colors.onColor5,
                 style = MaterialTheme.typography.bodyLarge,
 
@@ -79,7 +79,7 @@ fun RegisteredProjectListItem(
 
             Text(
                 modifier = Modifier.padding(vertical = 4.dp),
-                text = projectUiModel.path,
+                text = projectDomainModel.path,
                 color = AppTheme.colors.color5,
                 style = MaterialTheme.typography.bodyMedium,
                 fontStyle = FontStyle.Italic

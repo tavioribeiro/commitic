@@ -40,7 +40,7 @@ import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
-import org.tavioribeiro.commitic.domain.model.ProjectUiModel
+import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
 import org.tavioribeiro.commitic.theme.ThemeState
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item.RegisteredProjectListItem
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -56,8 +56,8 @@ fun ProjectsTab() {
     val isMedium = windowSize.width == WindowType.Medium
 
 
-    var newProjectUiModel by remember { mutableStateOf(
-        ProjectUiModel(
+    var newProjectDomainModel by remember { mutableStateOf(
+        ProjectDomainModel(
             id = 0,
             name = "",
             path = ""
@@ -68,19 +68,19 @@ fun ProjectsTab() {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val projectUiModels = remember {
+    val projectDomainModels = remember {
         mutableStateListOf(
-            ProjectUiModel(
+            ProjectDomainModel(
                 id = 1,
                 name = "Commitic",
                 path = "/home/tavioribeiro/AndroidStudioProjects/Commitic"
             ),
-            ProjectUiModel(
+            ProjectDomainModel(
                 id = 2,
                 name = "Meu App de Finanças",
                 path = "/home/tavioribeiro/Projects/FinanceApp"
             ),
-            ProjectUiModel(
+            ProjectDomainModel(
                 id = 3,
                 name = "Jogo da Velha em Compose",
                 path = "/home/tavioribeiro/Compose/TicTacToe"
@@ -166,7 +166,7 @@ fun ProjectsTab() {
                     placeholder = "Meu Projeto Maravilhoso",
                     initialValue = "",
                     onValueChange = { newName ->
-                        newProjectUiModel.name = newName
+                        newProjectDomainModel.name = newName
                     },
                     isBackgroudColorDark = true
                 )
@@ -175,9 +175,9 @@ fun ProjectsTab() {
                     title = "Git Repository Path",
                     placeholder = "/endereco/do/repositorio",
                     icon = painterResource(Res.drawable.icon_folder),
-                    initialValue = newProjectUiModel.path,
+                    initialValue = newProjectDomainModel.path,
                     onValueChange = { newPath ->
-                        newProjectUiModel.path = newPath
+                        newProjectDomainModel.path = newPath
                     },
                     onFileSelect = {
                         println("Botão de selecionar arquivo clicado!")
@@ -192,7 +192,7 @@ fun ProjectsTab() {
                     onResult = { path ->
                         showDirPicker = false
                         path?.let {
-                            newProjectUiModel.path = it
+                            newProjectDomainModel.path = it
                         }
                     }
                 )
@@ -250,8 +250,8 @@ fun ProjectsTab() {
                     contentPadding = PaddingValues(top = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(projectUiModels.size) { index ->
-                        RegisteredProjectListItem(projectUiModel = projectUiModels[index])
+                    items(projectDomainModels.size) { index ->
+                        RegisteredProjectListItem(projectDomainModel = projectDomainModels[index])
                     }
                 }
             }

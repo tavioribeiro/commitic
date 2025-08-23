@@ -7,9 +7,12 @@ import androidx.compose.ui.window.rememberWindowState
 import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.logo3
 import org.jetbrains.compose.resources.painterResource
+import org.tavioribeiro.commitic.di.initKoin
 import java.awt.Dimension // Importe novamente a classe Dimension
 
 fun main() = application {
+
+    initKoin()
 
     val windowInitialState = rememberWindowState(
         width = 1440.dp,
