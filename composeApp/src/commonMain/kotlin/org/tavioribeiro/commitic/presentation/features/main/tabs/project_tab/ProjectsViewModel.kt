@@ -20,6 +20,7 @@ data class ProjectsUiState(
     val error: String? = null
 )
 
+
 class ProjectsViewModel(
     private val getProjectsUseCase: GetProjectsUseCase,
     private val saveProjectUseCase: SaveProjectUseCase
