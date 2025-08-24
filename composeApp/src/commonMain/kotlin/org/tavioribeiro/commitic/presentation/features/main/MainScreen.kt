@@ -44,7 +44,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.components.buttons.UnderlineButton
 import org.tavioribeiro.commitic.presentation.features.main.tabs.ai_agents_tab.AiAgentsTab
-import org.tavioribeiro.commitic.presentation.features.main.tabs.ProjectsTab
+import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsTab
 
 
 @Composable

@@ -23,14 +23,14 @@ import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_code
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
+import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 import org.tavioribeiro.commitic.theme.AppTheme
 
 
 
 @Composable
 fun RegisteredProjectListItem(
-    projectDomainModel: ProjectDomainModel,
+    projectDomainModel: ProjectUiModel,
     modifier: Modifier = Modifier
 ) {
     Row(

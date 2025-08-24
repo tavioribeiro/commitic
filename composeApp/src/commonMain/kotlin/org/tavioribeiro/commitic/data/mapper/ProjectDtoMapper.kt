@@ -11,3 +11,11 @@ fun ProjectDomainModel.toDto(): ProjectDTOModel {
         path = this.path
     )
 }
+
+fun ProjectDTOModel.toDomain(): ProjectDomainModel {
+    return ProjectDomainModel(
+        id = this.id,
+        name = this.name,
+        path = this.path
+    )
+}

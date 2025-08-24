@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs
+package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,6 +46,8 @@ import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.com
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,10 +56,15 @@ import org.koin.compose.koinInject
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsViewModel
 
 @Composable
-fun ProjectsTab(viewModel: ProjectsViewModel = koinInject()) {
+fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
     val windowSize = getWindowSize()
     val isMedium = windowSize.width == WindowType.Medium
 
+    val projectsTabuiState by projectsTabviewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        projectsTabviewModel.loadProjects()
+    }
 
     var newProjectDomainModel by remember { mutableStateOf(
         ProjectDomainModel(
@@ -71,25 +78,7 @@ fun ProjectsTab(viewModel: ProjectsViewModel = koinInject()) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val projectDomainModels = remember {
-        mutableStateListOf(
-            ProjectDomainModel(
-                id = 1,
-                name = "Commitic",
-                path = "/home/tavioribeiro/AndroidStudioProjects/Commitic"
-            ),
-            ProjectDomainModel(
-                id = 2,
-                name = "Meu App de Finanças",
-                path = "/home/tavioribeiro/Projects/FinanceApp"
-            ),
-            ProjectDomainModel(
-                id = 3,
-                name = "Jogo da Velha em Compose",
-                path = "/home/tavioribeiro/Compose/TicTacToe"
-            )
-        )
-    }
+
 
 
     if (isMedium) {
@@ -211,7 +200,7 @@ fun ProjectsTab(viewModel: ProjectsViewModel = koinInject()) {
                          onClick = {
                              ThemeState.toggleTheme()
                              coroutineScope.launch(Dispatchers.Main) {
-                                 viewModel.onSaveProjectClicked(newProjectDomainModel)
+                                 projectsTabviewModel.onSaveProjectClicked(newProjectDomainModel)
                              }
                          },
                          icon = painterResource(Res.drawable.icon_plus),
@@ -256,8 +245,8 @@ fun ProjectsTab(viewModel: ProjectsViewModel = koinInject()) {
                     contentPadding = PaddingValues(top = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(projectDomainModels.size) { index ->
-                        RegisteredProjectListItem(projectDomainModel = projectDomainModels[index])
+                    items(projectsTabuiState.projects.size) { index ->
+                        RegisteredProjectListItem(projectDomainModel = projectsTabuiState.projects[index])
                     }
                 }
             }
