@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -230,23 +231,37 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                 )
 
 
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .pointerInput(Unit) {
-                            detectDragGestures { change, dragAmount ->
-                                change.consume()
-                                coroutineScope.launch {
-                                    listState.scrollBy(-dragAmount.y)
-                                }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    if (projectsTabuiState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .height(30.dp)
+                                .width(30.dp),
+                            color = AppTheme.colors.onColor5
+                        )
+                    } else {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .pointerInput(Unit) {
+                                    detectDragGestures { change, dragAmount ->
+                                        change.consume()
+                                        coroutineScope.launch {
+                                            listState.scrollBy(-dragAmount.y)
+                                        }
+                                    }
+                                },
+                            contentPadding = PaddingValues(top = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(projectsTabuiState.projects.size) { index ->
+                                RegisteredProjectListItem(
+                                    projectDomainModel = projectsTabuiState.projects[index]
+                                )
                             }
-                        },
-                    contentPadding = PaddingValues(top = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(projectsTabuiState.projects.size) { index ->
-                        RegisteredProjectListItem(projectDomainModel = projectsTabuiState.projects[index])
+                        }
                     }
                 }
             }

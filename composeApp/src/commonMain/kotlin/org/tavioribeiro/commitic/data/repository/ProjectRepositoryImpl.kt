@@ -18,7 +18,7 @@ class ProjectRepositoryImpl(
     }
 
 
-    override fun getProjects(): List<ProjectDomainModel> {
+    override suspend fun getProjects(): List<ProjectDomainModel> {
         println("--- CAMADA DO REPOSITÓRIO ---")
         println("Buscando DTOs do DataSource e mapeando para DomainModels...")
         val projectDtos = localDataSource.getProjects()

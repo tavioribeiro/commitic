@@ -8,7 +8,7 @@ class GetProjectsUseCase(
 ) {
     // Usar 'operator fun invoke' permite chamar a classe como se fosse uma função
     // Ex: getProjectsUseCase() em vez de getProjectsUseCase.execute()
-    operator fun invoke(): List<ProjectDomainModel> {
+    suspend operator fun invoke(): List<ProjectDomainModel> {
         println("--- CAMADA DE DOMÍNIO (USE CASE) ---")
         println("Executando regra de negócio para buscar projetos...")
         return projectRepository.getProjects()

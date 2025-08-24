@@ -5,5 +5,5 @@ import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
 
 interface ProjectRepository {
     fun saveProject(project: ProjectDomainModel)
-    fun getProjects(): List<ProjectDomainModel>
+    suspend fun getProjects(): List<ProjectDomainModel>
 }

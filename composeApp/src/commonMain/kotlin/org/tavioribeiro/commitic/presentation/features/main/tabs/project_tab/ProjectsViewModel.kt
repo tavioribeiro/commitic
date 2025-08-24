@@ -25,7 +25,7 @@ class ProjectsViewModel(
     private val _uiState = MutableStateFlow(ProjectsUiState())
     val uiState: StateFlow<ProjectsUiState> = _uiState.asStateFlow()
 
-    fun loadProjects() {
+    suspend fun loadProjects() {
         // Use o viewModelScope para lançar coroutines que são canceladas
         // automaticamente quando o ViewModel é destruído.
         // No momento, como suas chamadas são síncronas, não é estritamente necessário,
