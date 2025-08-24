@@ -41,6 +41,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation("io.insert-koin:koin-core:3.5.0")
+            implementation("io.insert-koin:koin-compose:1.1.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -55,15 +58,15 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "org.upxdev.calculatordpi.MainKt"
+        mainClass = "org.tavioribeiro.commitic.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.upxdev.calculatordpi"
+            packageName = "org.tavioribeiro.commitic"
             packageVersion = "1.0.0"
 
             linux {
-                iconFile.set(project.file("composeApp/src/commonMain/composeResources/drawable/logo.png"))
+                iconFile.set(project.file("composeApp/src/commonMain/composeResources/drawable/logo3.png"))
             }
         }
     }

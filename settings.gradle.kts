@@ -1,4 +1,4 @@
-rootProject.name = "CalculatorDPI"
+rootProject.name = "Commitic"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
