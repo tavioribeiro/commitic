@@ -1,5 +1,10 @@
 package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +51,7 @@ import org.tavioribeiro.commitic.theme.ThemeState
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item.RegisteredProjectListItem
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,6 +60,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.presentation.features.main.tabs.ai_agents_tab.AiAgentsTab
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsViewModel
 
 @Composable
@@ -232,34 +239,56 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
 
 
                 Box(modifier = Modifier.fillMaxSize()) {
-                    if (projectsTabuiState.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .height(30.dp)
-                                .width(30.dp),
-                            color = AppTheme.colors.onColor5
-                        )
-                    } else {
-                        LazyColumn(
-                            state = listState,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .pointerInput(Unit) {
-                                    detectDragGestures { change, dragAmount ->
-                                        change.consume()
-                                        coroutineScope.launch {
-                                            listState.scrollBy(-dragAmount.y)
-                                        }
-                                    }
-                                },
-                            contentPadding = PaddingValues(top = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(projectsTabuiState.projects.size) { index ->
-                                RegisteredProjectListItem(
-                                    projectDomainModel = projectsTabuiState.projects[index]
+                    AnimatedContent(
+                        targetState = projectsTabuiState.isLoading,
+                        modifier = Modifier.fillMaxSize(),
+                        transitionSpec = {
+                            val exit = fadeOut(animationSpec = tween(300))
+
+                            val enter = fadeIn(
+                                animationSpec = tween(
+                                    durationMillis = 300,
+                                    delayMillis = 300
                                 )
+                            )
+
+                            enter togetherWith exit
+                        },
+                        label = "TabContentAnimation"
+                    ) { targetState ->
+                        if (targetState) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .height(30.dp)
+                                        .width(30.dp),
+                                    color = AppTheme.colors.onColor5
+                                )
+                            }
+                        } else {
+                            LazyColumn(
+                                state = listState,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .pointerInput(Unit) {
+                                        detectDragGestures { change, dragAmount ->
+                                            change.consume()
+                                            coroutineScope.launch {
+                                                listState.scrollBy(-dragAmount.y)
+                                            }
+                                        }
+                                    },
+                                contentPadding = PaddingValues(top = 16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(projectsTabuiState.projects.size) { index ->
+                                    RegisteredProjectListItem(
+                                        projectDomainModel = projectsTabuiState.projects[index]
+                                    )
+                                }
                             }
                         }
                     }
