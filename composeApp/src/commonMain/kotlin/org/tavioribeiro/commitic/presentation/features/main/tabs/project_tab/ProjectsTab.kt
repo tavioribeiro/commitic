@@ -49,9 +49,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.Dispatchers
+import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsViewModel
 
 @Composable
-fun ProjectsTab() {
+fun ProjectsTab(viewModel: ProjectsViewModel = koinInject()) {
     val windowSize = getWindowSize()
     val isMedium = windowSize.width == WindowType.Medium
 
@@ -207,6 +210,9 @@ fun ProjectsTab() {
                          text = "Adicionar esse projeto",
                          onClick = {
                              ThemeState.toggleTheme()
+                             coroutineScope.launch(Dispatchers.Main) {
+                                 viewModel.onSaveProjectClicked(newProjectDomainModel)
+                             }
                          },
                          icon = painterResource(Res.drawable.icon_plus),
                          modifier = Modifier.padding(16.dp)
