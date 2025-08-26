@@ -43,7 +43,7 @@ import commitic.composeapp.generated.resources.icon_robot
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.components.buttons.UnderlineButton
-import org.tavioribeiro.commitic.presentation.features.main.tabs.ai_agents_tab.AiAgentsTab
+import org.tavioribeiro.commitic.presentation.features.main.tabs.ll_models_tab.LLModelsTab
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsTab
 
 
@@ -118,10 +118,10 @@ fun CalculatorScreen() {
                 )
 
                 UnderlineButton(
-                    text = "AI Agentes",
+                    text = "Modelos",
                     icon = painterResource(Res.drawable.icon_robot),
-                    isSelected = (selectedButton == "AI Agentes"),
-                    onClick = { selectedButton = "AI Agentes" }
+                    isSelected = (selectedButton == "Modelos"),
+                    onClick = { selectedButton = "Modelos" }
                 )
 
                 UnderlineButton(
@@ -155,7 +155,7 @@ fun CalculatorScreen() {
             ){ targetState ->
                 when (targetState) {
                     "Projetos" -> ProjectsTab()
-                    "AI Agentes" -> AiAgentsTab()
+                    "Modelos" -> LLModelsTab()
                     "Histórico" -> ProjectsTab()
                 }
             }

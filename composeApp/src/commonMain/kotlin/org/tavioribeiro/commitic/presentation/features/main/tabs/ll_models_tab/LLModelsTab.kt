@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.ai_agents_tab
+package org.tavioribeiro.commitic.presentation.features.main.tabs.ll_models_tab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,7 @@ import org.tavioribeiro.commitic.theme.AppTheme
 
 
 @Composable
-fun AiAgentsTab() {
+fun LLModelsTab() {
     Column(
         Modifier.height(391.dp)
             .fillMaxWidth()
