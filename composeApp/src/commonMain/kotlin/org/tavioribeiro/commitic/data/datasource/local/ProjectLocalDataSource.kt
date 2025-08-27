@@ -51,7 +51,13 @@ class ProjectLocalDataSource {
     }
 
 
-    fun deleteProject(project: ProjectDTOModel) {
-        println("✅ Projeto Deletado (simulado): ${project.name} no caminho ${project.path}")
+    fun deleteProject(project: ProjectDTOModel): String { //TODO("Trocar por um enum")
+        try {
+            println("✅ Projeto Deletado (simulado): ${project.name} no caminho ${project.path}")
+            return ""
+        } catch (e: Exception) {
+            throw e
+        }
+
     }
 }

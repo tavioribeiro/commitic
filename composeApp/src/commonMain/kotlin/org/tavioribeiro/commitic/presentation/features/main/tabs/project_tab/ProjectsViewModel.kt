@@ -3,8 +3,10 @@ package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -12,6 +14,7 @@ import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
 import org.tavioribeiro.commitic.domain.usecase.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.SaveProjectUseCase
+import org.tavioribeiro.commitic.domain.util.Outcome
 import org.tavioribeiro.commitic.presentation.mapper.toDomain
 import org.tavioribeiro.commitic.presentation.mapper.toUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
@@ -30,6 +33,11 @@ class ProjectsViewModel(
 ) {
     private val _uiState = MutableStateFlow(ProjectsUiState())
     val uiState: StateFlow<ProjectsUiState> = _uiState.asStateFlow()
+
+
+    private val _uiEvent = MutableSharedFlow<String>()
+    val uiEvent = _uiEvent.asSharedFlow()
+
 
     suspend fun loadProjects() {
         _uiState.update { it.copy(isLoading = true) }
@@ -58,6 +66,20 @@ class ProjectsViewModel(
 
     suspend fun deleteProject(projectToDelete: ProjectUiModel) {
         val project = projectToDelete.toDomain()
-        deleteProjectUseCase(project)
+        val outcome = deleteProjectUseCase(project)
+
+        when (outcome) {
+            is Outcome.Success -> {
+                // Sucesso!
+                _uiEvent.emit("Projeto salvo com sucesso!")
+                // Opcional: Você pode querer recarregar a lista de projetos aqui.
+                // fetchProjects()
+            }
+            is Outcome.Error -> {
+                // Erro!
+                val errorMessage = outcome.exception.message ?: "Ocorreu um erro desconhecido."
+                _uiEvent.emit("Falha ao salvar: $errorMessage")
+            }
+        }
     }
 }
