@@ -45,7 +45,6 @@ import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
-import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
 import org.tavioribeiro.commitic.theme.ThemeState
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item.RegisteredProjectListItem
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -58,6 +57,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 
 @Composable
 fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
@@ -70,8 +70,8 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
         projectsTabviewModel.loadProjects()
     }
 
-    var newProjectDomainModel by remember { mutableStateOf(
-        ProjectDomainModel(
+    var newProjectUiModel by remember { mutableStateOf(
+        ProjectUiModel(
             id = 0,
             name = "",
             path = ""
@@ -162,7 +162,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                     placeholder = "Meu Projeto Maravilhoso",
                     initialValue = "",
                     onValueChange = { newName ->
-                        newProjectDomainModel.name = newName
+                        newProjectUiModel.name = newName
                     },
                     isBackgroudColorDark = true
                 )
@@ -171,9 +171,9 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                     title = "Git Repository Path",
                     placeholder = "/endereco/do/repositorio",
                     icon = painterResource(Res.drawable.icon_folder),
-                    initialValue = newProjectDomainModel.path,
+                    initialValue = newProjectUiModel.path,
                     onValueChange = { newPath ->
-                        newProjectDomainModel.path = newPath
+                        newProjectUiModel.path = newPath
                     },
                     onFileSelect = {
                         println("Botão de selecionar arquivo clicado!")
@@ -188,7 +188,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                     onResult = { path ->
                         showDirPicker = false
                         path?.let {
-                            newProjectDomainModel.path = it
+                            newProjectUiModel.path = it
                         }
                     }
                 )
@@ -204,7 +204,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                          onClick = {
                              ThemeState.toggleTheme()
                              coroutineScope.launch(Dispatchers.Main) {
-                                 projectsTabviewModel.onSaveProjectClicked(newProjectDomainModel)
+                                 projectsTabviewModel.onSaveProjectClicked(newProjectUiModel)
                              }
                          },
                          icon = painterResource(Res.drawable.icon_plus),
@@ -232,7 +232,6 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
                 )
-
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     AnimatedContent(
@@ -282,7 +281,12 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                             ) {
                                 items(projectsTabuiState.projects.size) { index ->
                                     RegisteredProjectListItem(
-                                        projectDomainModel = projectsTabuiState.projects[index]
+                                        projectDomainModel = projectsTabuiState.projects[index],
+                                        deleteProject = { project ->
+                                            coroutineScope.launch(Dispatchers.Main){
+                                                projectsTabviewModel.deleteProject(project)
+                                            }
+                                        }
                                     )
                                 }
                             }

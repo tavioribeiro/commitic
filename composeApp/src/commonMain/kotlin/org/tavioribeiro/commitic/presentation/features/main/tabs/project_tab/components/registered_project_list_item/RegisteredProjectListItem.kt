@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,16 +23,20 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_code
+import commitic.composeapp.generated.resources.icon_plus
+import commitic.composeapp.generated.resources.icon_trash
 import org.jetbrains.compose.resources.painterResource
+import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 import org.tavioribeiro.commitic.theme.AppTheme
-
+import org.tavioribeiro.commitic.theme.ThemeState
 
 
 @Composable
 fun RegisteredProjectListItem(
     projectDomainModel: ProjectUiModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    deleteProject: (ProjectUiModel) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -91,6 +96,21 @@ fun RegisteredProjectListItem(
                 color = AppTheme.colors.color5,
                 style = MaterialTheme.typography.bodySmall
             )*/
+        }
+
+        IconButton(
+            onClick = {
+                deleteProject(projectDomainModel)
+            }
+        ){
+            Icon(
+                modifier = Modifier
+                    .height(20.dp)
+                    .width(20.dp),
+                painter = painterResource(Res.drawable.icon_trash),
+                contentDescription = null,
+                tint = AppTheme.colors.color5
+            )
         }
     }
 }

@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import org.tavioribeiro.commitic.data.datasource.local.ProjectLocalDataSource
 import org.tavioribeiro.commitic.data.repository.ProjectRepositoryImpl
 import org.tavioribeiro.commitic.domain.repository.ProjectRepository
+import org.tavioribeiro.commitic.domain.usecase.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.SaveProjectUseCase
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsViewModel
@@ -20,13 +21,16 @@ fun initKoin() {
 val appModule = module {
     // --- CAMADA DE DADOS ---
     single { ProjectLocalDataSource() }
+
+    factory { SaveProjectUseCase(get()) }
     factory { GetProjectsUseCase(get()) }
+    factory { DeleteProjectUseCase(get()) }
 
     single<ProjectRepository> { ProjectRepositoryImpl(get()) }
 
     // --- CAMADA DE DOMÍNIO (UseCases) ---
-    factory { SaveProjectUseCase(get()) }
+
 
     // --- CAMADA DE APRESENTAÇÃO (ViewModels) ---
-    factory { ProjectsViewModel(get(), get()) }
+    factory { ProjectsViewModel(get(), get(), get()) }
 }

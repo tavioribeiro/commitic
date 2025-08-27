@@ -49,4 +49,9 @@ class ProjectLocalDataSource {
             ProjectDTOModel(id = 3, name = "Projeto Secreto", path = "/path/to/secret")
         )
     }
+
+
+    fun deleteProject(project: ProjectDTOModel) {
+        println("✅ Projeto Deletado (simulado): ${project.name} no caminho ${project.path}")
+    }
 }
