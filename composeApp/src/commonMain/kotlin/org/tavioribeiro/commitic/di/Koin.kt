@@ -9,28 +9,32 @@ import org.tavioribeiro.commitic.domain.repository.ProjectRepository
 import org.tavioribeiro.commitic.domain.usecase.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.SaveProjectUseCase
+import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsViewModel
 
 
 fun initKoin() {
     startKoin {
-        modules(appModule)
+        modules(
+            dataModule,
+            domainModule,
+            presentationModule
+        )
     }
 }
 
-val appModule = module {
-    // --- CAMADA DE DADOS ---
+val dataModule = module {
     single { ProjectLocalDataSource() }
+    single<ProjectRepository> { ProjectRepositoryImpl(get()) }
+}
 
+val domainModule = module {
     factory { SaveProjectUseCase(get()) }
     factory { GetProjectsUseCase(get()) }
     factory { DeleteProjectUseCase(get()) }
+}
 
-    single<ProjectRepository> { ProjectRepositoryImpl(get()) }
-
-    // --- CAMADA DE DOMÍNIO (UseCases) ---
-
-
-    // --- CAMADA DE APRESENTAÇÃO (ViewModels) ---
-    factory { ProjectsViewModel(get(), get(), get()) }
+val presentationModule = module {
+    single { ToastViewModel() }
+    factory { ProjectsViewModel(get(), get(), get(), get()) }
 }

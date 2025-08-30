@@ -15,6 +15,9 @@ import org.tavioribeiro.commitic.domain.usecase.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.SaveProjectUseCase
 import org.tavioribeiro.commitic.domain.util.Outcome
+import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
+import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
+import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
 import org.tavioribeiro.commitic.presentation.mapper.toDomain
 import org.tavioribeiro.commitic.presentation.mapper.toUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
@@ -27,6 +30,7 @@ data class ProjectsUiState(
 
 
 class ProjectsViewModel(
+    private val toastViewModel: ToastViewModel,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val saveProjectUseCase: SaveProjectUseCase,
     private val deleteProjectUseCase: DeleteProjectUseCase
@@ -68,12 +72,22 @@ class ProjectsViewModel(
         val project = projectToDelete.toDomain()
         val outcome = deleteProjectUseCase(project)
 
+
+        toastViewModel.showToast(
+            ToastUiModel(
+                title = "Ação Concluída",
+                message = "A operação foi realizada com sucesso.",
+                type = ToastType.INFO
+            )
+        )
+
         when (outcome) {
             is Outcome.Success -> {
                 // Sucesso!
                 _uiEvent.emit("Projeto salvo com sucesso!")
                 // Opcional: Você pode querer recarregar a lista de projetos aqui.
                 // fetchProjects()
+
             }
             is Outcome.Error -> {
                 // Erro!
