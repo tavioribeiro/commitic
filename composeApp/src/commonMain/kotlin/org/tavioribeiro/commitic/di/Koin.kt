@@ -1,14 +1,13 @@
 package org.tavioribeiro.commitic.di
 
 import org.koin.core.context.startKoin
-import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 import org.tavioribeiro.commitic.data.datasource.local.ProjectLocalDataSource
 import org.tavioribeiro.commitic.data.repository.ProjectRepositoryImpl
 import org.tavioribeiro.commitic.domain.repository.ProjectRepository
-import org.tavioribeiro.commitic.domain.usecase.DeleteProjectUseCase
-import org.tavioribeiro.commitic.domain.usecase.GetProjectsUseCase
-import org.tavioribeiro.commitic.domain.usecase.SaveProjectUseCase
+import org.tavioribeiro.commitic.domain.usecase.project.DeleteProjectUseCase
+import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
+import org.tavioribeiro.commitic.domain.usecase.project.SaveProjectUseCase
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsViewModel
 
