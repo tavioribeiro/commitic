@@ -51,14 +51,15 @@ class ProjectsViewModel(
             it.toUiModel()
         }
 
+        _uiState.update { it.copy(isLoading = false, projects = uiProjects) }
 
-        coroutineScope {
+        /*coroutineScope {
             launch(Dispatchers.Main) {
                 _uiState.update { it.copy(projects = uiProjects) }
                 delay(500)
                 _uiState.update { it.copy(isLoading = false) }
             }
-        }
+        }*/
     }
 
 
@@ -69,6 +70,8 @@ class ProjectsViewModel(
 
 
     suspend fun deleteProject(projectToDelete: ProjectUiModel) {
+        _uiState.update { it.copy(isLoading = true) }
+
         val project = projectToDelete.toDomain()
         val outcome = deleteProjectUseCase(project)
 
@@ -80,7 +83,8 @@ class ProjectsViewModel(
                     ToastUiModel(
                         title = "Sucesso",
                         message = "Projeto deletado com sucesso",
-                        type = ToastType.SUCCESS
+                        type = ToastType.SUCCESS,
+                        duration = 1500
                     )
                 )
             }
@@ -92,10 +96,28 @@ class ProjectsViewModel(
                     ToastUiModel(
                         title = "Erro",
                         message = "Falha ao deletar projeto",
-                        type = ToastType.ERROR
+                        type = ToastType.ERROR,
+                        duration = 1500
                     )
                 )
             }
         }
+
+
+        val domainProjects = getProjectsUseCase()
+        val uiProjects = domainProjects.map {
+            it.toUiModel()
+        }
+
+
+        _uiState.update { it.copy(isLoading = false, projects = uiProjects) }
+
+        /*coroutineScope {
+            launch(Dispatchers.Main) {
+                _uiState.update { it.copy(isLoading = false, projects = uiProjects) }
+                delay(500)
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }*/
     }
 }
