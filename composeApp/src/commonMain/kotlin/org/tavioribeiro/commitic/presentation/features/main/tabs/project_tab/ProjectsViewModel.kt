@@ -39,8 +39,8 @@ class ProjectsViewModel(
     val uiState: StateFlow<ProjectsUiState> = _uiState.asStateFlow()
 
 
-    private val _uiEvent = MutableSharedFlow<String>()
-    val uiEvent = _uiEvent.asSharedFlow()
+    //private val _uiEvent = MutableSharedFlow<String>()
+    //val uiEvent = _uiEvent.asSharedFlow()
 
 
     suspend fun loadProjects() {
@@ -72,27 +72,29 @@ class ProjectsViewModel(
         val project = projectToDelete.toDomain()
         val outcome = deleteProjectUseCase(project)
 
-
-        toastViewModel.showToast(
-            ToastUiModel(
-                title = "Ação Concluída",
-                message = "A operação foi realizada com sucesso.",
-                type = ToastType.INFO
-            )
-        )
-
         when (outcome) {
             is Outcome.Success -> {
-                // Sucesso!
-                _uiEvent.emit("Projeto salvo com sucesso!")
-                // Opcional: Você pode querer recarregar a lista de projetos aqui.
-                // fetchProjects()
+                //_uiEvent.emit("Projeto deletado com sucesso")
 
+                toastViewModel.showToast(
+                    ToastUiModel(
+                        title = "Sucesso",
+                        message = "Projeto deletado com sucesso",
+                        type = ToastType.SUCCESS
+                    )
+                )
             }
             is Outcome.Error -> {
-                // Erro!
-                val errorMessage = outcome.exception.message ?: "Ocorreu um erro desconhecido."
-                _uiEvent.emit("Falha ao salvar: $errorMessage")
+                //val errorMessage = outcome.exception.message ?: "Ocorreu um erro desconhecido."
+                //_uiEvent.emit("Falha ao salvar: $errorMessage")
+
+                toastViewModel.showToast(
+                    ToastUiModel(
+                        title = "Erro",
+                        message = "Falha ao deletar projeto",
+                        type = ToastType.ERROR
+                    )
+                )
             }
         }
     }

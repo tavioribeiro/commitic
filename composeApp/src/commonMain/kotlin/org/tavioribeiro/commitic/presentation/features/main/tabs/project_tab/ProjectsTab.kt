@@ -65,7 +65,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
     val isMedium = windowSize.width == WindowType.Medium
 
     val projectsTabuiState by projectsTabviewModel.uiState.collectAsState()
-    val projectsTabuiEvent by projectsTabviewModel.uiEvent.collectAsState(initial = "")
+
 
     LaunchedEffect(Unit) {
         projectsTabviewModel.loadProjects()
