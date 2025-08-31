@@ -33,6 +33,14 @@ class ProjectsViewModel(
     val uiState: StateFlow<ProjectsUiState> = _uiState.asStateFlow()
 
 
+    private val _projectNameInputWarningState = MutableStateFlow("")
+    val projectNameInputWarningState = _projectNameInputWarningState.asStateFlow()
+
+    private val _pathInputWarningState = MutableStateFlow("")
+    val pathInputWarningState = _pathInputWarningState.asStateFlow()
+
+
+
     //TROCADO POR TOAST
     //private val _uiEvent = MutableSharedFlow<String>()
     //val uiEvent = _uiEvent.asSharedFlow()
@@ -51,20 +59,11 @@ class ProjectsViewModel(
 
                 _uiState.update { it.copy(isLoading = false, projects = uiProjects) }
             }
+
             is Result.Failure -> {
                 _uiState.update { it.copy(isLoading = false) }
 
                 when (result.failure) {
-                    is ProjectFailure.InvalidName -> {
-                        //TODO("implementar a mensagem na View)
-                    }
-                    is ProjectFailure.InvalidPath -> {
-                        //TODO("implementar a mensagem na View)
-                    }
-                    is ProjectFailure.SaveError -> {
-                        //TODO("implementar a mensagem na View)
-                    }
-
                     is ProjectFailure.Unexpected -> {
                         toastViewModel.showToast(
                             ToastUiModel(
@@ -75,6 +74,7 @@ class ProjectsViewModel(
                             )
                         )
                     }
+                    else -> {}
                 }
             }
         }
@@ -100,18 +100,15 @@ class ProjectsViewModel(
                     )
                 )
             }
+
             is Result.Failure -> {
                 when (result.failure) {
                     is ProjectFailure.InvalidName -> {
-                        //TODO("implementar a mensagem na View)
+                        _projectNameInputWarningState.update { "O nome não pode ser vazio." }
                     }
                     is ProjectFailure.InvalidPath -> {
-                        //TODO("implementar a mensagem na View)
+                        _pathInputWarningState.update { "O caminho não pode ser vazio." }
                     }
-                    is ProjectFailure.SaveError -> {
-                        //TODO("implementar a mensagem na View)
-                    }
-
                     is ProjectFailure.Unexpected -> {
                         toastViewModel.showToast(
                             ToastUiModel(
@@ -150,25 +147,6 @@ class ProjectsViewModel(
 
             is Result.Failure -> {
                 when (result.failure) {
-                    is ProjectFailure.InvalidName -> {
-                        //TODO("implementar a mensagem na View)
-                    }
-
-                    is ProjectFailure.InvalidPath -> {
-                        toastViewModel.showToast(
-                            ToastUiModel(
-                                title = "Erro",
-                                message = "O caminho não pode ser vazio",
-                                type = ToastType.ERROR,
-                                duration = 1500
-                            )
-                        )
-                    }
-
-                    is ProjectFailure.SaveError -> {
-                        //TODO("implementar a mensagem na View)
-                    }
-
                     is ProjectFailure.Unexpected -> {
                         toastViewModel.showToast(
                             ToastUiModel(
@@ -179,6 +157,7 @@ class ProjectsViewModel(
                             )
                         )
                     }
+                    else -> {}
                 }
             }
         }

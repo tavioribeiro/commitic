@@ -65,6 +65,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
     val isMedium = windowSize.width == WindowType.Medium
 
     val projectsTabuiState by projectsTabviewModel.uiState.collectAsState()
+    val pathInputWarningState by projectsTabviewModel.pathInputWarningState.collectAsState()
 
 
     LaunchedEffect(Unit) {
@@ -171,6 +172,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                 FileInput(
                     title = "Git Repository Path",
                     placeholder = "/endereco/do/repositorio",
+                    warning = pathInputWarningState,
                     icon = painterResource(Res.drawable.icon_folder),
                     initialValue = newProjectUiModel.path,
                     onValueChange = { newPath ->
