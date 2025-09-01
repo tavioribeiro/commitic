@@ -14,6 +14,7 @@ fun FullInput(
     modifier: Modifier = Modifier,
     title: String,
     placeholder: String,
+    warning: String = "",
     initialValue: String = "",
     onValueChange: (String) -> Unit,
     isBackgroudColorDark: Boolean = false
@@ -56,9 +57,9 @@ fun FullInput(
         )
 
         Text(
-            //text = title,
-            text = "",
-            color = AppTheme.colors.color10,
+            text = warning,
+            //color = AppTheme.colors.color10,
+            color = Color(0xFFF44336),
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.padding(top = 4.dp)
         )

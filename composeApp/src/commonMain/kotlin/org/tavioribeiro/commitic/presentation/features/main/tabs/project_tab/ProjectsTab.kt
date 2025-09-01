@@ -65,6 +65,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
     val isMedium = windowSize.width == WindowType.Medium
 
     val projectsTabuiState by projectsTabviewModel.uiState.collectAsState()
+    val projectNameInputWarningState by projectsTabviewModel.projectNameInputWarningState.collectAsState()
     val pathInputWarningState by projectsTabviewModel.pathInputWarningState.collectAsState()
 
 
@@ -162,6 +163,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                     modifier = Modifier.padding(top = 20.dp),
                     title = "Nome do Projeto",
                     placeholder = "Meu Projeto Maravilhoso",
+                    warning = projectNameInputWarningState,
                     initialValue = "",
                     onValueChange = { newName ->
                         newProjectUiModel.name = newName
@@ -205,7 +207,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                      IconTextButton(
                          text = "Adicionar esse projeto",
                          onClick = {
-                             ThemeState.toggleTheme()
+                             //ThemeState.toggleTheme()
                              coroutineScope.launch(Dispatchers.Main) {
                                  projectsTabviewModel.onSaveProjectClicked(newProjectUiModel)
                              }

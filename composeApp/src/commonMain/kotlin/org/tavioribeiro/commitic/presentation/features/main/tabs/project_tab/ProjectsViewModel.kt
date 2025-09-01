@@ -87,7 +87,10 @@ class ProjectsViewModel(
         val project = projectToSave.toDomain()
         val result = saveProjectUseCase(project)
 
-        _uiState.update { it.copy(isLoading = false) }
+
+        _projectNameInputWarningState.update { "" }
+        _pathInputWarningState.update { "" }
+
 
         when (result) {
             is Result.Success -> {
@@ -122,6 +125,7 @@ class ProjectsViewModel(
                 }
             }
         }
+        _uiState.update { it.copy(isLoading = false) }
     }
 
 
