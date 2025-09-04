@@ -20,6 +20,7 @@ class ProjectRepositoryImpl(
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            println("Erro ao buscar projetos: ${e.message}")
             Result.Failure(ProjectFailure.Unexpected(e))
         }
     }
@@ -32,6 +33,7 @@ class ProjectRepositoryImpl(
 
             Result.Success(projectsDomain)
         } catch (e: Exception) {
+            println("Erro ao buscar projetos: ${e.message}")
             Result.Failure(ProjectFailure.Unexpected(e))
         }
     }
@@ -45,6 +47,7 @@ class ProjectRepositoryImpl(
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            println("Erro ao buscar projetos: ${e.message}")
             Result.Failure(ProjectFailure.Unexpected(e))
         }
     }

@@ -3,6 +3,7 @@ package org.tavioribeiro.commitic.di
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.tavioribeiro.commitic.data.datasource.local.ProjectLocalDataSource
 import org.tavioribeiro.commitic.data.repository.ProjectRepositoryImpl
@@ -15,9 +16,12 @@ import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsViewModel
 
 
+expect val platformModule: Module
+
 fun initKoin() {
     startKoin {
         modules(
+            platformModule,
             dataModule,
             domainModule,
             presentationModule
@@ -26,10 +30,8 @@ fun initKoin() {
 }
 
 val dataModule = module {
-    single <SqlDriver> { JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY) }
-    single { ProjectSchemaQueries(driver = get())}
+    single { ProjectSchemaQueries(driver = get()) }
     single { ProjectLocalDataSource(get()) }
-
     single<ProjectRepository> { ProjectRepositoryImpl(get()) }
 }
 
