@@ -1,0 +1,90 @@
+-- Criação das tabelas com nomes no plural e chaves estrangeiras
+CREATE TABLE projects (
+  project_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL
+);
+
+CREATE TABLE branches (
+  branch_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  project_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+);
+
+CREATE TABLE commits (
+  commit_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  branch_id INTEGER NOT NULL,
+  message TEXT NOT NULL,
+  timestamp INTEGER NOT NULL,
+  FOREIGN KEY (branch_id) REFERENCES branches(branch_id) ON DELETE CASCADE
+);
+
+
+-- -------------------------------- CONSULTAS --------------------------------
+
+insertProject:
+INSERT INTO projects (name)
+VALUES (?);
+
+insertBranch:
+INSERT INTO branches (project_id, name)
+VALUES (?, ?);
+
+insertCommit:
+INSERT INTO commits (branch_id, message, timestamp)
+VALUES (?, ?, ?);
+
+
+selectAllProjects:
+SELECT * FROM projects;
+
+selectProjectById:
+SELECT * FROM projects WHERE project_id = ?;
+
+selectBranchesByProjectId:
+SELECT * FROM branches WHERE project_id = ?;
+
+selectBranchById:
+SELECT * FROM branches WHERE branch_id = ?;
+
+selectCommitsByBranchId:
+SELECT * FROM commits WHERE branch_id = ? ORDER BY timestamp DESC;
+
+selectCommitById:
+SELECT * FROM commits WHERE commit_id = ?;
+
+
+selectProjectWithBranches:
+SELECT p.project_id,
+       p.name AS project_name,
+       b.branch_id,
+       b.name AS branch_name
+FROM projects p
+LEFT JOIN branches b ON b.project_id = p.project_id
+WHERE p.project_id = ?;
+
+selectProjectWithBranchesAndCommits:
+SELECT p.project_id,
+       p.name AS project_name,
+       b.branch_id,
+       b.name AS branch_name,
+       c.commit_id,
+       c.message,
+       c.timestamp
+FROM projects p
+LEFT JOIN branches b ON b.project_id = p.project_id
+LEFT JOIN commits c ON c.branch_id = b.branch_id
+WHERE p.project_id = ?
+ORDER BY b.branch_id, c.timestamp DESC;
+
+
+selectAllBranchesWithCommits:
+SELECT b.branch_id,
+       b.project_id,
+       b.name AS branch_name,
+       c.commit_id,
+       c.message,
+       c.timestamp
+FROM branches b
+LEFT JOIN commits c ON c.branch_id = b.branch_id
+ORDER BY b.branch_id, c.timestamp DESC;

@@ -7,12 +7,13 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
     jvm()
     
-    @OptIn(ExperimentalWasmDsl::class)
+    /*@OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         outputModuleName.set("composeApp")
         browser {
@@ -29,7 +30,7 @@ kotlin {
             }
         }
         binaries.executable()
-    }
+    }*/
     
     sourceSets {
         commonMain.dependencies {
@@ -44,6 +45,8 @@ kotlin {
 
             implementation("io.insert-koin:koin-core:3.5.0")
             implementation("io.insert-koin:koin-compose:1.1.0")
+
+            implementation(libs.sqldelight.coroutines.extensions)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -51,6 +54,8 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+
+            implementation(libs.sqldelight.sqlite.driver)
         }
     }
 }
@@ -68,6 +73,15 @@ compose.desktop {
             linux {
                 iconFile.set(project.file("composeApp/src/commonMain/composeResources/drawable/logo3.png"))
             }
+        }
+    }
+}
+
+
+sqldelight {
+    databases {
+        create("CommiticDatabase") {
+            packageName.set("org.tavioribeiro.commitic.db")
         }
     }
 }
