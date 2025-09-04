@@ -5,8 +5,10 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.tavioribeiro.commitic.data.model.ProjectDTOModel
+import org.tavioribeiro.commitic.db.ProjectSchemaQueries
 
-class ProjectLocalDataSource {
+
+class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
 
     suspend fun saveProject(project: ProjectDTOModel): String {
         try {
@@ -16,7 +18,9 @@ class ProjectLocalDataSource {
                 }
             }
 
-            println("✅ Projeto salvo: ${project.name} no caminho ${project.path}")
+
+            db.insertProject(project.name)
+
             return "✅ Projeto salvo: ${project.name} no caminho ${project.path}"
         } catch (e: Exception) {
             throw e
