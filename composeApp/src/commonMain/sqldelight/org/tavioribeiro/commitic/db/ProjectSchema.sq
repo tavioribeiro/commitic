@@ -1,7 +1,7 @@
--- Criação das tabelas com nomes no plural e chaves estrangeiras
 CREATE TABLE projects (
   project_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  directory_path TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE branches (
@@ -23,8 +23,8 @@ CREATE TABLE commits (
 -- -------------------------------- CONSULTAS --------------------------------
 
 insertProject:
-INSERT INTO projects (name)
-VALUES (?);
+INSERT INTO projects (name, directory_path)
+VALUES (?, ?);
 
 insertBranch:
 INSERT INTO branches (project_id, name)
@@ -57,6 +57,7 @@ SELECT * FROM commits WHERE commit_id = ?;
 selectProjectWithBranches:
 SELECT p.project_id,
        p.name AS project_name,
+       p.directory_path,
        b.branch_id,
        b.name AS branch_name
 FROM projects p
@@ -66,6 +67,7 @@ WHERE p.project_id = ?;
 selectProjectWithBranchesAndCommits:
 SELECT p.project_id,
        p.name AS project_name,
+       p.directory_path,
        b.branch_id,
        b.name AS branch_name,
        c.commit_id,

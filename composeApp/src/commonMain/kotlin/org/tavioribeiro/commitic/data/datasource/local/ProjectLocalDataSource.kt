@@ -19,7 +19,10 @@ class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
             }
 
 
-            db.insertProject(project.name)
+            db.insertProject(
+                name = project.name,
+                directory_path = project.path
+            )
 
             return "✅ Projeto salvo: ${project.name} no caminho ${project.path}"
         } catch (e: Exception) {
