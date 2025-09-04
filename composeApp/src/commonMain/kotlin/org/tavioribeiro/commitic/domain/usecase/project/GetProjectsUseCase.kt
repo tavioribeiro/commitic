@@ -10,8 +10,6 @@ class GetProjectsUseCase(
     private val projectRepository: ProjectRepository
 ) {
     suspend operator fun invoke(): Result<List<ProjectDomainModel>, ProjectFailure> {
-        println("--- CAMADA DE DOMÍNIO (USE CASE) ---")
-        println("Executando regra de negócio para buscar projetos...")
         return projectRepository.getProjects()
     }
 }

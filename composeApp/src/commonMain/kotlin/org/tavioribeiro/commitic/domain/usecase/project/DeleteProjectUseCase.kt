@@ -16,7 +16,7 @@ class DeleteProjectUseCase(
         if (project.path.isBlank()) {
             return Result.Failure(ProjectFailure.InvalidPath("O caminho não pode ser vazio."))
         }
-        return Result.Failure(ProjectFailure.InvalidPath("O caminho não pode ser vazio."))
+
         return projectRepository.deleteProject(project)
     }
 }
