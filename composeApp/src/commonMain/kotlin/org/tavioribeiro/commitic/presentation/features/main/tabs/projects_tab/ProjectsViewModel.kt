@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab
+package org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

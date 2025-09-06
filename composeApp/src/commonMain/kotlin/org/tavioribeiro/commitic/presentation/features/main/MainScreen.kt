@@ -43,8 +43,8 @@ import commitic.composeapp.generated.resources.icon_robot
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.components.buttons.UnderlineButton
-import org.tavioribeiro.commitic.presentation.features.main.tabs.ll_models_tab.LLModelsTab
-import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsTab
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.LLModelsTab
+import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.ProjectsTab
 
 
 @Composable

@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab
+package org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -45,8 +45,7 @@ import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
-import org.tavioribeiro.commitic.theme.ThemeState
-import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item.RegisteredProjectListItem
+import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.components.registered_project_list_item.RegisteredProjectListItem
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -57,7 +56,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import commitic.composeapp.generated.resources.icon_no_projects
-import commitic.composeapp.generated.resources.icon_trash
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
@@ -280,7 +278,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                                 ) {
                                     Icon(
                                         modifier = Modifier
-                                            .padding(end = 4.dp)
+                                            .padding(end = 8.dp)
                                             .height(24.dp)
                                             .width(24 .dp),
                                         painter = painterResource(Res.drawable.icon_no_projects),

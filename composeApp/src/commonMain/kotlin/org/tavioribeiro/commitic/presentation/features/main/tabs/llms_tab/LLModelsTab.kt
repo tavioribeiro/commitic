@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.ll_models_tab
+package org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

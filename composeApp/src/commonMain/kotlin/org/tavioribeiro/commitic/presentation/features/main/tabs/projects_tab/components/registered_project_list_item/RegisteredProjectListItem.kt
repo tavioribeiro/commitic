@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item
+package org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.components.registered_project_list_item
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,13 +23,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_code
-import commitic.composeapp.generated.resources.icon_plus
 import commitic.composeapp.generated.resources.icon_trash
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 import org.tavioribeiro.commitic.theme.AppTheme
-import org.tavioribeiro.commitic.theme.ThemeState
 
 
 @Composable
