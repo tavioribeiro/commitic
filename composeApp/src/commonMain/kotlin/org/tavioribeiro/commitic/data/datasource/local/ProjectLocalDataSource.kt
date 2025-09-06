@@ -1,9 +1,7 @@
 package org.tavioribeiro.commitic.data.datasource.local
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.tavioribeiro.commitic.data.model.ProjectDTOModel
 import org.tavioribeiro.commitic.db.ProjectSchemaQueries
@@ -14,7 +12,7 @@ class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
     suspend fun saveProject(project: ProjectDTOModel): String {
         try {
             withContext(Dispatchers.IO){
-                delay(8000)
+                delay(800)
 
                 db.insertProject(
                     name = project.name,

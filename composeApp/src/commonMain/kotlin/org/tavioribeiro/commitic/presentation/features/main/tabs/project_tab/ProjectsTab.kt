@@ -204,7 +204,9 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                  ){
+
                      IconTextButton(
+                         modifier = Modifier.padding(16.dp),
                          text = "Adicionar esse projeto",
                          onClick = {
                              //ThemeState.toggleTheme()
@@ -213,7 +215,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                              }
                          },
                          icon = painterResource(Res.drawable.icon_plus),
-                         modifier = Modifier.padding(16.dp)
+                         isLoading = projectsTabuiState.isLoading
                      )
                 }
 
