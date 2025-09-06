@@ -13,18 +13,14 @@ class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
 
     suspend fun saveProject(project: ProjectDTOModel): String {
         try {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    delay(800)
+            withContext(Dispatchers.IO){
+                delay(8000)
 
-                    db.insertProject(
-                        name = project.name,
-                        directory_path = project.path
-                    )
-                }
+                db.insertProject(
+                    name = project.name,
+                    directory_path = project.path
+                )
             }
-
-
             return "✅ Projeto salvo: ${project.name} no caminho ${project.path}"
         } catch (e: Exception) {
             throw e
@@ -34,8 +30,8 @@ class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
 
 
     suspend fun getProjects(): List<ProjectDTOModel> {
-        try {
-            return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO){
+            try {
                 val projectsFromDb = db.selectAllProjects().executeAsList()
 
                 projectsFromDb.map { projectEntity ->
@@ -45,23 +41,22 @@ class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
                         path = projectEntity.directory_path
                     )
                 }
+            } catch (e: Exception) {
+                throw e
             }
-        } catch (e: Exception) {
-            throw e
         }
     }
 
 
     suspend fun deleteProject(project: ProjectDTOModel): String {
         try {
-            coroutineScope {
-                launch(Dispatchers.Main) {
-                    delay(800)
+            withContext(Dispatchers.IO){
+                delay(800)
 
-                    if(project.id != null){
-                        db.deleteBranchById(project.id)
-                    }
+                if(project.id != null){
+                    db.deleteProjectById(project.id)
                 }
+
             }
             return "✅ Projeto Deletado: ${project.name} no caminho ${project.path}"
         } catch (e: Exception) {
