@@ -47,7 +47,9 @@ fun IconTextButton(
     isLoading: Boolean = false
 ) {
     Button(
-        onClick = onClick,
+        onClick = {
+            if(!isLoading) onClick()
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = AppTheme.colors.color7,
             contentColor = AppTheme.colors.onColor7
@@ -83,9 +85,10 @@ fun IconTextButton(
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .height(20.dp)
-                            .width(20.dp),
-                        color = AppTheme.colors.onColor7
+                            .height(18.dp)
+                            .width(18.dp),
+                        color = AppTheme.colors.onColor7,
+                        strokeWidth = 2.dp
                     )
                 }
             }

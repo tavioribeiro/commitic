@@ -50,11 +50,14 @@ import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.com
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import commitic.composeapp.generated.resources.icon_no_projects
+import commitic.composeapp.generated.resources.icon_trash
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
@@ -172,7 +175,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                 )
 
                 FileInput(
-                    title = "Git Repository Path",
+                    title = "Endereço do repositório Git",
                     placeholder = "/endereco/do/repositorio",
                     warning = pathInputWarningState,
                     icon = painterResource(Res.drawable.icon_folder),
@@ -218,8 +221,6 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                          isLoading = projectsTabuiState.isLoading
                      )
                 }
-
-
             }
             Spacer(modifier = Modifier.width(30.dp))
 
@@ -271,30 +272,55 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                                 )
                             }
                         } else {
-                            LazyColumn(
-                                state = listState,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .pointerInput(Unit) {
-                                        detectDragGestures { change, dragAmount ->
-                                            change.consume()
-                                            coroutineScope.launch {
-                                                listState.scrollBy(-dragAmount.y)
-                                            }
-                                        }
-                                    },
-                                contentPadding = PaddingValues(top = 16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                items(projectsTabuiState.projects.size) { index ->
-                                    RegisteredProjectListItem(
-                                        projectDomainModel = projectsTabuiState.projects[index],
-                                        deleteProject = { project ->
-                                            coroutineScope.launch(Dispatchers.Main){
-                                                projectsTabviewModel.deleteProject(project)
-                                            }
-                                        }
+                            if(projectsTabuiState.projects.isEmpty()){
+                                Row(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .padding(end = 4.dp)
+                                            .height(24.dp)
+                                            .width(24 .dp),
+                                        painter = painterResource(Res.drawable.icon_no_projects),
+                                        contentDescription = null,
+                                        tint = AppTheme.colors.onColor5
                                     )
+
+                                    Text(
+                                        text = "Nenhum projeto cadastrado",
+                                        color = AppTheme.colors.onColor5,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                }
+                            }
+                            else {
+                                LazyColumn(
+                                    state = listState,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .pointerInput(Unit) {
+                                            detectDragGestures { change, dragAmount ->
+                                                change.consume()
+                                                coroutineScope.launch {
+                                                    listState.scrollBy(-dragAmount.y)
+                                                }
+                                            }
+                                        },
+                                    contentPadding = PaddingValues(top = 16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    items(projectsTabuiState.projects.size) { index ->
+                                        RegisteredProjectListItem(
+                                            projectDomainModel = projectsTabuiState.projects[index],
+                                            deleteProject = { project ->
+                                                coroutineScope.launch(Dispatchers.Main) {
+                                                    projectsTabviewModel.deleteProject(project)
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
