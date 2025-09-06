@@ -43,7 +43,7 @@ import commitic.composeapp.generated.resources.icon_robot
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.components.buttons.UnderlineButton
-import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.LLModelsTab
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.LlmsTab
 import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.ProjectsTab
 
 
@@ -155,7 +155,7 @@ fun CalculatorScreen() {
             ){ targetState ->
                 when (targetState) {
                     "Projetos" -> ProjectsTab()
-                    "Modelos" -> LLModelsTab()
+                    "Modelos" -> LlmsTab()
                     "Histórico" -> ProjectsTab()
                 }
             }

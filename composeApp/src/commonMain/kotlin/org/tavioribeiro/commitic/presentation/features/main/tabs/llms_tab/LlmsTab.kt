@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab
+package org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -45,7 +45,7 @@ import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
-import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.components.registered_project_list_item.RegisteredProjectListItem
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.registered_project_list_item.RegisteredProjectListItem
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -61,17 +61,17 @@ import org.koin.compose.koinInject
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 
 @Composable
-fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
+fun LlmsTab(llmsTabviewModel: LLMsTabViewModel = koinInject()) {
     val windowSize = getWindowSize()
     val isMedium = windowSize.width == WindowType.Medium
 
-    val projectsTabuiState by projectsTabviewModel.uiState.collectAsState()
-    val projectNameInputWarningState by projectsTabviewModel.projectNameInputWarningState.collectAsState()
-    val pathInputWarningState by projectsTabviewModel.pathInputWarningState.collectAsState()
+    val llmsTabuiState by llmsTabviewModel.uiState.collectAsState()
+    val projectNameInputWarningState by llmsTabviewModel.projectNameInputWarningState.collectAsState()
+    val pathInputWarningState by llmsTabviewModel.pathInputWarningState.collectAsState()
 
 
     LaunchedEffect(Unit) {
-        projectsTabviewModel.loadProjects()
+        llmsTabviewModel.loadProjects()
     }
 
     var newProjectUiModel by remember { mutableStateOf(
@@ -212,11 +212,11 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
                          onClick = {
                              //ThemeState.toggleTheme()
                              coroutineScope.launch(Dispatchers.Main) {
-                                 projectsTabviewModel.onSaveProjectClicked(newProjectUiModel)
+                                 llmsTabviewModel.onSaveProjectClicked(newProjectUiModel)
                              }
                          },
                          icon = painterResource(Res.drawable.icon_plus),
-                         isLoading = projectsTabuiState.isLoading
+                         isLoading = llmsTabuiState.isLoading
                      )
                 }
             }
@@ -241,7 +241,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     AnimatedContent(
-                        targetState = projectsTabuiState.isLoading,
+                        targetState = llmsTabuiState.isLoading,
                         modifier = Modifier.fillMaxSize(),
                         transitionSpec = {
                             val exit = fadeOut(animationSpec = tween(300))
@@ -270,7 +270,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
                                 )
                             }
                         } else {
-                            if(projectsTabuiState.projects.isEmpty()){
+                            if(llmsTabuiState.projects.isEmpty()){
                                 Row(
                                     modifier = Modifier.fillMaxSize(),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -309,12 +309,12 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
                                     contentPadding = PaddingValues(top = 16.dp),
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    items(projectsTabuiState.projects.size) { index ->
+                                    items(llmsTabuiState.projects.size) { index ->
                                         RegisteredProjectListItem(
-                                            projectDomainModel = projectsTabuiState.projects[index],
+                                            projectDomainModel = llmsTabuiState.projects[index],
                                             deleteProject = { project ->
                                                 coroutineScope.launch(Dispatchers.Main) {
-                                                    projectsTabviewModel.deleteProject(project)
+                                                    llmsTabviewModel.deleteProject(project)
                                                 }
                                             }
                                         )

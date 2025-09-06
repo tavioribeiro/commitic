@@ -19,22 +19,22 @@ import org.tavioribeiro.commitic.presentation.mapper.toDomain
 import org.tavioribeiro.commitic.presentation.mapper.toUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 
-data class ProjectsUiState(
+data class ProjectsTabUiState(
     val isLoading: Boolean = false,
     val projects: List<ProjectUiModel> = emptyList(),
     val error: String? = null
 )
 
 
-class ProjectsViewModel(
+class ProjectsTabViewModel(
     private val toastViewModel: ToastViewModel,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val saveProjectUseCase: SaveProjectUseCase,
     private val deleteProjectUseCase: DeleteProjectUseCase
 ): ViewModel(){
 
-    private val _uiState = MutableStateFlow(ProjectsUiState())
-    val uiState: StateFlow<ProjectsUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ProjectsTabUiState())
+    val uiState: StateFlow<ProjectsTabUiState> = _uiState.asStateFlow()
 
 
     private val _projectNameInputWarningState = MutableStateFlow("")
@@ -104,7 +104,7 @@ class ProjectsViewModel(
 
             when (result) {
                 is Result.Success -> {
-                    this@ProjectsViewModel.loadProjects()
+                    this@ProjectsTabViewModel.loadProjects()
 
                     toastViewModel.showToast(
                         ToastUiModel(
@@ -154,7 +154,7 @@ class ProjectsViewModel(
 
              when (result) {
                  is Result.Success -> {
-                     this@ProjectsViewModel.loadProjects()
+                     this@ProjectsTabViewModel.loadProjects()
 
                      toastViewModel.showToast(
                          ToastUiModel(

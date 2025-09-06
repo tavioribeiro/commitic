@@ -11,7 +11,7 @@ import org.tavioribeiro.commitic.domain.usecase.project.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.SaveProjectUseCase
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
-import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.ProjectsViewModel
+import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.ProjectsTabViewModel
 
 
 expect val platformModule: Module
@@ -41,5 +41,5 @@ val domainModule = module {
 
 val presentationModule = module {
     single { ToastViewModel() }
-    factory { ProjectsViewModel(get(), get(), get(), get()) }
+    factory { ProjectsTabViewModel(get(), get(), get(), get()) }
 }
