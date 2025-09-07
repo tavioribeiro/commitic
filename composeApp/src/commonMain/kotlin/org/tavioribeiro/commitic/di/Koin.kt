@@ -11,6 +11,7 @@ import org.tavioribeiro.commitic.domain.usecase.project.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.SaveProjectUseCase
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.LLMsTabViewModel
 import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.ProjectsTabViewModel
 
 
@@ -30,16 +31,38 @@ fun initKoin() {
 val dataModule = module {
     single { ProjectSchemaQueries(driver = get()) }
     single { ProjectLocalDataSource(get()) }
-    single<ProjectRepository> { ProjectRepositoryImpl(get()) }
+    single<ProjectRepository> {
+        ProjectRepositoryImpl(
+            get()
+        )
+    }
 }
 
 val domainModule = module {
     factory { SaveProjectUseCase(get()) }
     factory { GetProjectsUseCase(get()) }
     factory { DeleteProjectUseCase(get()) }
+
+
 }
 
 val presentationModule = module {
     single { ToastViewModel() }
-    factory { ProjectsTabViewModel(get(), get(), get(), get()) }
+
+    factory {
+        ProjectsTabViewModel(
+        get(),
+        get(),
+        get(),
+        get())
+    }
+
+    factory {
+        LLMsTabViewModel(
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
 }

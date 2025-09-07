@@ -104,3 +104,9 @@ SELECT b.branch_id,
 FROM branches b
 LEFT JOIN commits c ON c.branch_id = b.branch_id
 ORDER BY b.branch_id DESC, c.timestamp DESC;
+
+
+
+
+
+
