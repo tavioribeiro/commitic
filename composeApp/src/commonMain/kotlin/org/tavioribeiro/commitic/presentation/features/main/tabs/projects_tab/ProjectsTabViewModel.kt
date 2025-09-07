@@ -11,7 +11,7 @@ import org.tavioribeiro.commitic.domain.model.project.ProjectFailure
 import org.tavioribeiro.commitic.domain.usecase.project.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.SaveProjectUseCase
-import org.tavioribeiro.commitic.domain.util.Result
+import org.tavioribeiro.commitic.domain.util.RequestResult
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
@@ -57,7 +57,7 @@ class ProjectsTabViewModel(
             val result = getProjectsUseCase()
 
             when (result) {
-                is Result.Success -> {
+                is RequestResult.Success -> {
                     val uiProjects = result.data.map {
                         it.toUiModel()
                     }
@@ -65,7 +65,7 @@ class ProjectsTabViewModel(
                     _uiState.update { it.copy(isLoading = false, projects = uiProjects) }
                 }
 
-                is Result.Failure -> {
+                is RequestResult.Failure -> {
                     _uiState.update { it.copy(isLoading = false) }
 
                     when (result.failure) {
@@ -103,7 +103,7 @@ class ProjectsTabViewModel(
 
 
             when (result) {
-                is Result.Success -> {
+                is RequestResult.Success -> {
                     this@ProjectsTabViewModel.loadProjects()
 
                     toastViewModel.showToast(
@@ -116,7 +116,7 @@ class ProjectsTabViewModel(
                     )
                 }
 
-                is Result.Failure -> {
+                is RequestResult.Failure -> {
                     when (result.failure) {
                         is ProjectFailure.InvalidName -> {
                             _projectNameInputWarningState.update { "O nome não pode ser vazio." }
@@ -153,7 +153,7 @@ class ProjectsTabViewModel(
 
 
              when (result) {
-                 is Result.Success -> {
+                 is RequestResult.Success -> {
                      this@ProjectsTabViewModel.loadProjects()
 
                      toastViewModel.showToast(
@@ -166,7 +166,7 @@ class ProjectsTabViewModel(
                      )
                  }
 
-                 is Result.Failure -> {
+                 is RequestResult.Failure -> {
                      when (result.failure) {
                          is ProjectFailure.Unexpected -> {
                              toastViewModel.showToast(
