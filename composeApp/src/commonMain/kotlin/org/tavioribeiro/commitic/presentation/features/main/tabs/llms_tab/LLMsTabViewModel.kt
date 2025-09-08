@@ -7,182 +7,119 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.tavioribeiro.commitic.domain.model.project.ProjectFailure
-import org.tavioribeiro.commitic.domain.usecase.project.DeleteProjectUseCase
-import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
-import org.tavioribeiro.commitic.domain.usecase.project.SaveProjectUseCase
+import org.tavioribeiro.commitic.domain.model.llm.*
+import org.tavioribeiro.commitic.domain.usecase.llm.DeleteLlmConfigUseCase
+import org.tavioribeiro.commitic.domain.usecase.llm.GetLlmConfigsUseCase
+import org.tavioribeiro.commitic.domain.usecase.llm.SaveLlmConfigUseCase
 import org.tavioribeiro.commitic.domain.util.RequestResult
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
-import org.tavioribeiro.commitic.presentation.mapper.toDomain
-import org.tavioribeiro.commitic.presentation.mapper.toUiModel
-import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 
-data class LLMsTabUiState(
+data class LlmsTabUiState(
     val isLoading: Boolean = false,
-    val projects: List<ProjectUiModel> = emptyList(),
-    val error: String? = null
+    val configs: List<LlmConfig> = emptyList(),
+    val selectedProvider: ProviderType = ProviderType.OPENAI,
+    val currentFormState: LlmConfig = LlmConfig.OpenAI(null, "", "", null, "gpt-4"),
+    val nameError: String? = null,
+    val apiKeyError: String? = null,
+    val modelError: String? = null
 )
-
 
 class LLMsTabViewModel(
     private val toastViewModel: ToastViewModel,
-    private val getProjectsUseCase: GetProjectsUseCase,
-    private val saveProjectUseCase: SaveProjectUseCase,
-    private val deleteProjectUseCase: DeleteProjectUseCase
-): ViewModel(){
+    private val saveLlmConfigUseCase: SaveLlmConfigUseCase,
+    private val getLlmConfigsUseCase: GetLlmConfigsUseCase,
+    private val deleteLlmConfigUseCase: DeleteLlmConfigUseCase
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LLMsTabUiState())
-    val uiState: StateFlow<LLMsTabUiState> = _uiState.asStateFlow()
-
-
-    private val _projectNameInputWarningState = MutableStateFlow("")
-    val projectNameInputWarningState = _projectNameInputWarningState.asStateFlow()
-
-    private val _pathInputWarningState = MutableStateFlow("")
-    val pathInputWarningState = _pathInputWarningState.asStateFlow()
+    private val _uiState = MutableStateFlow(LlmsTabUiState())
+    val uiState: StateFlow<LlmsTabUiState> = _uiState.asStateFlow()
 
 
-
-    //TROCADO POR TOAST
-    //private val _uiEvent = MutableSharedFlow<String>()
-    //val uiEvent = _uiEvent.asSharedFlow()
-    //_uiEvent.emit("Projeto deletado com sucesso")
-
-    fun loadProjects() {
+     fun loadConfigs() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-
-            val result = getProjectsUseCase()
-
-            when (result) {
+            when (val result = getLlmConfigsUseCase()) {
                 is RequestResult.Success -> {
-                    val uiProjects = result.data.map {
-                        it.toUiModel()
-                    }
-
-                    _uiState.update { it.copy(isLoading = false, projects = uiProjects) }
+                    _uiState.update { it.copy(configs = result.data, isLoading = false) }
                 }
-
                 is RequestResult.Failure -> {
+                    toastViewModel.showToast(ToastUiModel("Erro", "Falha ao carregar configurações.", ToastType.ERROR))
                     _uiState.update { it.copy(isLoading = false) }
-
-                    when (result.failure) {
-                        is ProjectFailure.Unexpected -> {
-                            toastViewModel.showToast(
-                                ToastUiModel(
-                                    title = "Erro",
-                                    message = "Falha ao buscar projetos",
-                                    type = ToastType.ERROR,
-                                    duration = 1500
-                                )
-                            )
-                        }
-                        else -> {}
-                    }
                 }
             }
         }
     }
 
-
-     fun onSaveProjectClicked(projectToSave: ProjectUiModel) {
+    fun deleteConfig(id: Long) {
         viewModelScope.launch {
-            if(!_uiState.value.isLoading){
-                _uiState.update { it.copy(isLoading = true) }
-            }
-
-
-            val project = projectToSave.toDomain()
-            val result = saveProjectUseCase(project)
-
-
-            _projectNameInputWarningState.update { "" }
-            _pathInputWarningState.update { "" }
-
-
-            when (result) {
+            _uiState.update { it.copy(isLoading = true) }
+            when (deleteLlmConfigUseCase(id)) {
                 is RequestResult.Success -> {
-                    this@LLMsTabViewModel.loadProjects()
-
-                    toastViewModel.showToast(
-                        ToastUiModel(
-                            title = "Sucesso",
-                            message = "Projeto salvo com sucesso",
-                            type = ToastType.SUCCESS,
-                            duration = 1500
-                        )
-                    )
+                    toastViewModel.showToast(ToastUiModel("Sucesso", "Configuração deletada!", ToastType.SUCCESS))
+                    this@LLMsTabViewModel.loadConfigs()
                 }
-
                 is RequestResult.Failure -> {
-                    when (result.failure) {
-                        is ProjectFailure.InvalidName -> {
-                            _projectNameInputWarningState.update { "O nome não pode ser vazio." }
-                        }
-
-                        is ProjectFailure.InvalidPath -> {
-                            _pathInputWarningState.update { "O caminho não pode ser vazio." }
-                        }
-
-                        is ProjectFailure.Unexpected -> {
-                            toastViewModel.showToast(
-                                ToastUiModel(
-                                    title = "Erro",
-                                    message = "Falha ao salvar projeto",
-                                    type = ToastType.ERROR,
-                                    duration = 1500
-                                )
-                            )
-                        }
-                    }
+                    toastViewModel.showToast(ToastUiModel("Erro", "Falha ao deletar configuração.", ToastType.ERROR))
                     _uiState.update { it.copy(isLoading = false) }
                 }
             }
         }
     }
 
+    fun onProviderSelected(providerType: ProviderType) {
+        _uiState.update {
+            val newFormState = when (providerType) {
+                ProviderType.OPENAI -> LlmConfig.OpenAI(null, "", "", null, "gpt-4")
+                ProviderType.GROQ -> LlmConfig.Groq(null, "", "", "llama3-8b-8192")
+                ProviderType.GEMINI -> LlmConfig.Gemini(null, "", "", "gemini-1.5-flash")
+                ProviderType.CLAUDE -> LlmConfig.Claude(null, "", "", "claude-3-opus-20240229", "2023-06-01")
+                ProviderType.OPENROUTER -> LlmConfig.OpenRouter(null, "", "", null, "google/gemini-flash-1.5")
+            }
+            it.copy(
+                selectedProvider = providerType,
+                currentFormState = newFormState,
+                nameError = null,
+                apiKeyError = null,
+                modelError = null
+            )
+        }
+    }
 
-     fun deleteProject(projectToDelete: ProjectUiModel) {
-         viewModelScope.launch {
-             _uiState.update { it.copy(isLoading = true) }
+    fun onFieldChange(update: (LlmConfig) -> LlmConfig) {
+        _uiState.update {
+            it.copy(
+                currentFormState = update(it.currentFormState),
+                nameError = null,
+                apiKeyError = null,
+                modelError = null
+            )
+        }
+    }
 
-             val project = projectToDelete.toDomain()
-             val result = deleteProjectUseCase(project)
+    fun onSaveClicked() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            val configToSave = _uiState.value.currentFormState
+            val result = saveLlmConfigUseCase(configToSave)
 
-
-             when (result) {
-                 is RequestResult.Success -> {
-                     this@LLMsTabViewModel.loadProjects()
-
-                     toastViewModel.showToast(
-                         ToastUiModel(
-                             title = "Sucesso",
-                             message = "Projeto deletado com sucesso",
-                             type = ToastType.SUCCESS,
-                             duration = 1500
-                         )
-                     )
-                 }
-
-                 is RequestResult.Failure -> {
-                     when (result.failure) {
-                         is ProjectFailure.Unexpected -> {
-                             toastViewModel.showToast(
-                                 ToastUiModel(
-                                     title = "Erro",
-                                     message = "Falha ao deletar projeto",
-                                     type = ToastType.ERROR,
-                                     duration = 1500
-                                 )
-                             )
-                         }
-
-                         else -> {}
-                     }
-                 }
-             }
-         }
-     }
+            when (result) {
+                is RequestResult.Success -> {
+                    toastViewModel.showToast(ToastUiModel("Sucesso", "Configuração salva!", ToastType.SUCCESS))
+                    onProviderSelected(_uiState.value.selectedProvider)
+                    this@LLMsTabViewModel.loadConfigs()
+                }
+                is RequestResult.Failure -> {
+                    when (val failure = result.failure) {
+                        is LlmFailure.InvalidName -> _uiState.update { it.copy(nameError = failure.reason) }
+                        is LlmFailure.InvalidApiKey -> _uiState.update { it.copy(apiKeyError = failure.reason) }
+                        is LlmFailure.InvalidModel -> _uiState.update { it.copy(modelError = failure.reason) }
+                        is LlmFailure.Unexpected -> toastViewModel.showToast(ToastUiModel("Erro", "Ocorreu um erro inesperado.", ToastType.ERROR))
+                    }
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+            }
+        }
+    }
 }

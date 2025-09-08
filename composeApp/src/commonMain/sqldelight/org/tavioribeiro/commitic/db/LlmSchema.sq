@@ -1,0 +1,24 @@
+import org.tavioribeiro.commitic.domain.model.llm.ProviderType;
+
+CREATE TABLE llm_configs (
+  config_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  provider_type TEXT AS ProviderType NOT NULL,
+  api_key TEXT,
+  base_url TEXT,
+  model_name TEXT,
+  anthropic_version TEXT
+);
+
+-- INSERTS
+insertConfig:
+INSERT OR REPLACE INTO llm_configs(config_id, name, provider_type, api_key, base_url, model_name, anthropic_version)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+-- SELECTS
+selectAllConfigs:
+SELECT * FROM llm_configs ORDER BY name ASC;
+
+-- DELETES
+deleteConfigById:
+DELETE FROM llm_configs WHERE config_id = ?;
