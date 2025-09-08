@@ -12,6 +12,11 @@ import org.tavioribeiro.commitic.domain.model.llm.LlmConfig
 import org.tavioribeiro.commitic.domain.model.llm.ProviderType
 import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.LLMsTabViewModel
 import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.LlmsTabUiState
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.ClaudeFields
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.GeminiFields
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.GroqFields
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.OpenAiFields
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.OpenRouterFields
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
