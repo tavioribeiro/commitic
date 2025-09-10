@@ -3,28 +3,52 @@ package org.tavioribeiro.commitic.data.repository
 import org.tavioribeiro.commitic.data.datasource.local.ProjectLocalDataSource
 import org.tavioribeiro.commitic.data.mapper.toDomain
 import org.tavioribeiro.commitic.data.mapper.toDto
-import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
+import org.tavioribeiro.commitic.domain.model.project.ProjectDomainModel
+import org.tavioribeiro.commitic.domain.model.project.ProjectFailure
 import org.tavioribeiro.commitic.domain.repository.ProjectRepository
+import org.tavioribeiro.commitic.domain.util.RequestResult
 
 class ProjectRepositoryImpl(
     private val localDataSource: ProjectLocalDataSource
 ) : ProjectRepository {
 
-    override fun saveProject(project: ProjectDomainModel) {
-        // Mapeamos o modelo de domínio para o DTO
-        val projectDto = project.toDto()
-        // Chamamos o DataSource com o modelo correto
-        localDataSource.saveProject(projectDto)
+    override suspend fun saveProject(project: ProjectDomainModel): RequestResult<Unit, ProjectFailure> {
+        return try {
+            val projectDto = project.toDto()
+
+            localDataSource.saveProject(projectDto)
+
+            RequestResult.Success(Unit)
+        } catch (e: Exception) {
+            println("Erro ao buscar projetos: ${e.message}")
+            RequestResult.Failure(ProjectFailure.Unexpected(e))
+        }
     }
 
 
-    override suspend fun getProjects(): List<ProjectDomainModel> {
-        println("--- CAMADA DO REPOSITÓRIO ---")
-        println("Buscando DTOs do DataSource e mapeando para DomainModels...")
-        val projectDtos = localDataSource.getProjects()
-        // Mapeamos cada item da lista para o modelo de domínio
-        return projectDtos.map { it.toDomain() }
+    override suspend fun getProjects(): RequestResult<List<ProjectDomainModel>, ProjectFailure> {
+        return try {
+            val projectsDto = localDataSource.getProjects()
+            val projectsDomain = projectsDto.map { it.toDomain() }
+
+            RequestResult.Success(projectsDomain)
+        } catch (e: Exception) {
+            println("Erro ao buscar projetos: ${e.message}")
+            RequestResult.Failure(ProjectFailure.Unexpected(e))
+        }
     }
 
 
+    override suspend fun deleteProject(project: ProjectDomainModel): RequestResult<Unit, ProjectFailure> {
+        return try {
+            val projectDto = project.toDto()
+
+            localDataSource.deleteProject(projectDto)
+
+            RequestResult.Success(Unit)
+        } catch (e: Exception) {
+            println("Erro ao buscar projetos: ${e.message}")
+            RequestResult.Failure(ProjectFailure.Unexpected(e))
+        }
+    }
 }

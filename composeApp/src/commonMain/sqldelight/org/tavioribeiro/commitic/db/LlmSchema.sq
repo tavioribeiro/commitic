@@ -1,0 +1,25 @@
+CREATE TABLE llm (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  company TEXT NOT NULL,
+  model TEXT NOT NULL,
+  api_token TEXT NOT NULL
+);
+
+
+insertLlm:
+INSERT INTO llm (company, model, api_token)
+VALUES (:company, :model, :api_token);
+
+getAllLlm:
+SELECT * FROM llm;
+
+getLlmById:
+SELECT * FROM llm WHERE id = :id;
+
+updateLlm:
+UPDATE llm
+SET company = :company, model = :model, api_token = :api_token
+WHERE id = :id;
+
+deleteLlmById:
+DELETE FROM llm WHERE id = :id;
