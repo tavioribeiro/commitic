@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import org.tavioribeiro.commitic.theme.AppTheme
@@ -16,6 +17,7 @@ fun FileInput(
     modifier: Modifier = Modifier,
     title: String,
     placeholder: String,
+    warning: String = "",
     icon: Painter,
     initialValue: String = "",
     onValueChange: (String) -> Unit,
@@ -74,9 +76,8 @@ fun FileInput(
         )
 
         Text(
-            //text = title,
-            text = "",
-            color = AppTheme.colors.color10,
+            text = warning,
+            color = Color(0xFFF44336),
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.padding(top = 4.dp)
         )

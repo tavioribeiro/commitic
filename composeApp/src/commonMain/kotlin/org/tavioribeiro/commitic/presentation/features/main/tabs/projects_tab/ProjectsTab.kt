@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab
+package org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -27,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,36 +45,37 @@ import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
-import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
-import org.tavioribeiro.commitic.theme.ThemeState
-import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item.RegisteredProjectListItem
+import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.components.registered_project_list_item.RegisteredProjectListItem
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import commitic.composeapp.generated.resources.icon_no_projects
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
-import org.tavioribeiro.commitic.presentation.features.main.tabs.ai_agents_tab.AiAgentsTab
-import org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.ProjectsViewModel
+import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 
 @Composable
-fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
+fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
     val windowSize = getWindowSize()
     val isMedium = windowSize.width == WindowType.Medium
 
     val projectsTabuiState by projectsTabviewModel.uiState.collectAsState()
+    val projectNameInputWarningState by projectsTabviewModel.projectNameInputWarningState.collectAsState()
+    val pathInputWarningState by projectsTabviewModel.pathInputWarningState.collectAsState()
+
 
     LaunchedEffect(Unit) {
         projectsTabviewModel.loadProjects()
     }
 
-    var newProjectDomainModel by remember { mutableStateOf(
-        ProjectDomainModel(
+    var newProjectUiModel by remember { mutableStateOf(
+        ProjectUiModel(
             id = 0,
             name = "",
             path = ""
@@ -164,20 +164,22 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                     modifier = Modifier.padding(top = 20.dp),
                     title = "Nome do Projeto",
                     placeholder = "Meu Projeto Maravilhoso",
+                    warning = projectNameInputWarningState,
                     initialValue = "",
                     onValueChange = { newName ->
-                        newProjectDomainModel.name = newName
+                        newProjectUiModel.name = newName
                     },
                     isBackgroudColorDark = true
                 )
 
                 FileInput(
-                    title = "Git Repository Path",
+                    title = "Endereço do repositório Git",
                     placeholder = "/endereco/do/repositorio",
+                    warning = pathInputWarningState,
                     icon = painterResource(Res.drawable.icon_folder),
-                    initialValue = newProjectDomainModel.path,
+                    initialValue = newProjectUiModel.path,
                     onValueChange = { newPath ->
-                        newProjectDomainModel.path = newPath
+                        newProjectUiModel.path = newPath
                     },
                     onFileSelect = {
                         println("Botão de selecionar arquivo clicado!")
@@ -192,7 +194,7 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                     onResult = { path ->
                         showDirPicker = false
                         path?.let {
-                            newProjectDomainModel.path = it
+                            newProjectUiModel.path = it
                         }
                     }
                 )
@@ -203,20 +205,20 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                  ){
+
                      IconTextButton(
+                         modifier = Modifier.padding(16.dp),
                          text = "Adicionar esse projeto",
                          onClick = {
-                             ThemeState.toggleTheme()
+                             //ThemeState.toggleTheme()
                              coroutineScope.launch(Dispatchers.Main) {
-                                 projectsTabviewModel.onSaveProjectClicked(newProjectDomainModel)
+                                 projectsTabviewModel.onSaveProjectClicked(newProjectUiModel)
                              }
                          },
                          icon = painterResource(Res.drawable.icon_plus),
-                         modifier = Modifier.padding(16.dp)
+                         isLoading = projectsTabuiState.isLoading
                      )
                 }
-
-
             }
             Spacer(modifier = Modifier.width(30.dp))
 
@@ -236,7 +238,6 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
                 )
-
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     AnimatedContent(
@@ -269,25 +270,55 @@ fun ProjectsTab(projectsTabviewModel: ProjectsViewModel = koinInject()) {
                                 )
                             }
                         } else {
-                            LazyColumn(
-                                state = listState,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .pointerInput(Unit) {
-                                        detectDragGestures { change, dragAmount ->
-                                            change.consume()
-                                            coroutineScope.launch {
-                                                listState.scrollBy(-dragAmount.y)
-                                            }
-                                        }
-                                    },
-                                contentPadding = PaddingValues(top = 16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                items(projectsTabuiState.projects.size) { index ->
-                                    RegisteredProjectListItem(
-                                        projectDomainModel = projectsTabuiState.projects[index]
+                            if(projectsTabuiState.projects.isEmpty()){
+                                Row(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .height(24.dp)
+                                            .width(24 .dp),
+                                        painter = painterResource(Res.drawable.icon_no_projects),
+                                        contentDescription = null,
+                                        tint = AppTheme.colors.onColor5
                                     )
+
+                                    Text(
+                                        text = "Nenhum projeto cadastrado",
+                                        color = AppTheme.colors.onColor5,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                }
+                            }
+                            else {
+                                LazyColumn(
+                                    state = listState,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .pointerInput(Unit) {
+                                            detectDragGestures { change, dragAmount ->
+                                                change.consume()
+                                                coroutineScope.launch {
+                                                    listState.scrollBy(-dragAmount.y)
+                                                }
+                                            }
+                                        },
+                                    contentPadding = PaddingValues(top = 16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    items(projectsTabuiState.projects.size) { index ->
+                                        RegisteredProjectListItem(
+                                            projectDomainModel = projectsTabuiState.projects[index],
+                                            deleteProject = { project ->
+                                                coroutineScope.launch(Dispatchers.Main) {
+                                                    projectsTabviewModel.deleteProject(project)
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }

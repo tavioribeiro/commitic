@@ -1,6 +1,6 @@
 package org.tavioribeiro.commitic.presentation.mapper
 
-import org.tavioribeiro.commitic.domain.model.ProjectDomainModel
+import org.tavioribeiro.commitic.domain.model.project.ProjectDomainModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 
 

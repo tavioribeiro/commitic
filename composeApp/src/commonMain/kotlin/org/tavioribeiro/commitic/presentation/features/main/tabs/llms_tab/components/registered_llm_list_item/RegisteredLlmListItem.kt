@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.project_tab.components.registered_project_list_item
+package org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.registered_llm_list_item
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,17 +22,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
-import commitic.composeapp.generated.resources.icon_code
+import commitic.composeapp.generated.resources.icon_llm
+import commitic.composeapp.generated.resources.icon_trash
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
+import org.tavioribeiro.commitic.core.extension.maskStart
+import org.tavioribeiro.commitic.presentation.model.LlmUiModel
 import org.tavioribeiro.commitic.theme.AppTheme
 
 
-
 @Composable
-fun RegisteredProjectListItem(
-    projectDomainModel: ProjectUiModel,
-    modifier: Modifier = Modifier
+fun RegisteredLlmListItem(
+    llmUiModel: LlmUiModel,
+    modifier: Modifier = Modifier,
+    deleteLlm: (LlmUiModel) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -54,9 +57,10 @@ fun RegisteredProjectListItem(
         ) {
             Icon(
                 modifier = Modifier
+                    .padding(4.dp)
                     .fillMaxWidth()
                     .fillMaxHeight(),
-                painter = painterResource(Res.drawable.icon_code),
+                painter = painterResource(llmUiModel.iconResource!!),
                 contentDescription = null,
                 tint = AppTheme.colors.onColor7
             )
@@ -71,7 +75,7 @@ fun RegisteredProjectListItem(
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 4.dp),
-                text = projectDomainModel.name,
+                text = llmUiModel.company,
                 color = AppTheme.colors.onColor5,
                 style = MaterialTheme.typography.bodyLarge,
 
@@ -79,18 +83,33 @@ fun RegisteredProjectListItem(
 
             Text(
                 modifier = Modifier.padding(vertical = 4.dp),
-                text = projectDomainModel.path,
+                text = llmUiModel.model,
                 color = AppTheme.colors.color5,
                 style = MaterialTheme.typography.bodyMedium,
                 fontStyle = FontStyle.Italic
             )
 
-            /*Text(
+            Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = projectUiModel.agentName,
+                text = "Chave: ${llmUiModel.apiToken.maskStart(5)}",
                 color = AppTheme.colors.color5,
                 style = MaterialTheme.typography.bodySmall
-            )*/
+            )
+        }
+
+        IconButton(
+            onClick = {
+                deleteLlm(llmUiModel)
+            }
+        ){
+            Icon(
+                modifier = Modifier
+                    .height(20.dp)
+                    .width(20.dp),
+                painter = painterResource(Res.drawable.icon_trash),
+                contentDescription = null,
+                tint = AppTheme.colors.color5
+            )
         }
     }
 }

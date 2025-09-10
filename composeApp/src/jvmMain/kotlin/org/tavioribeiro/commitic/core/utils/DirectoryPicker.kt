@@ -2,6 +2,7 @@ package org.tavioribeiro.commitic.core.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.UIManager
 import javax.swing.filechooser.FileSystemView
@@ -28,7 +29,18 @@ actual fun DirectoryPicker(
 
             val result = fileChooser.showOpenDialog(null)
             if (result == JFileChooser.APPROVE_OPTION) {
-                onResult(fileChooser.selectedFile.absolutePath)
+                val selectedFile = fileChooser.selectedFile
+                var absolutePath = selectedFile.absolutePath
+
+
+                val separator = File.separator
+                if (absolutePath.endsWith(separator + selectedFile.name) &&
+                    selectedFile.parentFile?.name == selectedFile.name) {
+                    absolutePath = selectedFile.parentFile.absolutePath
+                }
+
+
+                onResult(absolutePath)
             } else {
                 onResult(null)
             }
