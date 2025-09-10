@@ -58,7 +58,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import commitic.composeapp.generated.resources.icon_no_projects
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
+import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 
 @Composable
 fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
@@ -88,6 +90,16 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
 
 
 
+
+    val categoryOptions = listOf(
+        SelectOptionModel(label = "OpenAI", value = "openai"),
+        SelectOptionModel(label = "Gemini", value = "gemini"),
+        SelectOptionModel(label = "DeepSeek", value = "deepseek"),
+        SelectOptionModel(label = "HuggingFace", value = "huggingface"),
+        SelectOptionModel(label = "DeepSeek", value = "deepseek")
+    )
+
+    var selectedCategoryValue by remember { mutableStateOf<String?>("books") }
 
     if (isMedium) {
         Column(
@@ -145,7 +157,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
         ) {
             Column(
                 Modifier
-                    .height(425.dp)
+                    //.height(530.dp)
                     .width(394.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(AppTheme.colors.color3)
@@ -158,6 +170,17 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                     text = "Adicionar Novo Modelo LLM",
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
+                )
+
+                SelectInput(
+                    title = "Categoria do Produto",
+                    placeholder = "Selecione uma categoria",
+                    options = categoryOptions,
+                    initialValue = selectedCategoryValue,
+                    onValueChange = { newValue ->
+                        selectedCategoryValue = newValue
+                    },
+                    isBackgroudColorDark = true
                 )
 
                 FullInput(
