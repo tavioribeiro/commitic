@@ -35,17 +35,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
-import commitic.composeapp.generated.resources.icon_folder
 import commitic.composeapp.generated.resources.icon_plus
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitic.core.utils.DirectoryPicker
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
-import org.tavioribeiro.commitic.presentation.components.inputs.FileInput
 import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
-import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.registered_project_list_item.RegisteredProjectListItem
+import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.components.registered_llm_list_item.RegisteredLlmListItem
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -59,8 +56,7 @@ import commitic.composeapp.generated.resources.icon_no_projects
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
-import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
-import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
+import org.tavioribeiro.commitic.presentation.model.LlmUiModel
 
 @Composable
 fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
@@ -68,38 +64,25 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
     val isMedium = windowSize.width == WindowType.Medium
 
     val llmsTabuiState by llmsTabviewModel.uiState.collectAsState()
-    val projectNameInputWarningState by llmsTabviewModel.projectNameInputWarningState.collectAsState()
+    val llmNameInputWarningState by llmsTabviewModel.llmNameInputWarningState.collectAsState()
     val pathInputWarningState by llmsTabviewModel.pathInputWarningState.collectAsState()
 
 
     LaunchedEffect(Unit) {
-        llmsTabviewModel.loadProjects()
+        llmsTabviewModel.loadLlms()
     }
 
-    var newProjectUiModel by remember { mutableStateOf(
-        ProjectUiModel(
+    var newLlmUiModel by remember { mutableStateOf(
+        LlmUiModel(
             id = 0,
-            name = "",
-            path = ""
+            model = "",
+            company = "",
+            apiToken = ""
         )
     )}
 
-    var showDirPicker by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-
-
-
-
-    val categoryOptions = listOf(
-        SelectOptionModel(label = "OpenAI", value = "openai"),
-        SelectOptionModel(label = "Gemini", value = "gemini"),
-        SelectOptionModel(label = "DeepSeek", value = "deepseek"),
-        SelectOptionModel(label = "HuggingFace", value = "huggingface"),
-        SelectOptionModel(label = "DeepSeek", value = "deepseek")
-    )
-
-    var selectedCategoryValue by remember { mutableStateOf<String?>("books") }
 
     if (isMedium) {
         Column(
@@ -157,7 +140,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
         ) {
             Column(
                 Modifier
-                    //.height(530.dp)
+                    .height(530.dp)
                     .width(394.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(AppTheme.colors.color3)
@@ -167,18 +150,18 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Adicionar Novo Modelo LLM",
+                    text = "Adicionar Modelo LLM",
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
                 )
 
                 SelectInput(
-                    title = "Categoria do Produto",
-                    placeholder = "Selecione uma categoria",
-                    options = categoryOptions,
-                    initialValue = selectedCategoryValue,
-                    onValueChange = { newValue ->
-                        selectedCategoryValue = newValue
+                    title = "API do Modelo",
+                    placeholder = "Selecione uma API",
+                    options = llmsTabuiState.apiOptions,
+                    initialValue = newLlmUiModel.company,
+                    onValueChange = { newCompany ->
+                        newLlmUiModel = newLlmUiModel.copy(company = newCompany ?: "")
                     },
                     isBackgroudColorDark = true
                 )
@@ -187,10 +170,10 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                     modifier = Modifier.padding(top = 20.dp),
                     title = "ID do Modelo",
                     placeholder = "deepseek-chat-v3.1",
-                    warning = projectNameInputWarningState,
-                    initialValue = "",
-                    onValueChange = { newName ->
-                        newProjectUiModel.name = newName
+                    warning = llmNameInputWarningState,
+                    initialValue = newLlmUiModel.model,
+                    onValueChange = { newModel ->
+                        newLlmUiModel = newLlmUiModel.copy(model = newModel)
                     },
                     isBackgroudColorDark = true
                 )
@@ -199,51 +182,39 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                     modifier = Modifier.padding(top = 0.dp),
                     title = "Chave da API",
                     placeholder = "f07c1367716290d39235cf642580ad2c",
-                    warning = projectNameInputWarningState,
-                    initialValue = "",
-                    onValueChange = { newName ->
-                        newProjectUiModel.name = newName
+                    warning = pathInputWarningState,
+                    initialValue = newLlmUiModel.apiToken,
+                    onValueChange = { newApiToken ->
+                        newLlmUiModel = newLlmUiModel.copy(apiToken = newApiToken)
                     },
                     isBackgroudColorDark = true
                 )
 
-                DirectoryPicker(
-                    show = showDirPicker,
-                    title = "Selecione a pasta do repositório",
-                    onResult = { path ->
-                        showDirPicker = false
-                        path?.let {
-                            newProjectUiModel.path = it
-                        }
-                    }
-                )
 
-
-                 Box(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
-                 ){
+                ){
 
-                     IconTextButton(
-                         modifier = Modifier.padding(16.dp),
-                         text = "Adicionar esse projeto",
-                         onClick = {
-                             //ThemeState.toggleTheme()
-                             coroutineScope.launch(Dispatchers.Main) {
-                                 llmsTabviewModel.onSaveProjectClicked(newProjectUiModel)
-                             }
-                         },
-                         icon = painterResource(Res.drawable.icon_plus),
-                         isLoading = llmsTabuiState.isLoading
-                     )
+                    IconTextButton(
+                        modifier = Modifier.padding(16.dp),
+                        text = "Adicionar esse projeto",
+                        onClick = {
+                            coroutineScope.launch(Dispatchers.Main) {
+                                llmsTabviewModel.onSaveLlmClicked(newLlmUiModel)
+                            }
+                        },
+                        icon = painterResource(Res.drawable.icon_plus),
+                        isLoading = llmsTabuiState.isLoading
+                    )
                 }
             }
             Spacer(modifier = Modifier.width(30.dp))
 
             Column(
                 Modifier
-                    .height(425.dp)
+                    .height(530.dp)
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
                     .background(AppTheme.colors.color3)
@@ -289,7 +260,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                                 )
                             }
                         } else {
-                            if(llmsTabuiState.projects.isEmpty()){
+                            if(llmsTabuiState.llms.isEmpty()){
                                 Row(
                                     modifier = Modifier.fillMaxSize(),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -306,7 +277,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                                     )
 
                                     Text(
-                                        text = "Nenhum modelo cadastrado",
+                                        text = "Sem modelo cadastrado",
                                         color = AppTheme.colors.onColor5,
                                         style = MaterialTheme.typography.bodyLarge
                                     )
@@ -328,12 +299,12 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                                     contentPadding = PaddingValues(top = 16.dp),
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    items(llmsTabuiState.projects.size) { index ->
-                                        RegisteredProjectListItem(
-                                            projectDomainModel = llmsTabuiState.projects[index],
-                                            deleteProject = { project ->
+                                    items(llmsTabuiState.llms.size) { index ->
+                                        RegisteredLlmListItem(
+                                            llmUiModel = llmsTabuiState.llms[index],
+                                            deleteLlm = { llm ->
                                                 coroutineScope.launch(Dispatchers.Main) {
-                                                    llmsTabviewModel.deleteProject(project)
+                                                    llmsTabviewModel.deleteLlm(llm)
                                                 }
                                             }
                                         )

@@ -1,7 +1,9 @@
 package org.tavioribeiro.commitic.presentation.mapper
 
+import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
 import org.tavioribeiro.commitic.presentation.model.LlmUiModel
+import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 
 
 fun LlmUiModel.toDomain(): LlmDomainModel {
@@ -19,5 +21,13 @@ fun LlmDomainModel.toUiModel(): LlmUiModel {
         company = this.company,
         model = this.model,
         apiToken = this.apiToken
+    )
+}
+
+
+fun LlmAvailableApis.toSelectOption(): SelectOptionModel {
+    return SelectOptionModel(
+        label = this.displayName,
+        value = this.value
     )
 }
