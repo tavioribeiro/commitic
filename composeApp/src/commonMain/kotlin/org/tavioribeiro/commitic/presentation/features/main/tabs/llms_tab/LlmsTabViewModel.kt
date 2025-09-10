@@ -136,6 +136,7 @@ class LlmsTabViewModel(
                                 )
                             )
                         }
+                        else -> {}
                     }
                     _uiState.update { it.copy(isLoading = false) }
                 }
@@ -178,7 +179,6 @@ class LlmsTabViewModel(
                                  )
                              )
                          }
-
                          else -> {}
                      }
                  }

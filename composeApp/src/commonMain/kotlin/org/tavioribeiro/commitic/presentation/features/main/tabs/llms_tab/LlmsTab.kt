@@ -155,15 +155,15 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Adicionar Novo Projeto",
+                    text = "Adicionar Novo Modelo LLM",
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
                 )
 
                 FullInput(
                     modifier = Modifier.padding(top = 20.dp),
-                    title = "Nome do Projeto",
-                    placeholder = "Meu Projeto Maravilhoso",
+                    title = "ID do Modelo",
+                    placeholder = "deepseek-chat-v3.1",
                     warning = projectNameInputWarningState,
                     initialValue = "",
                     onValueChange = { newName ->
@@ -172,18 +172,14 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                     isBackgroudColorDark = true
                 )
 
-                FileInput(
-                    title = "Endereço do repositório Git",
-                    placeholder = "/endereco/do/repositorio",
-                    warning = pathInputWarningState,
-                    icon = painterResource(Res.drawable.icon_folder),
-                    initialValue = newProjectUiModel.path,
-                    onValueChange = { newPath ->
-                        newProjectUiModel.path = newPath
-                    },
-                    onFileSelect = {
-                        println("Botão de selecionar arquivo clicado!")
-                        showDirPicker = true
+                FullInput(
+                    modifier = Modifier.padding(top = 0.dp),
+                    title = "Chave da API",
+                    placeholder = "f07c1367716290d39235cf642580ad2c",
+                    warning = projectNameInputWarningState,
+                    initialValue = "",
+                    onValueChange = { newName ->
+                        newProjectUiModel.name = newName
                     },
                     isBackgroudColorDark = true
                 )
@@ -234,7 +230,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Projetos Registrados",
+                    text = "Modelos LLMs Registrados",
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
                 )
@@ -287,7 +283,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                                     )
 
                                     Text(
-                                        text = "Nenhum projeto cadastrado",
+                                        text = "Nenhum modelo cadastrado",
                                         color = AppTheme.colors.onColor5,
                                         style = MaterialTheme.typography.bodyLarge
                                     )

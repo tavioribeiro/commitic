@@ -136,6 +136,7 @@ class ProjectsTabViewModel(
                                 )
                             )
                         }
+                        else -> {}
                     }
                     _uiState.update { it.copy(isLoading = false) }
                 }
