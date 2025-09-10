@@ -9,12 +9,12 @@ class DeleteProjectUseCase(
     private val projectRepository: ProjectRepository
 ) {
     suspend operator fun invoke(project: ProjectDomainModel): RequestResult<Unit, ProjectFailure> {
-        if (project.name.isBlank()) {
-            return RequestResult.Failure(ProjectFailure.InvalidName("O nome não pode ser vazio."))
-        }
+        val projectId = project.id ?: return RequestResult.Failure(
+            ProjectFailure.NotFound("O projeto não possui um ID e não pode ser deletado.")
+        )
 
-        if (project.path.isBlank()) {
-            return RequestResult.Failure(ProjectFailure.InvalidPath("O caminho não pode ser vazio."))
+        if (projectId <= 0) {
+            return RequestResult.Failure(ProjectFailure.InvalidId("ID do projeto é inválido."))
         }
 
         return projectRepository.deleteProject(project)
