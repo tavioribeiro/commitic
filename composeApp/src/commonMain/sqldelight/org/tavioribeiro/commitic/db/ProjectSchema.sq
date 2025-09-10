@@ -36,6 +36,17 @@ INSERT INTO commits (branch_id, message, timestamp)
 VALUES (?, ?, ?);
 
 
+-- UPDATES
+updateProject:
+UPDATE projects SET name = ?, directory_path = ? WHERE project_id = ?;
+
+updateBranch:
+UPDATE branches SET name = ? WHERE branch_id = ?;
+
+updateCommit:
+UPDATE commits SET message = ? WHERE commit_id = ?;
+
+
 -- DELETES
 deleteProjectById:
 DELETE FROM projects WHERE project_id = ?;
@@ -47,27 +58,34 @@ deleteCommitById:
 DELETE FROM commits WHERE commit_id = ?;
 
 
--- SELECTS
-selectAllProjects:
+-- GETTERS (SELECTS)
+getAllProjects:
 SELECT * FROM projects ORDER BY project_id DESC;
 
-selectProjectById:
+getProjectById:
 SELECT * FROM projects WHERE project_id = ?;
 
-selectBranchesByProjectId:
+getAllBranches:
+SELECT * FROM branches ORDER BY branch_id DESC;
+
+getBranchesByProjectId:
 SELECT * FROM branches WHERE project_id = ? ORDER BY branch_id DESC;
 
-selectBranchById:
+getBranchById:
 SELECT * FROM branches WHERE branch_id = ?;
 
-selectCommitsByBranchId:
+getAllCommits:
+SELECT * FROM commits ORDER BY commit_id DESC;
+
+getCommitsByBranchId:
 SELECT * FROM commits WHERE branch_id = ? ORDER BY timestamp DESC;
 
-selectCommitById:
+getCommitById:
 SELECT * FROM commits WHERE commit_id = ?;
 
 
-selectProjectWithBranches:
+-- GETTERS COM JOIN (SELECTS WITH JOIN)
+getProjectWithBranches:
 SELECT p.project_id,
        p.name AS project_name,
        p.directory_path,
@@ -78,7 +96,7 @@ LEFT JOIN branches b ON b.project_id = p.project_id
 WHERE p.project_id = ?
 ORDER BY b.branch_id DESC;
 
-selectProjectWithBranchesAndCommits:
+getProjectWithBranchesAndCommits:
 SELECT p.project_id,
        p.name AS project_name,
        p.directory_path,
@@ -94,7 +112,7 @@ WHERE p.project_id = ?
 ORDER BY b.branch_id DESC, c.timestamp DESC;
 
 
-selectAllBranchesWithCommits:
+getAllBranchesWithCommits:
 SELECT b.branch_id,
        b.project_id,
        b.name AS branch_name,
@@ -104,9 +122,3 @@ SELECT b.branch_id,
 FROM branches b
 LEFT JOIN commits c ON c.branch_id = b.branch_id
 ORDER BY b.branch_id DESC, c.timestamp DESC;
-
-
-
-
-
-

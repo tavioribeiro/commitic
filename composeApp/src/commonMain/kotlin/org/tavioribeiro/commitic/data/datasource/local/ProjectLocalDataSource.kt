@@ -30,7 +30,7 @@ class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
     suspend fun getProjects(): List<ProjectDTOModel> {
         return withContext(Dispatchers.IO){
             try {
-                val projectsFromDb = db.selectAllProjects().executeAsList()
+                val projectsFromDb = db.getAllProjects().executeAsList()
 
                 projectsFromDb.map { projectEntity ->
                     ProjectDTOModel(
