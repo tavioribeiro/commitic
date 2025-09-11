@@ -3,6 +3,10 @@ package org.tavioribeiro.commitic.di
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import org.tavioribeiro.commitic.data.datasource.local.ConsoleDataSource
+import org.tavioribeiro.commitic.data.repository.ConsoleRepositoryImpl
+import org.tavioribeiro.commitic.domain.repository.ConsoleRepository
+import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.data.datasource.local.LlmLocalDataSource
 import org.tavioribeiro.commitic.data.datasource.local.ProjectLocalDataSource
 import org.tavioribeiro.commitic.data.repository.LlmRepositoryImpl
@@ -44,7 +48,6 @@ val dataModule = module {
         )
     }
 
-
     single { LlmSchemaQueries(driver = get()) }
     single { LlmLocalDataSource(get()) }
     single<LlmRepository> {
@@ -52,6 +55,9 @@ val dataModule = module {
             get()
         )
     }
+
+    single { ConsoleDataSource() }
+    single<ConsoleRepository> { ConsoleRepositoryImpl(get()) }
 }
 
 val domainModule = module {
@@ -59,10 +65,11 @@ val domainModule = module {
     factory { GetProjectsUseCase(get()) }
     factory { DeleteProjectUseCase(get()) }
 
-
     factory { SaveLlmUseCase(get()) }
     factory { GetLlmsUseCase(get()) }
     factory { DeleteLlmUseCase(get()) }
+
+    factory { ExecuteCommandUseCase(get()) }
 }
 
 val presentationModule = module {
@@ -70,12 +77,12 @@ val presentationModule = module {
 
     factory {
         ProjectsTabViewModel(
-        get(),
-        get(),
-        get(),
-        get())
+            get(),
+            get(),
+            get(),
+            get()
+        )
     }
-
 
     factory {
         LlmsTabViewModel(
