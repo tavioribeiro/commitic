@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.tavioribeiro.commitic.domain.model.project.ProjectFailure
+import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.SaveProjectUseCase
@@ -30,7 +31,8 @@ class ProjectsTabViewModel(
     private val toastViewModel: ToastViewModel,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val saveProjectUseCase: SaveProjectUseCase,
-    private val deleteProjectUseCase: DeleteProjectUseCase
+    private val deleteProjectUseCase: DeleteProjectUseCase,
+    private val executeCommandUseCase: ExecuteCommandUseCase
 ): ViewModel(){
 
     private val _uiState = MutableStateFlow(ProjectsTabUiState())
@@ -93,6 +95,7 @@ class ProjectsTabViewModel(
                 _uiState.update { it.copy(isLoading = true) }
             }
 
+            println(executeCommandUseCase.invoke("git branch --show-current", projectToSave.path))
 
             val project = projectToSave.toDomain()
             val result = saveProjectUseCase(project)
