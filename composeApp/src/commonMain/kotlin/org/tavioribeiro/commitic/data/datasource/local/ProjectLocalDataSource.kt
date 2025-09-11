@@ -34,7 +34,7 @@ class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
 
                 projectsFromDb.map { projectEntity ->
                     ProjectDTOModel(
-                        id = projectEntity.project_id,
+                        id = projectEntity.id,
                         name = projectEntity.name,
                         path = projectEntity.directory_path
                     )

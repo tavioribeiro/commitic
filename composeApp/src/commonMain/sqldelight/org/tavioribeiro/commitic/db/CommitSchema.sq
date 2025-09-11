@@ -1,0 +1,28 @@
+CREATE TABLE commits (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  branch_id INTEGER NOT NULL,
+  message TEXT NOT NULL,
+  timestamp INTEGER NOT NULL,
+  FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE CASCADE
+);
+
+
+insertCommit:
+INSERT INTO commits (branch_id, message, timestamp)
+VALUES (?, ?, ?);
+
+updateCommit:
+UPDATE commits SET message = ? WHERE id = ?;
+
+deleteCommitById:
+DELETE FROM commits WHERE id = ?;
+
+
+getAllCommits:
+SELECT * FROM commits ORDER BY id DESC;
+
+getCommitsByBranchId:
+SELECT * FROM commits WHERE branch_id = ? ORDER BY timestamp DESC;
+
+getCommitById:
+SELECT * FROM commits WHERE id = ?;
