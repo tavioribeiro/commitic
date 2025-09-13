@@ -9,12 +9,15 @@ import org.tavioribeiro.commitic.domain.repository.ConsoleRepository
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.data.datasource.local.LlmLocalDataSource
 import org.tavioribeiro.commitic.data.datasource.local.ProjectLocalDataSource
+import org.tavioribeiro.commitic.data.repository.FileSystemRepositoryImpl
 import org.tavioribeiro.commitic.data.repository.LlmRepositoryImpl
 import org.tavioribeiro.commitic.data.repository.ProjectRepositoryImpl
 import org.tavioribeiro.commitic.db.LlmSchemaQueries
 import org.tavioribeiro.commitic.db.ProjectSchemaQueries
+import org.tavioribeiro.commitic.domain.repository.FileSystemRepository
 import org.tavioribeiro.commitic.domain.repository.LlmRepository
 import org.tavioribeiro.commitic.domain.repository.ProjectRepository
+import org.tavioribeiro.commitic.domain.usecase.directory.CheckDirectoryExistsUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.DeleteLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.GetLlmsUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.SaveLlmUseCase
@@ -58,10 +61,12 @@ val dataModule = module {
 
     single { ConsoleDataSource() }
     single<ConsoleRepository> { ConsoleRepositoryImpl(get()) }
+
+    single<FileSystemRepository> { FileSystemRepositoryImpl() }
 }
 
 val domainModule = module {
-    factory { SaveProjectUseCase(get()) }
+    factory { SaveProjectUseCase(get(), get()) }
     factory { GetProjectsUseCase(get()) }
     factory { DeleteProjectUseCase(get()) }
 
@@ -70,6 +75,8 @@ val domainModule = module {
     factory { DeleteLlmUseCase(get()) }
 
     factory { ExecuteCommandUseCase(get()) }
+
+    factory { CheckDirectoryExistsUseCase(get()) }
 }
 
 val presentationModule = module {

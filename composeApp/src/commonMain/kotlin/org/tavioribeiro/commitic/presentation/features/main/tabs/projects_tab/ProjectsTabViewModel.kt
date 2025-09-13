@@ -126,7 +126,7 @@ class ProjectsTabViewModel(
                         }
 
                         is ProjectFailure.InvalidPath -> {
-                            _pathInputWarningState.update { "O caminho não pode ser vazio." }
+                            _pathInputWarningState.update { "O caminho está vazio ou não existe!" }
                         }
 
                         is ProjectFailure.Unexpected -> {
