@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.layout.ContentScale
 import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_clear
+import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_folder
 import commitic.composeapp.generated.resources.icon_history
 import commitic.composeapp.generated.resources.icon_plus
@@ -43,6 +44,7 @@ import commitic.composeapp.generated.resources.icon_robot
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.components.buttons.UnderlineButton
+import org.tavioribeiro.commitic.presentation.features.main.tabs.commits_tab.CommitsTab
 import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.LlmsTab
 import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.ProjectsTab
 
@@ -125,11 +127,18 @@ fun CalculatorScreen() {
                 )
 
                 UnderlineButton(
+                    text = "Commits",
+                    icon = painterResource(Res.drawable.icon_commit),
+                    isSelected = (selectedButton == "Commits"),
+                    onClick = { selectedButton = "Commits" }
+                )
+
+                /*UnderlineButton(
                     text = "Histórico",
                     icon = painterResource(Res.drawable.icon_history),
                     isSelected = (selectedButton == "Histórico"),
                     onClick = { selectedButton = "Histórico" }
-                )
+                )*/
             }
 
             Box(modifier = Modifier
@@ -156,7 +165,8 @@ fun CalculatorScreen() {
                 when (targetState) {
                     "Projetos" -> ProjectsTab()
                     "Modelos" -> LlmsTab()
-                    "Histórico" -> ProjectsTab()
+                    "Commits" -> CommitsTab()
+                    //"Histórico" -> ProjectsTab()
                 }
             }
         }
