@@ -129,6 +129,17 @@ class ProjectsTabViewModel(
                             _pathInputWarningState.update { "O caminho está vazio ou não existe!" }
                         }
 
+                        is ProjectFailure.NotFoundPath -> {
+                            toastViewModel.showToast(
+                                ToastUiModel(
+                                    title = "Erro",
+                                    message = "Não foi possível encontrar a pasta do projeto.",
+                                    type = ToastType.ERROR,
+                                    duration = 3000
+                                )
+                            )
+                        }
+
                         is ProjectFailure.Unexpected -> {
                             toastViewModel.showToast(
                                 ToastUiModel(

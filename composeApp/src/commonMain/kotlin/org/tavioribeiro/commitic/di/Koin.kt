@@ -45,7 +45,7 @@ fun initKoin() {
 val dataModule = module {
     single { ProjectSchemaQueries(driver = get()) }
     single { ProjectLocalDataSource(get()) }
-    single<ProjectRepository> {
+    single <ProjectRepository> {
         ProjectRepositoryImpl(
             get()
         )
@@ -53,16 +53,16 @@ val dataModule = module {
 
     single { LlmSchemaQueries(driver = get()) }
     single { LlmLocalDataSource(get()) }
-    single<LlmRepository> {
+    single <LlmRepository> {
         LlmRepositoryImpl(
             get()
         )
     }
 
     single { ConsoleDataSource() }
-    single<ConsoleRepository> { ConsoleRepositoryImpl(get()) }
+    single <ConsoleRepository> { ConsoleRepositoryImpl(get()) }
 
-    single<FileSystemRepository> { FileSystemRepositoryImpl() }
+    single <FileSystemRepository> { FileSystemRepositoryImpl() }
 }
 
 val domainModule = module {
@@ -75,8 +75,6 @@ val domainModule = module {
     factory { DeleteLlmUseCase(get()) }
 
     factory { ExecuteCommandUseCase(get()) }
-
-    factory { CheckDirectoryExistsUseCase(get()) }
 }
 
 val presentationModule = module {

@@ -1,10 +1,9 @@
 package org.tavioribeiro.commitic.domain.model.project
 
-import org.tavioribeiro.commitic.domain.model.llm.LlmFailure
-
 sealed interface ProjectFailure {
     data class InvalidName(val reason: String) : ProjectFailure
     data class InvalidPath(val reason: String) : ProjectFailure
+    data class NotFoundPath(val reason: String) : ProjectFailure
     data class InvalidId(val reason: String) : ProjectFailure
     data class NotFound(val reason: String) : ProjectFailure
     data class Unexpected(val throwable: Throwable) : ProjectFailure
