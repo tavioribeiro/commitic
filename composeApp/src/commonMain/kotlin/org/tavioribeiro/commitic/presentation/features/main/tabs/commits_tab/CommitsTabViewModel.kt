@@ -50,6 +50,11 @@ class CommitsTabViewModel(
     //val uiEvent = _uiEvent.asSharedFlow()
     //_uiEvent.emit("Projeto deletado com sucesso")
 
+
+    private fun loadProjects() {
+
+    }
+
     fun loadCommits() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

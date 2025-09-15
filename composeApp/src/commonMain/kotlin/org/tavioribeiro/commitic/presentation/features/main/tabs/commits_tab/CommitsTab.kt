@@ -136,17 +136,10 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
             }
         }
     } else {
-        Row(
-            modifier = Modifier
-                .background(AppTheme.colors.color1)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
             Column(
                 Modifier
                     .height(425.dp)
-                    .width(394.dp)
+                    .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
                     .background(AppTheme.colors.color3)
                     .border(1.dp, AppTheme.colors.color4, RoundedCornerShape(10.dp))
@@ -205,7 +198,6 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                  ){
-
                      IconTextButton(
                          modifier = Modifier.padding(16.dp),
                          text = "Adicionar esse projeto",
@@ -219,112 +211,7 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
                          isLoading = commitsTabuiState.isLoading
                      )
                 }
-            }
-            Spacer(modifier = Modifier.width(30.dp))
 
-            Column(
-                Modifier
-                    .height(425.dp)
-                    .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(AppTheme.colors.color3)
-                    .border(1.dp, AppTheme.colors.color4, RoundedCornerShape(10.dp))
-                    .padding(horizontal = 25.dp, vertical = 25.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = "Projetos Registrados",
-                    color = AppTheme.colors.onColor5,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                Box(modifier = Modifier.fillMaxSize()) {
-                    AnimatedContent(
-                        targetState = commitsTabuiState.isLoading,
-                        modifier = Modifier.fillMaxSize(),
-                        transitionSpec = {
-                            val exit = fadeOut(animationSpec = tween(300))
-
-                            val enter = fadeIn(
-                                animationSpec = tween(
-                                    durationMillis = 300,
-                                    delayMillis = 300
-                                )
-                            )
-
-                            enter togetherWith exit
-                        },
-                        label = "TabContentAnimation"
-                    ) { targetState ->
-                        if (targetState) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .height(30.dp)
-                                        .width(30.dp),
-                                    color = AppTheme.colors.onColor5
-                                )
-                            }
-                        } else {
-                            if(commitsTabuiState.commits.isEmpty()){
-                                Row(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Icon(
-                                        modifier = Modifier
-                                            .padding(end = 8.dp)
-                                            .height(24.dp)
-                                            .width(24 .dp),
-                                        painter = painterResource(Res.drawable.icon_no_projects),
-                                        contentDescription = null,
-                                        tint = AppTheme.colors.onColor5
-                                    )
-
-                                    Text(
-                                        text = "Nenhum projeto cadastrado",
-                                        color = AppTheme.colors.onColor5,
-                                        style = MaterialTheme.typography.bodyLarge
-                                    )
-                                }
-                            }
-                            else {
-                                LazyColumn(
-                                    state = listState,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .pointerInput(Unit) {
-                                            detectDragGestures { change, dragAmount ->
-                                                change.consume()
-                                                coroutineScope.launch {
-                                                    listState.scrollBy(-dragAmount.y)
-                                                }
-                                            }
-                                        },
-                                    contentPadding = PaddingValues(top = 16.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    items(commitsTabuiState.commits.size) { index ->
-                                        RegisteredCommitListItem(
-                                            commitDomainModel = commitsTabuiState.commits[index],
-                                            deleteCommit = { commit ->
-                                                coroutineScope.launch(Dispatchers.Main) {
-                                                    commitsTabviewModel.deleteCommit(commit)
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }

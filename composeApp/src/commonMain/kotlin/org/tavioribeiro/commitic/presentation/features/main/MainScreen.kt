@@ -51,7 +51,7 @@ import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.Pr
 
 @Composable
 fun CalculatorScreen() {
-    var selectedButton by remember { mutableStateOf("Projetos") }
+    var selectedButton by remember { mutableStateOf("Commits") }
 
     Column(
         modifier = Modifier
@@ -113,6 +113,13 @@ fun CalculatorScreen() {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 UnderlineButton(
+                    text = "Commits",
+                    icon = painterResource(Res.drawable.icon_commit),
+                    isSelected = (selectedButton == "Commits"),
+                    onClick = { selectedButton = "Commits" }
+                )
+
+                UnderlineButton(
                     text = "Projetos",
                     icon = painterResource(Res.drawable.icon_folder),
                     isSelected = (selectedButton == "Projetos"),
@@ -126,12 +133,6 @@ fun CalculatorScreen() {
                     onClick = { selectedButton = "Modelos" }
                 )
 
-                UnderlineButton(
-                    text = "Commits",
-                    icon = painterResource(Res.drawable.icon_commit),
-                    isSelected = (selectedButton == "Commits"),
-                    onClick = { selectedButton = "Commits" }
-                )
 
                 /*UnderlineButton(
                     text = "Histórico",
@@ -163,9 +164,9 @@ fun CalculatorScreen() {
                 label = "TabContentAnimation"
             ){ targetState ->
                 when (targetState) {
+                    "Commits" -> CommitsTab()
                     "Projetos" -> ProjectsTab()
                     "Modelos" -> LlmsTab()
-                    "Commits" -> CommitsTab()
                     //"Histórico" -> ProjectsTab()
                 }
             }
