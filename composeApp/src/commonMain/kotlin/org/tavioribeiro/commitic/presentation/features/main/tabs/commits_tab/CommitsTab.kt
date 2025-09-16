@@ -58,6 +58,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import commitic.composeapp.generated.resources.icon_no_projects
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 
 @Composable
@@ -66,8 +67,6 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
     val isMedium = windowSize.width == WindowType.Medium
 
     val commitsTabuiState by commitsTabviewModel.uiState.collectAsState()
-    val commitNameInputWarningState by commitsTabviewModel.commitNameInputWarningState.collectAsState()
-    val pathInputWarningState by commitsTabviewModel.pathInputWarningState.collectAsState()
 
 
     LaunchedEffect(Unit) {
@@ -82,8 +81,7 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
         )
     )}
 
-    var showDirPicker by remember { mutableStateOf(false) }
-    val listState = rememberLazyListState()
+
     val coroutineScope = rememberCoroutineScope()
 
 
@@ -100,7 +98,7 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Column(
+            /*Column(
                 Modifier
                     .height(391.dp)
                     .fillMaxWidth()
@@ -133,7 +131,7 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-            }
+            }*/
         }
     } else {
             Column(
@@ -147,50 +145,26 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = "Adicionar Novo Projeto",
-                    color = AppTheme.colors.onColor5,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                FullInput(
-                    modifier = Modifier.padding(top = 20.dp),
-                    title = "Nome do Projeto",
-                    placeholder = "Meu Projeto Maravilhoso",
-                    warning = commitNameInputWarningState,
-                    initialValue = "",
-                    onValueChange = { newName ->
-                        newCommitUiModel.name = newName
-                    },
-                    isBackgroudColorDark = true
-                )
-
-                FileInput(
-                    title = "Endereço do repositório Git",
-                    placeholder = "/endereco/do/repositorio",
-                    warning = pathInputWarningState,
-                    icon = painterResource(Res.drawable.icon_folder),
-                    initialValue = newCommitUiModel.path,
-                    onValueChange = { newPath ->
-                        newCommitUiModel.path = newPath
-                    },
-                    onFileSelect = {
-                        println("Botão de selecionar arquivo clicado!")
-                        showDirPicker = true
-                    },
-                    isBackgroudColorDark = true
-                )
-
-                DirectoryPicker(
-                    show = showDirPicker,
-                    title = "Selecione a pasta do repositório",
-                    onResult = { path ->
-                        showDirPicker = false
-                        path?.let {
-                            newCommitUiModel.path = it
-                        }
-                    }
-                )
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(AppTheme.colors.color3)
+                        .border(1.dp, AppTheme.colors.color4, RoundedCornerShape(10.dp))
+                        .padding(horizontal = 25.dp, vertical = 25.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    SelectInput(
+                        title = "Escolha o Projeto",
+                        placeholder = "Seu projeto favorito",
+                        options = commitsTabuiState.availableProjects,
+                        initialPosition = commitsTabuiState.selectedProjectIndex,
+                        onValueChange = { newCompany ->
+                            //newLlmUiModel = newLlmUiModel.copy(company = newCompany ?: "")
+                        },
+                        isBackgroudColorDark = true
+                    )
+                }
 
 
                  Box(

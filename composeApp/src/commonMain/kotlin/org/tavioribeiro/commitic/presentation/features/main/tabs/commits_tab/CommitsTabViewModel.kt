@@ -18,10 +18,25 @@ import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiMode
 import org.tavioribeiro.commitic.presentation.mapper.toDomain
 import org.tavioribeiro.commitic.presentation.mapper.toUiModel
 import org.tavioribeiro.commitic.presentation.model.CommitUiModel
+import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 
 data class CommitsTabUiState(
     val isLoading: Boolean = false,
-    val commits: List<CommitUiModel> = emptyList(),
+    val availableProjects: List<SelectOptionModel> = mutableListOf(
+        SelectOptionModel(label = "Calculadora", value = "calculator"),
+        SelectOptionModel(label = "Lista de Tarefas", value = "todo_list"),
+        SelectOptionModel(label = "App de Previsão do Tempo", value = "weather_app"),
+        SelectOptionModel(label = "Gerador de Citações", value = "quote_generator"),
+        SelectOptionModel(label = "Blog Pessoal", value = "personal_blog"),
+        SelectOptionModel(label = "Aplicativo de Receitas", value = "recipe_app"),
+        SelectOptionModel(label = "Clone do Twitter", value = "twitter_clone"),
+        SelectOptionModel(label = "App de Chat em Tempo Real", value = "realtime_chat"),
+        SelectOptionModel(label = "Plataforma de E-commerce", value = "ecommerce_platform"),
+        SelectOptionModel(label = "Controle Financeiro", value = "finance_tracker")
+    ),
+    val selectedProjectIndex: Int? = 4,
+    val availableLlms: List<SelectOptionModel> = emptyList(),
+    val selectedLlmIndex: Int? = 4,
     val error: String? = null
 )
 
@@ -37,22 +52,11 @@ class CommitsTabViewModel(
     val uiState: StateFlow<CommitsTabUiState> = _uiState.asStateFlow()
 
 
-    private val _commitNameInputWarningState = MutableStateFlow("")
-    val commitNameInputWarningState = _commitNameInputWarningState.asStateFlow()
-
-    private val _pathInputWarningState = MutableStateFlow("")
-    val pathInputWarningState = _pathInputWarningState.asStateFlow()
-
-
-
-    //TROCADO POR TOAST
-    //private val _uiEvent = MutableSharedFlow<String>()
-    //val uiEvent = _uiEvent.asSharedFlow()
-    //_uiEvent.emit("Projeto deletado com sucesso")
-
 
     private fun loadProjects() {
+        viewModelScope.launch {
 
+        }
     }
 
     fun loadCommits() {
@@ -67,7 +71,7 @@ class CommitsTabViewModel(
                         it.toUiModel()
                     }
 
-                    _uiState.update { it.copy(isLoading = false, commits = uiCommits) }
+                    //_uiState.update { it.copy(isLoading = false, commits = uiCommits) }
                 }
 
                 is RequestResult.Failure -> {
@@ -103,8 +107,6 @@ class CommitsTabViewModel(
             val result = saveCommitUseCase(commit)
 
 
-            _commitNameInputWarningState.update { "" }
-            _pathInputWarningState.update { "" }
 
 
             when (result) {
@@ -124,11 +126,11 @@ class CommitsTabViewModel(
                 is RequestResult.Failure -> {
                     when (result.failure) {
                         is CommitFailure.InvalidName -> {
-                            _commitNameInputWarningState.update { "O nome não pode ser vazio." }
+
                         }
 
                         is CommitFailure.InvalidPath -> {
-                            _pathInputWarningState.update { "O caminho não pode ser vazio." }
+
                         }
 
                         is CommitFailure.Unexpected -> {

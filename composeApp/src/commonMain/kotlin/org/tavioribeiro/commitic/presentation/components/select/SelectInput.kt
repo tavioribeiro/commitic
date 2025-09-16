@@ -7,11 +7,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 import org.tavioribeiro.commitic.theme.AppTheme
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,16 +18,20 @@ fun SelectInput(
     title: String,
     placeholder: String,
     options: List<SelectOptionModel>,
-    initialValue: String? = null,
+    initialOption: SelectOptionModel? = null, //1°
+    initialPosition: Int? = null,  //2°
+    initialValue: String? = null, //3°
     onValueChange: (String) -> Unit,
     isBackgroudColorDark: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val initialLabel = options.find { it.value == initialValue }?.label ?: ""
-    var selectedLabel by remember { mutableStateOf(initialLabel) }
+    var selectedLabel by remember { mutableStateOf("") }
 
-    LaunchedEffect(initialValue, options) {
-        selectedLabel = options.find { it.value == initialValue }?.label ?: ""
+    LaunchedEffect(initialValue, initialOption, initialPosition, options) {
+        val label = initialOption?.label
+            ?: options.getOrNull(initialPosition ?: -1)?.label
+            ?: options.find { it.value == initialValue }?.label
+        selectedLabel = label ?: ""
     }
 
     Column(
