@@ -167,7 +167,7 @@ class CommitsTabViewModel(
                 _uiState.update { it.copy(isCurrentBranchLoading = true) }
             }
 
-            val result = executeCommandUseCase(path = projectPath, command ="git branch --show-current")
+            val result = executeCommandUseCase(path = projectPath, command = "git branch --show-current")
 
             when (result) {
                 is RequestResult.Success -> {
