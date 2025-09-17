@@ -52,8 +52,8 @@ class CommitsTabViewModel(
     private val _uiState = MutableStateFlow(CommitsTabUiState())
     val uiState: StateFlow<CommitsTabUiState> = _uiState.asStateFlow()
 
-    private val availableProjects = mutableListOf<ProjectUiModel>()
-    private val availableLlms = mutableListOf<LlmUiModel>()
+    private var availableProjects = emptyList<ProjectUiModel>()
+    private var availableLlms = emptyList<LlmUiModel>()
 
     init {
         this.loadProjects()
@@ -72,9 +72,9 @@ class CommitsTabViewModel(
             when (result) {
                 is RequestResult.Success -> {
                     _uiState.update { it.copy(isProjectLoading = false) }
-                    val projects = result.data.map { it.toUiModel() }
+                    availableProjects = result.data.map { it.toUiModel() }
 
-                    val selectOptions = projects.map {
+                    val selectOptions = availableProjects.map {
                         SelectOptionModel(label = it.name, value = it.id.toString())
                     }
 
@@ -114,8 +114,8 @@ class CommitsTabViewModel(
                 is RequestResult.Success -> {
                     _uiState.update { it.copy(isLlmLoading = false) }
 
-                    val llms = result.data.map { it.toUiModel() }
-                    val selectOptions = llms.map {
+                    availableLlms = result.data.map { it.toUiModel() }
+                    val selectOptions = availableLlms.map {
                         val apiEnum = LlmAvailableApis.fromValue(it.company)
 
                         SelectOptionModel(label = "${it.model} | ${apiEnum?.displayName}", value = it.id.toString())
@@ -150,7 +150,7 @@ class CommitsTabViewModel(
 
             println("Project selected: $projectId")
 
-            val projectPath = uiState.value.availableProjectSelectOptions.firstOrNull { it.value == projectId }?.value
+            val projectPath = availableProjects.firstOrNull { it.id == projectId.toLong() }?.path
             if (projectPath != null) {
                 this@CommitsTabViewModel.getCurrentBranch(projectPath)
                 _uiState.update { it.copy(selectedProjectIndex = uiState.value.availableProjectSelectOptions.indexOfFirst { it.value == projectId }) }
@@ -167,7 +167,6 @@ class CommitsTabViewModel(
                 _uiState.update { it.copy(isCurrentBranchLoading = true) }
             }
 
-            println("Project path: $projectPath")
             val result = executeCommandUseCase(path = projectPath, command ="git branch --show-current")
 
             when (result) {

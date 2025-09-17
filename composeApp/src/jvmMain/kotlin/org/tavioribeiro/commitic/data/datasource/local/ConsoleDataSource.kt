@@ -2,6 +2,7 @@ package org.tavioribeiro.commitic.data.datasource.local
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 actual class ConsoleDataSource {
@@ -10,6 +11,7 @@ actual class ConsoleDataSource {
         try {
             val parts = command.split("\\s".toRegex())
             val process = ProcessBuilder(*parts.toTypedArray())
+                .directory(File(path))
                 .redirectOutput(ProcessBuilder.Redirect.PIPE)
                 .redirectError(ProcessBuilder.Redirect.PIPE)
                 .start()
