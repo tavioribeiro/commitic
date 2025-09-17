@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,16 +26,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
-import commitic.composeapp.generated.resources.icon_plus
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import commitic.composeapp.generated.resources.icon_commit
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
@@ -112,65 +113,74 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
     } else {
             Column(
                 Modifier
-                    .height(425.dp)
+                    .height(550.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
                     .background(AppTheme.colors.color3)
                     .border(1.dp, AppTheme.colors.color4, RoundedCornerShape(10.dp))
                     .padding(horizontal = 25.dp, vertical = 25.dp),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
-                    Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.Top
                 ) {
-                    SelectInput(
-                        title = "Escolha o Projeto",
-                        placeholder = "Seu projeto favorito",
-                        options = commitsTabuiState.availableProjects,
-                        initialPosition = commitsTabuiState.selectedProjectIndex,
-                        onValueChange = { newCompany ->
-                            //newLlmUiModel = newLlmUiModel.copy(company = newCompany ?: "")
-                        },
-                        modifier = Modifier.padding(top = 0.dp).width(300.dp),
-                        isBackgroudColorDark = true
-                    )
+                    Column(
+                        modifier = Modifier.padding(start = 12.dp)
+                    ) {
+                        SelectInput(
+                            title = "Escolha o Projeto",
+                            placeholder = "Seu projeto favorito",
+                            options = commitsTabuiState.availableProjectSelectOptions,
+                            initialPosition = commitsTabuiState.selectedProjectIndex,
+                            onValueChange = { selectedItemValue ->
+                                commitsTabviewModel.onProjectSelected(selectedItemValue)
+                            },
+                            modifier = Modifier.padding(top = 0.dp).width(400.dp),
+                            isBackgroudColorDark = true
+                        )
+
+                        Text(
+                            text = commitsTabuiState.currentBranch,
+                            color = AppTheme.colors.color7,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(start = 8.dp, top = 10.dp)
+                        )
+                    }
 
                     SelectInput(
                         title = "Escolha o Modelo",
                         placeholder = "Seu modelo favorito",
-                        options = commitsTabuiState.availableLlms,
+                        options = commitsTabuiState.availableLlmSelectOptions,
                         initialPosition = commitsTabuiState.selectedLlmIndex,
                         onValueChange = { newCompany ->
                             //newLlmUiModel = newLlmUiModel.copy(company = newCompany ?: "")
                         },
-                        modifier = Modifier.padding(top = 0.dp, start = 20.dp).width(300.dp),
+                        modifier = Modifier.padding(top = 0.dp, start = 12.dp).width(400.dp),
                         isBackgroudColorDark = true
+                    )
+
+                    IconTextButton(
+                        modifier = Modifier.padding(start = 36.dp, top = 52.dp),
+                        text = "Gerar Commit",
+                        onClick = {
+                            coroutineScope.launch(Dispatchers.Main) {
+                                commitsTabviewModel.onSaveCommitClicked(newCommitUiModel)
+                            }
+                        },
+                        icon = painterResource(Res.drawable.icon_commit),
+                        isLoading = commitsTabuiState.isProjectLoading
                     )
                 }
 
-
                  Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                  ){
-                     IconTextButton(
-                         modifier = Modifier.padding(16.dp),
-                         text = "Adicionar esse projeto",
-                         onClick = {
-                             //ThemeState.toggleTheme()
-                             coroutineScope.launch(Dispatchers.Main) {
-                                 commitsTabviewModel.onSaveCommitClicked(newCommitUiModel)
-                             }
-                         },
-                         icon = painterResource(Res.drawable.icon_plus),
-                         isLoading = commitsTabuiState.isProjectLoading
-                     )
-                }
 
+                }
         }
     }
 }

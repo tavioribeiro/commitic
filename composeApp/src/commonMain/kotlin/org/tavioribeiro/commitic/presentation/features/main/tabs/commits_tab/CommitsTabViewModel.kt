@@ -2,16 +2,6 @@ package org.tavioribeiro.commitic.presentation.features.main.tabs.commits_tab
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import commitic.composeapp.generated.resources.Res
-import commitic.composeapp.generated.resources.icon_llm
-import commitic.composeapp.generated.resources.image_chatgpt_dark
-import commitic.composeapp.generated.resources.image_claude_dark
-import commitic.composeapp.generated.resources.image_deepseek_dark
-import commitic.composeapp.generated.resources.image_gemini_dark
-import commitic.composeapp.generated.resources.image_groq_dark
-import commitic.composeapp.generated.resources.image_hugginface_dark
-import commitic.composeapp.generated.resources.image_openrouter_dark
-import commitic.composeapp.generated.resources.image_qwen_dark
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,30 +21,21 @@ import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiMode
 import org.tavioribeiro.commitic.presentation.mapper.toDomain
 import org.tavioribeiro.commitic.presentation.mapper.toUiModel
 import org.tavioribeiro.commitic.presentation.model.CommitUiModel
+import org.tavioribeiro.commitic.presentation.model.LlmUiModel
+import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 import kotlin.collections.map
 
 data class CommitsTabUiState(
     var isProjectLoading: Boolean = false,
-    val availableProjects: List<SelectOptionModel> = mutableListOf(
-        SelectOptionModel(label = "Calculadora", value = "calculator"),
-        SelectOptionModel(label = "Lista de Tarefas", value = "todo_list"),
-        SelectOptionModel(label = "App de Previsão do Tempo", value = "weather_app"),
-        SelectOptionModel(label = "Gerador de Citações", value = "quote_generator"),
-        SelectOptionModel(label = "Blog Pessoal", value = "personal_blog"),
-        SelectOptionModel(label = "Aplicativo de Receitas", value = "recipe_app"),
-        SelectOptionModel(label = "Clone do Twitter", value = "twitter_clone"),
-        SelectOptionModel(label = "App de Chat em Tempo Real", value = "realtime_chat"),
-        SelectOptionModel(label = "Plataforma de E-commerce", value = "ecommerce_platform"),
-        SelectOptionModel(label = "Controle Financeiro", value = "finance_tracker")
-    ),
+    val availableProjectSelectOptions: List<SelectOptionModel> = emptyList(),
     val selectedProjectIndex: Int? = 4,
 
     var isCurrentBranchLoading: Boolean = false,
     var currentBranch: String = "",
 
     var isLlmLoading: Boolean = false,
-    val availableLlms: List<SelectOptionModel> = emptyList(),
+    val availableLlmSelectOptions: List<SelectOptionModel> = emptyList(),
     val selectedLlmIndex: Int? = 4,
 )
 
@@ -70,6 +51,9 @@ class CommitsTabViewModel(
 
     private val _uiState = MutableStateFlow(CommitsTabUiState())
     val uiState: StateFlow<CommitsTabUiState> = _uiState.asStateFlow()
+
+    private val availableProjects = mutableListOf<ProjectUiModel>()
+    private val availableLlms = mutableListOf<LlmUiModel>()
 
     init {
         this.loadProjects()
@@ -91,10 +75,10 @@ class CommitsTabViewModel(
                     val projects = result.data.map { it.toUiModel() }
 
                     val selectOptions = projects.map {
-                        SelectOptionModel(label = it.name, value = it.path)
+                        SelectOptionModel(label = it.name, value = it.id.toString())
                     }
 
-                    _uiState.update { it.copy(availableProjects = selectOptions) }
+                    _uiState.update { it.copy(availableProjectSelectOptions = selectOptions) }
                 }
                 is RequestResult.Failure -> {
                     _uiState.update { it.copy(isProjectLoading = false) }
@@ -137,7 +121,7 @@ class CommitsTabViewModel(
                         SelectOptionModel(label = "${it.model} | ${apiEnum?.displayName}", value = it.id.toString())
                     }
 
-                    _uiState.update { it.copy(availableLlms = selectOptions) }
+                    _uiState.update { it.copy(availableLlmSelectOptions = selectOptions) }
                 }
                 is RequestResult.Failure -> {
                     _uiState.update { it.copy(isLlmLoading = false) }
@@ -160,12 +144,30 @@ class CommitsTabViewModel(
     }
 
 
-    fun getCurrentBranch(projectPath: String) {
+    fun onProjectSelected(projectId: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isCurrentBranchLoading = true) }
+
+            println("Project selected: $projectId")
+
+            val projectPath = uiState.value.availableProjectSelectOptions.firstOrNull { it.value == projectId }?.value
+            if (projectPath != null) {
+                this@CommitsTabViewModel.getCurrentBranch(projectPath)
+                _uiState.update { it.copy(selectedProjectIndex = uiState.value.availableProjectSelectOptions.indexOfFirst { it.value == projectId }) }
+
+                _uiState.update { it.copy(isCurrentBranchLoading = false) }
+            }
+        }
+    }
+
+
+    private fun getCurrentBranch(projectPath: String) {
         viewModelScope.launch {
             if(!_uiState.value.isCurrentBranchLoading) {
                 _uiState.update { it.copy(isCurrentBranchLoading = true) }
             }
 
+            println("Project path: $projectPath")
             val result = executeCommandUseCase(path = projectPath, command ="git branch --show-current")
 
             when (result) {
