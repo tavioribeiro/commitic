@@ -97,6 +97,8 @@ val domainModule = module {
     factory { DeleteCommitUseCase(get()) }
 
     factory { ExecuteCommandUseCase(get()) }
+
+    factory { ExecuteCommandUseCase(get()) }
 }
 
 val presentationModule = module {
@@ -122,8 +124,10 @@ val presentationModule = module {
     }
 
 
+
     factory {
         CommitsTabViewModel(
+            get(),
             get(),
             get(),
             get(),
