@@ -132,7 +132,9 @@ class CommitsTabViewModel(
 
                     val llms = result.data.map { it.toUiModel() }
                     val selectOptions = llms.map {
-                        SelectOptionModel(label = "${it.model} | (${it.company})", value = it.id.toString())
+                        val apiEnum = LlmAvailableApis.fromValue(it.company)
+
+                        SelectOptionModel(label = "${it.model} | ${apiEnum?.displayName}", value = it.id.toString())
                     }
 
                     _uiState.update { it.copy(availableLlms = selectOptions) }

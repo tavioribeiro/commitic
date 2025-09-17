@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -122,11 +123,7 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
             ) {
                 Row(
                     Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(AppTheme.colors.color3)
-                        .border(1.dp, AppTheme.colors.color4, RoundedCornerShape(10.dp))
-                        .padding(horizontal = 25.dp, vertical = 25.dp),
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Start
                 ) {
                     SelectInput(
@@ -137,6 +134,19 @@ fun CommitsTab(commitsTabviewModel: CommitsTabViewModel = koinInject()) {
                         onValueChange = { newCompany ->
                             //newLlmUiModel = newLlmUiModel.copy(company = newCompany ?: "")
                         },
+                        modifier = Modifier.padding(top = 0.dp).width(300.dp),
+                        isBackgroudColorDark = true
+                    )
+
+                    SelectInput(
+                        title = "Escolha o Modelo",
+                        placeholder = "Seu modelo favorito",
+                        options = commitsTabuiState.availableLlms,
+                        initialPosition = commitsTabuiState.selectedLlmIndex,
+                        onValueChange = { newCompany ->
+                            //newLlmUiModel = newLlmUiModel.copy(company = newCompany ?: "")
+                        },
+                        modifier = Modifier.padding(top = 0.dp, start = 20.dp).width(300.dp),
                         isBackgroudColorDark = true
                     )
                 }
