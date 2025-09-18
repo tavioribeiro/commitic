@@ -12,5 +12,6 @@ data class ThreeStepStatusModel(
     val currentStep: String,
     val stepOneColor: ThreeStepStatusColors,
     val stepTwoColor: ThreeStepStatusColors,
-    val stepThreeColor: ThreeStepStatusColors
+    val stepThreeColor: ThreeStepStatusColors,
+    val stepFourColor: ThreeStepStatusColors,
 )

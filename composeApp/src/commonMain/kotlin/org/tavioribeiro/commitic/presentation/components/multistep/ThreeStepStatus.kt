@@ -106,6 +106,31 @@ fun ThreeStepStatus(
                     .width(18.dp)
                     .height(18.dp),
             )
+
+            Icon(
+                modifier = Modifier
+                    .width(30.dp)
+                    .height(30.dp)
+                    .padding(horizontal = 4.dp),
+                painter = painterResource(Res.drawable.icon_arrow_forward),
+                contentDescription = null,
+                tint = AppTheme.colors.onColor2
+            )
+
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = when(threeStepStatusModel.stepFourColor){
+                            ThreeStepStatusColors.GRAY -> Color.Gray
+                            ThreeStepStatusColors.ORANGE -> Color.Yellow
+                            ThreeStepStatusColors.GREEN -> Color.Green
+                            ThreeStepStatusColors.RED -> Color.Red
+                        },
+                        shape = RoundedCornerShape(50.dp)
+                    )
+                    .width(18.dp)
+                    .height(18.dp),
+            )
         }
 
         Text(

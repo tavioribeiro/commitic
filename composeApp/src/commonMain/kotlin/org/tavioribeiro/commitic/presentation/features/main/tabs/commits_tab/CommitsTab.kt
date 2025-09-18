@@ -228,7 +228,7 @@ fun CommitsTab(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Projetos Registrados",
+                    text = "Progresso da geração",
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
                 )
@@ -238,7 +238,8 @@ fun CommitsTab(
                     currentStep = "Inferindo o objetivo da tarefa...",
                     stepOneColor = ThreeStepStatusColors.ORANGE,
                     stepTwoColor = ThreeStepStatusColors.GRAY,
-                    stepThreeColor = ThreeStepStatusColors.GRAY
+                    stepThreeColor = ThreeStepStatusColors.GRAY,
+                    stepFourColor = ThreeStepStatusColors.GRAY
                 )
 
                 // Use o componente passando o modelo
@@ -294,8 +295,6 @@ fun CommitsTab(
                         modifier = Modifier.align(Alignment.TopEnd),
                         onClick = {
                             clipboardManager.setText(AnnotatedString(logText))
-
-
 
                             toastViewModel.showToast(
                                 ToastUiModel(
