@@ -46,7 +46,6 @@ class CommitsTabViewModel(
     private val getProjectsUseCase: GetProjectsUseCase,
     private val executeCommandUseCase: ExecuteCommandUseCase,
     private val getLlmsUseCase: GetLlmsUseCase
-
 ): ViewModel(){
 
     private val _uiState = MutableStateFlow(CommitsTabUiState())
