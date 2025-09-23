@@ -1,5 +1,10 @@
 package org.tavioribeiro.commitic.presentation.features.main.tabs.commits_tab
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,9 +44,6 @@ import org.tavioribeiro.commitic.core.utils.getWindowSize
 import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.Clipboard
-import androidx.compose.ui.platform.ClipboardManager
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -57,7 +60,6 @@ import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiMode
 import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusColors
 import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusModel
-import kotlin.String
 
 @Composable
 fun CommitsTab(
@@ -235,37 +237,20 @@ fun CommitsTab(
 
 
                 val statusDoProgresso = ThreeStepStatusModel(
-                    currentStep = "Inferindo o objetivo da tarefa...",
-                    stepOneColor = ThreeStepStatusColors.ORANGE,
+                    currentStep = "Não iniciado",
+                    stepOneColor = ThreeStepStatusColors.GRAY,
                     stepTwoColor = ThreeStepStatusColors.GRAY,
                     stepThreeColor = ThreeStepStatusColors.GRAY,
                     stepFourColor = ThreeStepStatusColors.GRAY
                 )
 
-                // Use o componente passando o modelo
                 ThreeStepStatus(
                     threeStepStatusModel = statusDoProgresso,
                     modifier = Modifier.padding(top = 10.dp)
                 )
 
                 val logText = """
-✨ Melhorar experiência em selects vazios
-📜 Descrição:
-    - Adicionado parâmetro `emptyStateText` com padrão “Não há opções disponíveis”.
-    - Criada variável `isEmpty` para detectar listas sem opções.
-    - Lógica de label ajustada para calcular somente quando a lista não está vazia.
-    - Dropdown impedido de expandir quando `isEmpty` é true.
-    - Definido `placeholderColor` aplicado a texto, borda e ícone desabilitado.
-    - Campo de texto exibe `emptyStateText` em estado vazio.
-    - Interação desabilitada (`enabled = !isEmpty`) quando não há opções.
-    - Cores de placeholder e estado desabilitado adaptadas ao tema claro/escuro.
-    - `ExposedDropdownMenu` renderizado apenas se `!isEmpty`.
-    - Refatoração menor em `CommitsTabViewModel.kt` (formatação do comando git).
-    - Campo de texto exibe `emptyStateText` em estado vazio.
-    - Interação desabilitada (`enabled = !isEmpty`) quando não há opções.
-    - Cores de placeholder e estado desabilitado adaptadas ao tema claro/escuro.
-    - `ExposedDropdownMenu` renderizado apenas se `!isEmpty`.
-    - Refatoração menor em `CommitsTabViewModel.kt` (formatação do comando git).
+Seu commit aparecerá aqui.
     """.trimIndent()
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -315,6 +300,38 @@ fun CommitsTab(
                             tint = AppTheme.colors.color5
                         )
                     }
+
+                    AnimatedContent(
+                        targetState = commitsTabuiState.isGenaratingCommitLoading,
+                        modifier = Modifier.fillMaxSize(),
+                        transitionSpec = {
+                            val exit = fadeOut(animationSpec = tween(300))
+
+                            val enter = fadeIn(
+                                animationSpec = tween(
+                                    durationMillis = 300,
+                                    delayMillis = 300
+                                )
+                            )
+
+                            enter togetherWith exit
+                        },
+                        label = "TabContentAnimation"
+                    ) { targetState ->
+                        if(targetState){
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .height(30.dp)
+                                        .width(30.dp),
+                                    color = AppTheme.colors.onColor5
+                                )
+                            }
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -335,7 +352,7 @@ fun CommitsTab(
                             }
                         },
                         icon = painterResource(Res.drawable.icon_save),
-                        isLoading = commitsTabuiState.isProjectLoading
+                        isLoading = commitsTabuiState.isGenaratingCommitLoading
                     )
                 }
             }

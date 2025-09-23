@@ -37,6 +37,8 @@ data class CommitsTabUiState(
     var isLlmLoading: Boolean = false,
     val availableLlmSelectOptions: List<SelectOptionModel> = emptyList(),
     val selectedLlmIndex: Int? = 4,
+
+    var isGenaratingCommitLoading: Boolean = false,
 )
 
 
