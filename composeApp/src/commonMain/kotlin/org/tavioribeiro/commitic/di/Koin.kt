@@ -84,6 +84,7 @@ val dataModule = module {
     single { LlmLocalDataSource(get()) }
     single <LlmRepository> {
         LlmRepositoryImpl(
+            get(),
             get()
         )
     }
@@ -93,7 +94,6 @@ val dataModule = module {
     single { LlmRemoteDataSource(get()) }
     single <CommitRepository> {
         CommitRepositoryImpl(
-            get(),
             get()
         )
     }
@@ -118,7 +118,7 @@ val domainModule = module {
     factory { SaveCommitUseCase(get()) }
     factory { GetCommitsUseCase(get()) }
     factory { DeleteCommitUseCase(get()) }
-    factory { GenerateCommitUseCase(get()) }
+    factory { GenerateCommitUseCase(get(), get()) }
 
     factory { ExecuteCommandUseCase(get()) }
 

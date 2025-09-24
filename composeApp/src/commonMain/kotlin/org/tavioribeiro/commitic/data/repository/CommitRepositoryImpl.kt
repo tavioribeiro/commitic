@@ -12,28 +12,10 @@ import org.tavioribeiro.commitic.domain.repository.CommitRepository
 import org.tavioribeiro.commitic.domain.util.RequestResult
 
 class CommitRepositoryImpl(
-    private val localDataSource: CommitLocalDataSource,
-    private val remoteDataSource: LlmRemoteDataSource
+    private val localDataSource: CommitLocalDataSource
 ) : CommitRepository {
 
 
-    override suspend fun generateCommit(project: ProjectDomainModel, llm: LlmDomainModel): RequestResult<String, CommitFailure> {
-        return try {
-
-            println("Project: ${project.name}")
-            println("LLM: ${llm.company}")
-
-            val llmResponse = remoteDataSource.generateCommit(
-                "Oi, tudo bem?",
-                llm)
-
-            RequestResult.Success(llmResponse)
-        }
-        catch (e: Exception) {
-            println("Erro ao buscar projetos: ${e.message}")
-            RequestResult.Failure(CommitFailure.Unexpected(e))
-        }
-    }
 
     override suspend fun saveCommit(commit: CommitDomainModel): RequestResult<Unit, CommitFailure> {
         return try {
