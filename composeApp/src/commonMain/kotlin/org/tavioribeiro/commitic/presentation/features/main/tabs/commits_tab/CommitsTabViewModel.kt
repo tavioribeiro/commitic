@@ -41,6 +41,7 @@ data class CommitsTabUiState(
     val selectedLlmIndex: Int? = 4,
 
     var isGenaratingCommitLoading: Boolean = false,
+    val commitText: String = "Seu commit aparecerá aqui.",
 )
 
 
@@ -227,16 +228,13 @@ class CommitsTabViewModel(
 
             when (result) {
                 is RequestResult.Success -> {
-                    // this@CommitsTabViewModel.loadCommits()
-
-                    toastViewModel.showToast(
-                        ToastUiModel(
-                            title = "Sucesso",
-                            message = "Projeto salvo com sucesso",
-                            type = ToastType.SUCCESS,
-                            duration = 1500
+                    this@CommitsTabViewModel._uiState.update {
+                        it.copy(
+                            isGenaratingCommitLoading = false,
+                            commitText = result.data
                         )
-                    )
+                    }
+
                 }
 
                 is RequestResult.Failure -> {

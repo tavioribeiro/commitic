@@ -17,19 +17,17 @@ class CommitRepositoryImpl(
 ) : CommitRepository {
 
 
-    override suspend fun generateCommit(project: ProjectDomainModel, llm: LlmDomainModel): RequestResult<Unit, CommitFailure> {
+    override suspend fun generateCommit(project: ProjectDomainModel, llm: LlmDomainModel): RequestResult<String, CommitFailure> {
         return try {
 
             println("Project: ${project.name}")
             println("LLM: ${llm.company}")
 
-            val resposta = remoteDataSource.generateCommit(
+            val llmResponse = remoteDataSource.generateCommit(
                 "Oi, tudo bem?",
                 llm)
 
-            println(resposta)
-
-            RequestResult.Success(Unit)
+            RequestResult.Success(llmResponse)
         }
         catch (e: Exception) {
             println("Erro ao buscar projetos: ${e.message}")

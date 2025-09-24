@@ -267,7 +267,7 @@ Seu commit aparecerá aqui.
                     val scrollState = rememberScrollState()
 
                     BasicTextField(
-                        value = logText,
+                        value = commitsTabuiState.commitText,
                         onValueChange = {},
                         readOnly = true,
                         textStyle = TextStyle(color = AppTheme.colors.onColor1),
@@ -279,7 +279,7 @@ Seu commit aparecerá aqui.
                     IconButton(
                         modifier = Modifier.align(Alignment.TopEnd),
                         onClick = {
-                            clipboardManager.setText(AnnotatedString(logText))
+                            clipboardManager.setText(AnnotatedString(commitsTabuiState.commitText))
 
                             toastViewModel.showToast(
                                 ToastUiModel(

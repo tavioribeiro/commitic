@@ -1,6 +1,7 @@
 package org.tavioribeiro.commitic.data.datasource.remote
 
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -9,6 +10,7 @@ import org.tavioribeiro.commitic.data.model.apis.Content
 import org.tavioribeiro.commitic.data.model.apis.GeminiRequest
 import org.tavioribeiro.commitic.data.model.apis.HuggingFaceRequest
 import org.tavioribeiro.commitic.data.model.apis.Message
+import org.tavioribeiro.commitic.data.model.apis.OpenAiApiResponse
 import org.tavioribeiro.commitic.data.model.apis.OpenAiRequest
 import org.tavioribeiro.commitic.data.model.apis.Part
 import org.tavioribeiro.commitic.data.model.apis.QwenInput
@@ -41,8 +43,15 @@ class LlmRemoteDataSource(private val client: HttpClient)  {
             throw Exception("Erro na API [${response.status}]: ${response.bodyAsText()}")
         }
 
-        //TODO("Retornar apenas o commit geradoi")
-        return response.bodyAsText()
+         val apiResponse = when (LlmAvailableApis.fromValue(llmDomainModel.company)) {
+             LlmAvailableApis.OPENAI -> response.body<OpenAiApiResponse>()
+             LlmAvailableApis.GROQ -> response.body<OpenAiApiResponse>()
+             LlmAvailableApis.DEEPSEEK -> response.body<OpenAiApiResponse>()
+             LlmAvailableApis.OPEN_ROUTER -> response.body<OpenAiApiResponse>()
+             else -> response.body<OpenAiApiResponse>()
+         }
+
+         return apiResponse.choices.firstOrNull()?.message?.content?: throw Exception("A resposta da API não é válida.")
     }
 
     private suspend fun postOpenAiCompatible(url: String, prompt: String, config: LlmDomainModel): HttpResponse {
@@ -58,8 +67,7 @@ class LlmRemoteDataSource(private val client: HttpClient)  {
     }
 
     private suspend fun callGeminiApi(prompt: String, config: LlmDomainModel): HttpResponse {
-        val requestBody =
-            GeminiRequest(contents = listOf(Content(parts = listOf(Part(text = prompt)))))
+        val requestBody = GeminiRequest(contents = listOf(Content(parts = listOf(Part(text = prompt)))))
         return client.post("https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent") {
             url { parameters.append("key", config.apiToken) }
             contentType(ContentType.Application.Json)
