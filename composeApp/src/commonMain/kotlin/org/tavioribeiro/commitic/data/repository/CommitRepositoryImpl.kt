@@ -20,7 +20,15 @@ class CommitRepositoryImpl(
     override suspend fun generateCommit(project: ProjectDomainModel, llm: LlmDomainModel): RequestResult<Unit, CommitFailure> {
         return try {
 
-            remoteDataSource.generateCommit("projectDto", llm)
+            println("Project: ${project.name}")
+            println("LLM: ${llm.company}")
+
+            val resposta = remoteDataSource.generateCommit(
+                "Oi, tudo bem?",
+                llm)
+
+            println(resposta)
+
             RequestResult.Success(Unit)
         }
         catch (e: Exception) {

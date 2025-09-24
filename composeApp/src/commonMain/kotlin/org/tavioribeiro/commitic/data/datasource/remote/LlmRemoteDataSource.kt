@@ -22,6 +22,8 @@ import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
 class LlmRemoteDataSource(private val client: HttpClient)  {
 
      suspend fun generateCommit(prompt: String, llmDomainModel: LlmDomainModel): String {
+
+         println(LlmAvailableApis.fromValue(llmDomainModel.company))
         val response: HttpResponse = when (LlmAvailableApis.fromValue(llmDomainModel.company)) {
             LlmAvailableApis.OPENAI -> postOpenAiCompatible("https://api.openai.com/v1/chat/completions", prompt, llmDomainModel)
             LlmAvailableApis.GROQ -> postOpenAiCompatible("https://api.groq.com/openai/v1/chat/completions", prompt, llmDomainModel)

@@ -199,7 +199,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
 
                     IconTextButton(
                         modifier = Modifier.padding(16.dp),
-                        text = "Adicionar esse projeto",
+                        text = "Adicionar esse Modelo",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 llmsTabviewModel.onSaveLlmClicked(newLlmUiModel)

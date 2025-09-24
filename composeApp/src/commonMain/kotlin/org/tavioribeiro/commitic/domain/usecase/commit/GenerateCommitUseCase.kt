@@ -27,7 +27,6 @@ class GenerateCommitUseCase(
             return RequestResult.Failure(CommitFailure.InvalidName("O nome do projeto não pode ser vazio."))
         }
 
-
         return commitRepository.generateCommit(project, llm)
     }
 }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.LlmFailure
@@ -204,16 +205,14 @@ class CommitsTabViewModel(
 
 
 
-    fun onGenerateCommitClicked(projectId: Long, llmId: Long) {
+    fun onGenerateCommitClicked(projectId: String, llmId: String) {
         viewModelScope.launch {
             if(!_uiState.value.isGenaratingCommitLoading){
                 _uiState.update { it.copy(isGenaratingCommitLoading = true) }
             }
 
-
-
-            val projectUiModel = availableProjects.firstOrNull { it.id == projectId }
-            val llmUiModel = availableLlms.firstOrNull { it.id == llmId }
+            val projectUiModel = availableProjects.firstOrNull { it.id == projectId.toLong() }
+            val llmUiModel = availableLlms.firstOrNull { it.id == llmId.toLong() }
 
 
             val projectDomain = projectUiModel?.toDomain()
@@ -270,14 +269,19 @@ class CommitsTabViewModel(
 
 
 
-     fun onSaveCommitClicked(commitToSave: CommitUiModel) {
+     fun onSaveCommitClicked() {
         viewModelScope.launch {
             if(!_uiState.value.isProjectLoading){
                 _uiState.update { it.copy(isProjectLoading = true) }
             }
 
 
-            val commit = commitToSave.toDomain()
+            val commit = CommitDomainModel(
+                0,
+                "",
+                ""
+
+            )
             val result = saveCommitUseCase(commit)
 
 

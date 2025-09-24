@@ -57,7 +57,6 @@ import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
-import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusColors
 import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusModel
 
@@ -76,13 +75,12 @@ fun CommitsTab(
 
     val clipboardManager = LocalClipboardManager.current
 
-    var newCommitUiModel by remember { mutableStateOf(
-        CommitUiModel(
-            id = 0,
-            name = "",
-            path = ""
-        )
-    )}
+    var selectedLlmModelId by remember { mutableStateOf<String>("")}
+    var selectedProjectId by remember { mutableStateOf<String>("")}
+
+
+
+
 
 
     val coroutineScope = rememberCoroutineScope()
@@ -168,7 +166,9 @@ fun CommitsTab(
                     options = commitsTabuiState.availableProjectSelectOptions,
                     initialPosition = commitsTabuiState.selectedProjectIndex,
                     onValueChange = { selectedItemValue ->
-                        commitsTabviewModel.onProjectSelected(selectedItemValue) },
+                        commitsTabviewModel.onProjectSelected(selectedItemValue)
+                        selectedProjectId = selectedItemValue
+                    },
                     modifier = Modifier.padding(top = 0.dp),
                     isBackgroudColorDark = true
                 )
@@ -187,8 +187,8 @@ fun CommitsTab(
                     placeholder = "Seu modelo favorito",
                     options = commitsTabuiState.availableLlmSelectOptions,
                     initialPosition = commitsTabuiState.selectedLlmIndex,
-                    onValueChange = { newCompany ->
-                        //newLlmUiModel = newLlmUiModel.copy(company = newCompany ?: "")
+                    onValueChange = { newModelId ->
+                        selectedLlmModelId = newModelId
                     },
                     modifier = Modifier.padding(top = 0.dp),
                     isBackgroudColorDark = true
@@ -205,7 +205,7 @@ fun CommitsTab(
                         text = "Gerar Commit",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
-                                commitsTabviewModel.onSaveCommitClicked(newCommitUiModel)
+                                commitsTabviewModel.onGenerateCommitClicked(selectedProjectId, selectedLlmModelId)
                             }
                         },
                         icon = painterResource(Res.drawable.icon_commit),
@@ -348,7 +348,7 @@ Seu commit aparecerá aqui.
                         text = "Salvar Commit Gerado",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
-                                commitsTabviewModel.onSaveCommitClicked(newCommitUiModel)
+                                commitsTabviewModel.onSaveCommitClicked()
                             }
                         },
                         icon = painterResource(Res.drawable.icon_save),
