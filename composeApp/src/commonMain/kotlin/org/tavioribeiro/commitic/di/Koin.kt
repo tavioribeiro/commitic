@@ -1,5 +1,9 @@
 package org.tavioribeiro.commitic.di
 
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -10,6 +14,7 @@ import org.tavioribeiro.commitic.domain.repository.ConsoleRepository
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.data.datasource.local.LlmLocalDataSource
 import org.tavioribeiro.commitic.data.datasource.local.ProjectLocalDataSource
+import org.tavioribeiro.commitic.data.datasource.remote.LlmRemoteDataSource
 import org.tavioribeiro.commitic.data.repository.CommitRepositoryImpl
 import org.tavioribeiro.commitic.data.repository.FileSystemRepositoryImpl
 import org.tavioribeiro.commitic.data.repository.LlmRepositoryImpl
@@ -22,6 +27,7 @@ import org.tavioribeiro.commitic.domain.repository.FileSystemRepository
 import org.tavioribeiro.commitic.domain.repository.LlmRepository
 import org.tavioribeiro.commitic.domain.repository.ProjectRepository
 import org.tavioribeiro.commitic.domain.usecase.commit.DeleteCommitUseCase
+import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.GetCommitsUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.directory.CheckDirectoryExistsUseCase
@@ -35,6 +41,7 @@ import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.features.main.tabs.commits_tab.CommitsTabViewModel
 import org.tavioribeiro.commitic.presentation.features.main.tabs.llms_tab.LlmsTabViewModel
 import org.tavioribeiro.commitic.presentation.features.main.tabs.projects_tab.ProjectsTabViewModel
+
 
 
 expect val platformModule: Module
@@ -51,6 +58,20 @@ fun initKoin() {
 }
 
 val dataModule = module {
+
+    single {
+        HttpClient {
+            install(ContentNegotiation) {
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                    encodeDefaults = true
+                })
+            }
+        }
+    }
+
     single { ProjectSchemaQueries(driver = get()) }
     single { ProjectLocalDataSource(get()) }
     single <ProjectRepository> {
@@ -69,8 +90,10 @@ val dataModule = module {
 
     single { CommitSchemaQueries(driver = get()) }
     single { CommitLocalDataSource(get()) }
+    single { LlmRemoteDataSource(get()) }
     single <CommitRepository> {
         CommitRepositoryImpl(
+            get(),
             get()
         )
     }
@@ -95,6 +118,7 @@ val domainModule = module {
     factory { SaveCommitUseCase(get()) }
     factory { GetCommitsUseCase(get()) }
     factory { DeleteCommitUseCase(get()) }
+    factory { GenerateCommitUseCase(get()) }
 
     factory { ExecuteCommandUseCase(get()) }
 
@@ -127,6 +151,7 @@ val presentationModule = module {
 
     factory {
         CommitsTabViewModel(
+            get(),
             get(),
             get(),
             get(),

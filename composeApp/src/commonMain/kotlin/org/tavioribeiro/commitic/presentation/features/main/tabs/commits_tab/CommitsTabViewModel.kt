@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.LlmFailure
+import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.GetLlmsUseCase
@@ -47,7 +48,8 @@ class CommitsTabViewModel(
     private val saveCommitUseCase: SaveCommitUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val executeCommandUseCase: ExecuteCommandUseCase,
-    private val getLlmsUseCase: GetLlmsUseCase
+    private val getLlmsUseCase: GetLlmsUseCase,
+    private val generateCommitUseCase: GenerateCommitUseCase,
 ): ViewModel(){
 
     private val _uiState = MutableStateFlow(CommitsTabUiState())
@@ -200,6 +202,71 @@ class CommitsTabViewModel(
         }
     }
 
+
+
+    fun onGenerateCommitClicked(projectId: Long, llmId: Long) {
+        viewModelScope.launch {
+            if(!_uiState.value.isGenaratingCommitLoading){
+                _uiState.update { it.copy(isGenaratingCommitLoading = true) }
+            }
+
+
+
+            val projectUiModel = availableProjects.firstOrNull { it.id == projectId }
+            val llmUiModel = availableLlms.firstOrNull { it.id == llmId }
+
+
+            val projectDomain = projectUiModel?.toDomain()
+            val llmDomain = llmUiModel?.toDomain()
+
+            if(projectDomain == null || llmDomain == null){
+                _uiState.update { it.copy(isGenaratingCommitLoading = false) }
+                return@launch
+            }
+
+            val result = generateCommitUseCase(projectDomain, llmDomain)
+
+            when (result) {
+                is RequestResult.Success -> {
+                    // this@CommitsTabViewModel.loadCommits()
+
+                    toastViewModel.showToast(
+                        ToastUiModel(
+                            title = "Sucesso",
+                            message = "Projeto salvo com sucesso",
+                            type = ToastType.SUCCESS,
+                            duration = 1500
+                        )
+                    )
+                }
+
+                is RequestResult.Failure -> {
+                    when (result.failure) {
+                        is CommitFailure.InvalidName -> {
+
+                        }
+
+                        is CommitFailure.InvalidPath -> {
+
+                        }
+
+                        is CommitFailure.Unexpected -> {
+                            toastViewModel.showToast(
+                                ToastUiModel(
+                                    title = "Erro",
+                                    message = "Falha ao salvar projeto",
+                                    type = ToastType.ERROR,
+                                    duration = 1500
+                                )
+                            )
+                        }
+                        else -> {}
+                    }
+                    _uiState.update { it.copy(isProjectLoading = false) }
+                }
+            }
+        }
+    }
 
 
 

@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.data.model
+package org.tavioribeiro.commitic.data.model.dtos
 
 data class CommitDTOModel(
     val id: Long?,

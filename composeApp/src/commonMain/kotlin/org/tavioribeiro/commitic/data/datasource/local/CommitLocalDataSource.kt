@@ -3,7 +3,7 @@ package org.tavioribeiro.commitic.data.datasource.local
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import org.tavioribeiro.commitic.data.model.CommitDTOModel
+import org.tavioribeiro.commitic.data.model.dtos.CommitDTOModel
 import org.tavioribeiro.commitic.db.CommitSchemaQueries
 
 

@@ -47,6 +47,11 @@ kotlin {
             implementation("io.insert-koin:koin-compose:1.1.0")
 
             implementation(libs.sqldelight.coroutines.extensions)
+
+
+            implementation("io.ktor:ktor-client-core:2.3.5")
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -56,6 +61,8 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
 
             implementation(libs.sqldelight.sqlite.driver)
+
+            implementation("io.ktor:ktor-client-cio:2.3.5")
         }
     }
 }

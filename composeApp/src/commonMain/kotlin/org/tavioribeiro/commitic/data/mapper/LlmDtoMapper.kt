@@ -1,6 +1,6 @@
 package org.tavioribeiro.commitic.data.mapper
 
-import org.tavioribeiro.commitic.data.model.LlmDTOModel
+import org.tavioribeiro.commitic.data.model.dtos.LlmDTOModel
 import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
 
 

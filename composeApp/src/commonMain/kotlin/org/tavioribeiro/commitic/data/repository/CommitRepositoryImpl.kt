@@ -1,16 +1,33 @@
 package org.tavioribeiro.commitic.data.repository
 
 import org.tavioribeiro.commitic.data.datasource.local.CommitLocalDataSource
+import org.tavioribeiro.commitic.data.datasource.remote.LlmRemoteDataSource
 import org.tavioribeiro.commitic.data.mapper.toDomain
 import org.tavioribeiro.commitic.data.mapper.toDto
 import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
+import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
+import org.tavioribeiro.commitic.domain.model.project.ProjectDomainModel
 import org.tavioribeiro.commitic.domain.repository.CommitRepository
 import org.tavioribeiro.commitic.domain.util.RequestResult
 
 class CommitRepositoryImpl(
-    private val localDataSource: CommitLocalDataSource
+    private val localDataSource: CommitLocalDataSource,
+    private val remoteDataSource: LlmRemoteDataSource
 ) : CommitRepository {
+
+
+    override suspend fun generateCommit(project: ProjectDomainModel, llm: LlmDomainModel): RequestResult<Unit, CommitFailure> {
+        return try {
+
+            remoteDataSource.generateCommit("projectDto", llm)
+            RequestResult.Success(Unit)
+        }
+        catch (e: Exception) {
+            println("Erro ao buscar projetos: ${e.message}")
+            RequestResult.Failure(CommitFailure.Unexpected(e))
+        }
+    }
 
     override suspend fun saveCommit(commit: CommitDomainModel): RequestResult<Unit, CommitFailure> {
         return try {

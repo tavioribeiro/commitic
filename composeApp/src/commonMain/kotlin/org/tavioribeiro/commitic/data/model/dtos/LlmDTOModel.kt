@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.data.model
+package org.tavioribeiro.commitic.data.model.dtos
 
 data class LlmDTOModel(
     val id: Long,
