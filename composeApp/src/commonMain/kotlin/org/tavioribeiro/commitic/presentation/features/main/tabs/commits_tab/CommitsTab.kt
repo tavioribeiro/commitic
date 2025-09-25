@@ -236,22 +236,12 @@ fun CommitsTab(
                 )
 
 
-                val statusDoProgresso = ThreeStepStatusModel(
-                    currentStep = "Não iniciado",
-                    stepOneColor = ThreeStepStatusColors.GRAY,
-                    stepTwoColor = ThreeStepStatusColors.GRAY,
-                    stepThreeColor = ThreeStepStatusColors.GRAY,
-                    stepFourColor = ThreeStepStatusColors.GRAY
-                )
 
                 ThreeStepStatus(
-                    threeStepStatusModel = statusDoProgresso,
+                    threeStepStatusModel = commitsTabuiState.stepsAndProgress,
                     modifier = Modifier.padding(top = 10.dp)
                 )
 
-                val logText = """
-Seu commit aparecerá aqui.
-    """.trimIndent()
 
                 Spacer(modifier = Modifier.height(10.dp))
 

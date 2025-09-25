@@ -7,10 +7,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.tavioribeiro.commitic.domain.model.agents.LlmAgents
 import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.LlmFailure
+import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
@@ -26,6 +28,8 @@ import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 import org.tavioribeiro.commitic.presentation.model.LlmUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
+import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusColors
+import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusModel
 import kotlin.collections.map
 
 data class CommitsTabUiState(
@@ -42,6 +46,13 @@ data class CommitsTabUiState(
 
     var isGenaratingCommitLoading: Boolean = false,
     val commitText: String = "Seu commit aparecerá aqui.",
+    val stepsAndProgress: ThreeStepStatusModel = ThreeStepStatusModel(
+        currentStep = "Não iniciado",
+        stepOneColor = ThreeStepStatusColors.GRAY,
+        stepTwoColor = ThreeStepStatusColors.GRAY,
+        stepThreeColor = ThreeStepStatusColors.GRAY,
+        stepFourColor = ThreeStepStatusColors.GRAY
+    ),
 )
 
 
@@ -208,58 +219,109 @@ class CommitsTabViewModel(
 
     fun onGenerateCommitClicked(projectId: String, llmId: String) {
         viewModelScope.launch {
-            if(!_uiState.value.isGenaratingCommitLoading){
-                _uiState.update { it.copy(isGenaratingCommitLoading = true) }
+            if (!_uiState.value.isGenaratingCommitLoading) {
+                _uiState.update { it.copy(isGenaratingCommitLoading = true, commitText = "") }
             }
 
             val projectUiModel = availableProjects.firstOrNull { it.id == projectId.toLong() }
             val llmUiModel = availableLlms.firstOrNull { it.id == llmId.toLong() }
 
-
             val projectDomain = projectUiModel?.toDomain()
             val llmDomain = llmUiModel?.toDomain()
 
-            if(projectDomain == null || llmDomain == null){
+            if (projectDomain == null || llmDomain == null) {
                 _uiState.update { it.copy(isGenaratingCommitLoading = false) }
+                println("Erro: Projeto ou LLM não encontrado.")
                 return@launch
             }
 
-            val result = generateCommitUseCase(projectDomain, llmDomain)
-
-            when (result) {
-                is RequestResult.Success -> {
-                    this@CommitsTabViewModel._uiState.update {
-                        it.copy(
-                            isGenaratingCommitLoading = false,
-                            commitText = result.data
-                        )
+            generateCommitUseCase(projectDomain, llmDomain).collect { result ->
+                when (result) {
+                    is ProgressResult.Loading -> {
+                        _uiState.update { it.copy(isGenaratingCommitLoading = true) }
                     }
 
-                }
-
-                is RequestResult.Failure -> {
-                    when (result.failure) {
-                        is CommitFailure.InvalidName -> {
-
-                        }
-
-                        is CommitFailure.InvalidPath -> {
-
-                        }
-
-                        is CommitFailure.Unexpected -> {
-                            toastViewModel.showToast(
-                                ToastUiModel(
-                                    title = "Erro",
-                                    message = "Falha ao salvar projeto",
-                                    type = ToastType.ERROR,
-                                    duration = 1500
-                                )
+                    is ProgressResult.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isGenaratingCommitLoading = false,
+                                commitText = result.value
                             )
                         }
-                        else -> {}
                     }
-                    _uiState.update { it.copy(isProjectLoading = false) }
+
+                    is ProgressResult.Failure -> {
+                        println("Falha ao gerar commit: ${result.error}")
+                        toastViewModel.showToast(
+                            ToastUiModel(
+                                title = "Erro",
+                                message = "Falha ao gerar commit",
+                                type = ToastType.ERROR,
+                                duration = 1500
+                            )
+                        )
+                        _uiState.update { it.copy(isGenaratingCommitLoading = false) }
+                    }
+
+                    is ProgressResult.Progress -> {
+                         when (result.percent){
+                             1 -> _uiState.update {
+                                 it.copy(
+                                     stepsAndProgress = ThreeStepStatusModel(
+                                         currentStep =  LlmAgents.fromValue(result.percent)?.taskDescription ?: "Não iniciado",
+                                         stepOneColor = ThreeStepStatusColors.ORANGE,
+                                         stepTwoColor = ThreeStepStatusColors.GRAY,
+                                         stepThreeColor = ThreeStepStatusColors.GRAY,
+                                         stepFourColor = ThreeStepStatusColors.GRAY
+                                     )
+                                 )
+                             }
+                             2 -> _uiState.update {
+                                 it.copy(
+                                     stepsAndProgress = ThreeStepStatusModel(
+                                         currentStep = LlmAgents.fromValue(result.percent)?.taskDescription ?: "Não iniciado",
+                                         stepOneColor = ThreeStepStatusColors.GREEN,
+                                         stepTwoColor = ThreeStepStatusColors.ORANGE,
+                                         stepThreeColor = ThreeStepStatusColors.GRAY,
+                                         stepFourColor = ThreeStepStatusColors.GRAY
+                                     )
+                                 )
+                             }
+                             3 -> _uiState.update {
+                                 it.copy(
+                                     stepsAndProgress = ThreeStepStatusModel(
+                                         currentStep = LlmAgents.fromValue(result.percent)?.taskDescription ?: "Não iniciado",
+                                         stepOneColor = ThreeStepStatusColors.GREEN,
+                                         stepTwoColor = ThreeStepStatusColors.GREEN,
+                                         stepThreeColor = ThreeStepStatusColors.ORANGE,
+                                         stepFourColor = ThreeStepStatusColors.GRAY
+                                     )
+                                 )
+                             }
+                             4 -> _uiState.update {
+                                 it.copy(
+                                     stepsAndProgress = ThreeStepStatusModel(
+                                         currentStep = LlmAgents.fromValue(result.percent)?.taskDescription ?: "Não iniciado",
+                                         stepOneColor = ThreeStepStatusColors.GREEN,
+                                         stepTwoColor = ThreeStepStatusColors.GREEN,
+                                         stepThreeColor = ThreeStepStatusColors.GREEN,
+                                         stepFourColor = ThreeStepStatusColors.ORANGE
+                                     )
+                                 )
+                             }
+                             5 -> _uiState.update {
+                                 it.copy(
+                                     stepsAndProgress = ThreeStepStatusModel(
+                                         currentStep = LlmAgents.fromValue(result.percent)?.taskDescription ?: "Não iniciado",
+                                         stepOneColor = ThreeStepStatusColors.GREEN,
+                                         stepTwoColor = ThreeStepStatusColors.GREEN,
+                                         stepThreeColor = ThreeStepStatusColors.GREEN,
+                                         stepFourColor = ThreeStepStatusColors.GREEN
+                                     )
+                                 )
+                             }
+                         }
+                    }
                 }
             }
         }
