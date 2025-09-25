@@ -312,7 +312,7 @@ class CommitsTabViewModel(
                              5 -> _uiState.update {
                                  it.copy(
                                      stepsAndProgress = ThreeStepStatusModel(
-                                         currentStep = LlmAgents.fromValue(result.percent)?.taskDescription ?: "Não iniciado",
+                                         currentStep = "Finalizado com sucesso \uD83D\uDE42\uD83D\uDC4D",
                                          stepOneColor = ThreeStepStatusColors.GREEN,
                                          stepTwoColor = ThreeStepStatusColors.GREEN,
                                          stepThreeColor = ThreeStepStatusColors.GREEN,

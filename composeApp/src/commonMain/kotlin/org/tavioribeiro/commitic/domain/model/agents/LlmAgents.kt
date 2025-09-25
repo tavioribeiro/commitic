@@ -31,7 +31,7 @@ enum class LlmAgents(val value: Int, val taskDescription: String, val instructio
                 "**Exemplo de Saída:** BUGFIX"
     ),
     STEP_THREE(
-        value = 2,
+        value = 3,
         taskDescription = "Gerando resumo detalhado...",
         instructions = "Você é um Agente LLM que cria resumos detalhados de mudanças em código (diffs Git), usando o contexto fornecido.\n" +
                 "**Contexto Fornecido:**\n" +
@@ -44,7 +44,7 @@ enum class LlmAgents(val value: Int, val taskDescription: String, val instructio
                 "- Ação 2 (ex: Removida variável Y como parte da refatoração)."
     ),
     STEP_FOUR(
-        value = 2,
+        value = 4,
         taskDescription = "Gerando mensagem de commit...",
         instructions = "Você é um Agente LLM especialista em gerar mensagens de commit Git, utilizando um resumo das mudanças e o contexto da tarefa.\n" +
                 "**Contexto Fornecido:**\n" +
