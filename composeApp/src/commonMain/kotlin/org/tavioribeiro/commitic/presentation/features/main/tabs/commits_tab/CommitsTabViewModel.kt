@@ -312,7 +312,7 @@ class CommitsTabViewModel(
                              5 -> _uiState.update {
                                  it.copy(
                                      stepsAndProgress = ThreeStepStatusModel(
-                                         currentStep = "Finalizado com sucesso \uD83D\uDE42\uD83D\uDC4D",
+                                         currentStep = "Finalizado com sucesso!",
                                          stepOneColor = ThreeStepStatusColors.GREEN,
                                          stepTwoColor = ThreeStepStatusColors.GREEN,
                                          stepThreeColor = ThreeStepStatusColors.GREEN,
