@@ -188,6 +188,7 @@ fun CommitsTab(
                     options = commitsTabuiState.availableLlmSelectOptions,
                     initialPosition = commitsTabuiState.selectedLlmIndex,
                     onValueChange = { newModelId ->
+                        commitsTabviewModel.onLlmSelected(newModelId)
                         selectedLlmModelId = newModelId
                     },
                     modifier = Modifier.padding(top = 0.dp),

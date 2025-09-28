@@ -31,6 +31,10 @@ val commitModule = module {
             get(),
             get(),
             get(),
+            get(),
+            get(),
+            get(),
+            get(),
             get()
         )
     }

@@ -15,7 +15,8 @@ fun initKoin() {
             projectModule,
             llmModule,
             commitModule,
-            consoleModule
+            consoleModule,
+            preferencesModule
         )
     }
 }
