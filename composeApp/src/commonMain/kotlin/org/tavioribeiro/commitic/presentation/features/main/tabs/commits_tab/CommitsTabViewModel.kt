@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.tavioribeiro.commitic.domain.model.agents.LlmAgents
 import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
-import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
-import org.tavioribeiro.commitic.domain.model.llm.LlmFailure
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
@@ -270,16 +268,16 @@ class CommitsTabViewModel(
                     }
 
                     is ProgressResult.Progress -> {
-                        val currentStepDescription = LlmAgents.fromValue(result.percent)?.taskDescription ?: "Processando..."
-                        val stepColors = when (result.percent) {
+                        val currentStepDescription = LlmAgents.fromValue(result.currentStep)?.taskDescription ?: "Processando..."
+                        val stepColors = when (result.currentStep) {
                             1 -> Triple(ThreeStepStatusColors.ORANGE, ThreeStepStatusColors.GRAY, ThreeStepStatusColors.GRAY)
                             2 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.ORANGE, ThreeStepStatusColors.GRAY)
                             3 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN, ThreeStepStatusColors.ORANGE)
                             4 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN)
                             else -> Triple(ThreeStepStatusColors.GRAY, ThreeStepStatusColors.GRAY, ThreeStepStatusColors.GRAY)
                         }
-                        val finalStepColor = if (result.percent == 4) ThreeStepStatusColors.ORANGE else ThreeStepStatusColors.GRAY
-                        val finalDescription = if (result.percent == 5) "Finalizado com sucesso!" else currentStepDescription
+                        val finalStepColor = if (result.currentStep == 4) ThreeStepStatusColors.ORANGE else ThreeStepStatusColors.GRAY
+                        val finalDescription = if (result.currentStep == 5) "Finalizado com sucesso!" else currentStepDescription
 
                         _uiState.update {
                             it.copy(
