@@ -26,6 +26,7 @@ import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
 import org.tavioribeiro.commitic.presentation.mapper.toDomain
 import org.tavioribeiro.commitic.presentation.mapper.toUiModel
+import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 import org.tavioribeiro.commitic.presentation.model.LlmUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
@@ -79,6 +80,16 @@ class CommitsTabViewModel(
 
     private var availableProjects = emptyList<ProjectUiModel>()
     private var availableLlms = emptyList<LlmUiModel>()
+
+    private var commitUiModel = CommitUiModel(
+        id = null,
+        projectId = 0,
+        branchName = "",
+        taskObjective = "",
+        category = "",
+        summary = "",
+        commitMessage = ""
+    )
 
     init {
         loadProjects()
@@ -248,10 +259,13 @@ class CommitsTabViewModel(
                     }
 
                     is ProgressResult.Success -> {
+
+                        commitUiModel = result.value.toUiModel()
+
                         _uiState.update {
                             it.copy(
                                 isGenaratingCommitLoading = false,
-                                commitText = result.value
+                                commitText = result.value.commitMessage
                             )
                         }
                     }
@@ -297,7 +311,7 @@ class CommitsTabViewModel(
     }
 
     fun onSaveCommitClicked() {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             _uiState.update { it.copy(isProjectLoading = true) }
             val commit = CommitDomainModel(0, "", "")
             when (val result = saveCommitUseCase(commit)) {
@@ -322,6 +336,6 @@ class CommitsTabViewModel(
                 }
             }
             _uiState.update { it.copy(isProjectLoading = false) }
-        }
+        }*/
     }
 }

@@ -7,15 +7,24 @@ import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 fun CommitDomainModel.toDto(): CommitDTOModel {
     return CommitDTOModel(
         id = this.id,
-        name = this.name,
-        path = this.path
+        projectId = this.projectId,
+        branchName = this.branchName,
+        taskObjective = this.taskObjective,
+        category = this.category,
+        summary = this.summary,
+        commitMessage = this.commitMessage
     )
 }
+
 
 fun CommitDTOModel.toDomain(): CommitDomainModel {
     return CommitDomainModel(
         id = this.id,
-        name = this.name,
-        path = this.path
+        projectId = this.projectId,
+        branchName = this.branchName,
+        taskObjective = this.taskObjective,
+        category = this.category,
+        summary = this.summary,
+        commitMessage = this.commitMessage
     )
 }

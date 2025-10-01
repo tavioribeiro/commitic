@@ -210,7 +210,7 @@ fun CommitsTab(
                             }
                         },
                         icon = painterResource(Res.drawable.icon_commit),
-                        isLoading = commitsTabuiState.isProjectLoading
+                        isLoading = commitsTabuiState.isGenaratingCommitLoading
                     )
                 }
             }

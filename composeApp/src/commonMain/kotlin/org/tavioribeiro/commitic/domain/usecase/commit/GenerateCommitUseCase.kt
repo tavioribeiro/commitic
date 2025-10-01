@@ -3,6 +3,7 @@ package org.tavioribeiro.commitic.domain.usecase.commit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.tavioribeiro.commitic.domain.model.agents.LlmAgents
+import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
 import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
@@ -15,7 +16,7 @@ class GenerateCommitUseCase(
     private val llmRepository: LlmRepository,
     private val consoleRepository: ConsoleRepository
 ) {
-    operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel): Flow<ProgressResult<String, CommitFailure>> = flow {
+    operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel): Flow<ProgressResult<CommitDomainModel, CommitFailure>> = flow {
         emit(ProgressResult.Loading)
 
         if (project.path.isBlank()) {
@@ -105,7 +106,19 @@ class GenerateCommitUseCase(
             }
         }
 
+        if(project.id != null){
+            val commitDomainModel = CommitDomainModel(
+                projectId = project.id ,
+                branchName = "main",
+                taskObjective = taskObjective,
+                category = category,
+                summary = summary,
+                commitMessage = commitMessage
+            )
+
+            emit(ProgressResult.Success(commitDomainModel))
+        }
+
         emit(ProgressResult.Progress(5))
-        emit(ProgressResult.Success(commitMessage))
     }
 }

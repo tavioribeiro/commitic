@@ -9,12 +9,8 @@ class DeleteCommitUseCase(
     private val commitRepository: CommitRepository
 ) {
     suspend operator fun invoke(commit: CommitDomainModel): RequestResult<Unit, CommitFailure> {
-        if (commit.name.isBlank()) {
-            return RequestResult.Failure(CommitFailure.InvalidName("O nome não pode ser vazio."))
-        }
-
-        if (commit.path.isBlank()) {
-            return RequestResult.Failure(CommitFailure.InvalidPath("O caminho não pode ser vazio."))
+        if (commit.id == null) {
+            return RequestResult.Failure(CommitFailure.InvalidName("O id não pode ser vazio."))
         }
 
         return commitRepository.deleteCommit(commit)

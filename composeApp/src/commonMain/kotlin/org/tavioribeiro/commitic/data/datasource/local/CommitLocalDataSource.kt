@@ -19,7 +19,7 @@ class CommitLocalDataSource(private val db: CommitSchemaQueries) {
                     directory_path = commit.path
                 )*/
             }
-            return "✅ Projeto salvo: ${commit.name} no caminho ${commit.path}"
+            return ""
         } catch (e: Exception) {
             throw e
         }
@@ -58,7 +58,7 @@ class CommitLocalDataSource(private val db: CommitSchemaQueries) {
                 }
 
             }
-            return "✅ Projeto Deletado: ${commit.name} no caminho ${commit.path}"
+            return "✅ "
         } catch (e: Exception) {
             throw e
         }

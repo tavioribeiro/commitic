@@ -9,12 +9,24 @@ class SaveCommitUseCase(
     private val commitRepository: CommitRepository
 ) {
     suspend operator fun invoke(commit: CommitDomainModel): RequestResult<Unit, CommitFailure> {
-        if (commit.name.isBlank()) {
-            return RequestResult.Failure(CommitFailure.InvalidName("O nome do projeto não pode ser vazio."))
+        if (commit.commitMessage.isBlank()) {
+            return RequestResult.Failure(CommitFailure.InvalidName("O commit não pode ser vazio."))
         }
 
-        if (commit.path.isBlank()) {
-            return RequestResult.Failure(CommitFailure.InvalidPath("O caminho do projeto não pode ser vazio."))
+        if (commit.branchName.isBlank()) {
+            return RequestResult.Failure(CommitFailure.InvalidName("A branch não pode ser vazia."))
+        }
+
+        if (commit.taskObjective.isBlank()) {
+            return RequestResult.Failure(CommitFailure.InvalidName("A tarefa não pode ser vazia."))
+        }
+
+        if (commit.category.isBlank()) {
+            return RequestResult.Failure(CommitFailure.InvalidName("A categoria não pode ser vazia."))
+        }
+
+        if (commit.summary.isBlank()) {
+            return RequestResult.Failure(CommitFailure.InvalidName("O resumo não pode ser vazio."))
         }
 
         return commitRepository.saveCommit(commit)
