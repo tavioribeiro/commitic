@@ -54,7 +54,7 @@ class CommitLocalDataSource(private val db: CommitSchemaQueries) {
                 delay(800)
 
                 if(commit.id != null){
-                    db.deleteCommitById(commit.id)
+                   // db.deleteCommitById(commit.id)
                 }
 
             }

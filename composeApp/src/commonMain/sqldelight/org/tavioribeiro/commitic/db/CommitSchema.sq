@@ -1,28 +1,48 @@
 CREATE TABLE commits (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  branch_id INTEGER NOT NULL,
-  message TEXT NOT NULL,
-  timestamp INTEGER NOT NULL,
-  FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE CASCADE
+  project_id INTEGER NOT NULL,
+  branch_name TEXT NOT NULL,
+  task_objective TEXT NOT NULL,
+  category TEXT NOT NULL,
+  summary TEXT NOT NULL,
+  commit_message TEXT NOT NULL,
+  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 
 
-insertCommit:
-INSERT INTO commits (branch_id, message, timestamp)
-VALUES (?, ?, ?);
+insert:
+INSERT INTO commits (project_id, branch_name, task_objective, category, summary, commit_message)
+VALUES (?, ?, ?, ?, ?, ?);
 
-updateCommit:
-UPDATE commits SET message = ? WHERE id = ?;
+selectAllByProjectId:
+SELECT *
+FROM commits
+WHERE project_id = ?;
 
-deleteCommitById:
-DELETE FROM commits WHERE id = ?;
+selectAllByProjectIdAndBranchName:
+SELECT *
+FROM commits
+WHERE project_id = ? AND branch_name = ?;
+
+selectById:
+SELECT *
+FROM commits
+WHERE id = ?;
 
 
-getAllCommits:
-SELECT * FROM commits ORDER BY id DESC;
+update:
+UPDATE commits
+SET branch_name = ?,
+    task_objective = ?,
+    category = ?,
+    summary = ?,
+    commit_message = ?
+WHERE id = ?;
 
-getCommitsByBranchId:
-SELECT * FROM commits WHERE branch_id = ? ORDER BY timestamp DESC;
+deleteById:
+DELETE FROM commits
+WHERE id = ?;
 
-getCommitById:
-SELECT * FROM commits WHERE id = ?;
+deleteAllByProjectId:
+DELETE FROM commits
+WHERE project_id = ?;

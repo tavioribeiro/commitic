@@ -46,22 +46,19 @@ SELECT p.id,
        b.id,
        b.name AS branch_name,
        c.id,
-       c.message,
-       c.timestamp
+       c.commit_message
 FROM projects p
 LEFT JOIN branches b ON b.project_id = p.id
-LEFT JOIN commits c ON c.branch_id = b.id
+LEFT JOIN commits c ON c.project_id = b.project_id AND c.branch_name = b.name
 WHERE p.id = ?
-ORDER BY b.id DESC, c.timestamp DESC;
-
+ORDER BY b.id DESC;
 
 getAllBranchesWithCommits:
 SELECT b.id,
        b.project_id,
        b.name AS branch_name,
        c.id,
-       c.message,
-       c.timestamp
+       c.commit_message
 FROM branches b
-LEFT JOIN commits c ON c.branch_id = b.id
-ORDER BY b.id DESC, c.timestamp DESC;
+LEFT JOIN commits c ON c.project_id = b.project_id AND c.branch_name = b.name
+ORDER BY b.id DESC;
