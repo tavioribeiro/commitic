@@ -17,7 +17,7 @@ val projectModule = module {
     single<ProjectRepository> { ProjectRepositoryImpl(get()) }
 
     // domain
-    factory { SaveProjectUseCase(get(), get()) }
+    factory { SaveProjectUseCase(get(), get(), get()) }
     factory { GetProjectsUseCase(get()) }
     factory { DeleteProjectUseCase(get()) }
 

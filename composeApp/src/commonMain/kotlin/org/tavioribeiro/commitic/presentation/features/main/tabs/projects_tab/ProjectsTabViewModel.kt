@@ -95,7 +95,6 @@ class ProjectsTabViewModel(
                 _uiState.update { it.copy(isLoading = true) }
             }
 
-            println(executeCommandUseCase.invoke("git branch --show-current", projectToSave.path))
 
             val project = projectToSave.toDomain()
             val result = saveProjectUseCase(project)
@@ -126,7 +125,7 @@ class ProjectsTabViewModel(
                         }
 
                         is ProjectFailure.InvalidPath -> {
-                            _pathInputWarningState.update { "O caminho está vazio ou não existe!" }
+                            _pathInputWarningState.update { "O caminho está vazio ou não há um projeto git inicializado!" }
                         }
 
                         is ProjectFailure.NotFoundPath -> {

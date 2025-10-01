@@ -28,10 +28,8 @@ class GenerateCommitUseCase(
             return@flow
         }
 
-        val currentDetailsChanges = when (val gitInfoResult = consoleRepository.executeCommand(
-            command = "git --no-pager diff -w --unified=0 HEAD",
-            path = project.path
-        )) {
+        val gitInfoResult = consoleRepository.executeCommand(command = "git --no-pager diff -w --unified=0 HEAD", path = project.path)
+        val currentDetailsChanges = when (gitInfoResult) {
             is RequestResult.Success -> gitInfoResult.data
             is RequestResult.Failure -> {
                 emit(ProgressResult.Failure(CommitFailure.InvalidPath("Falha ao executar o comando git. Verifique se o caminho do projeto está correto e se é um repositório git.")))
