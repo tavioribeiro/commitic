@@ -21,7 +21,7 @@ val commitModule = module {
     factory { SaveCommitUseCase(get()) }
     factory { GetCommitsUseCase(get()) }
     factory { DeleteCommitUseCase(get()) }
-    factory { GenerateCommitUseCase(get(), get()) }
+    factory { GenerateCommitUseCase(get(), get(), get()) }
 
     // presentation
     factory {

@@ -340,18 +340,35 @@ fun CommitsTab(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
+                    AnimatedContent(
+                        targetState = commitsTabuiState.isCommitGenerated,
+                        transitionSpec = {
+                            val exit = fadeOut(animationSpec = tween(300))
 
-                    IconTextButton(
-                        //modifier = Modifier.padding(top = 52.dp),
-                        text = "Salvar Commit Gerado",
-                        onClick = {
-                            coroutineScope.launch(Dispatchers.Main) {
-                                commitsTabviewModel.onSaveCommitClicked()
-                            }
+                            val enter = fadeIn(
+                                animationSpec = tween(
+                                    durationMillis = 300,
+                                    delayMillis = 300
+                                )
+                            )
+
+                            enter togetherWith exit
                         },
-                        icon = painterResource(Res.drawable.icon_save),
-                        isLoading = commitsTabuiState.isGenaratingCommitLoading
-                    )
+                        label = "TabContentAnimation"
+                    ) { targetState ->
+                        if(targetState){
+                            IconTextButton(
+                                text = "Salvar Commit Gerado",
+                                onClick = {
+                                    coroutineScope.launch(Dispatchers.Main) {
+                                        commitsTabviewModel.onSaveCommitClicked()
+                                    }
+                                },
+                                icon = painterResource(Res.drawable.icon_save),
+                                isLoading = commitsTabuiState.isSavingCommitLoading
+                            )
+                        }
+                    }
                 }
             }
         }

@@ -10,7 +10,7 @@ CREATE TABLE commits (
 );
 
 
-insert:
+insertCommit:
 INSERT INTO commits (project_id, branch_name, task_objective, category, summary, commit_message)
 VALUES (?, ?, ?, ?, ?, ?);
 

@@ -56,6 +56,10 @@ data class CommitsTabUiState(
         stepThreeColor = ThreeStepStatusColors.GRAY,
         stepFourColor = ThreeStepStatusColors.GRAY
     ),
+
+    var isSavingCommitLoading: Boolean = false,
+
+    var isCommitGenerated: Boolean = false
 )
 
 
@@ -269,6 +273,7 @@ class CommitsTabViewModel(
                         _uiState.update {
                             it.copy(
                                 isGenaratingCommitLoading = false,
+                                isCommitGenerated = true,
                                 commitText = result.value.commitMessage
                             )
                         }
@@ -287,39 +292,69 @@ class CommitsTabViewModel(
 
                     is ProgressResult.Progress -> {
                         val currentStepDescription = LlmAgents.fromValue(result.currentStep)?.taskDescription ?: "Processando..."
-                        val stepColors = when (result.currentStep) {
-                            1 -> Triple(ThreeStepStatusColors.ORANGE, ThreeStepStatusColors.GRAY, ThreeStepStatusColors.GRAY)
-                            2 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.ORANGE, ThreeStepStatusColors.GRAY)
-                            3 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN, ThreeStepStatusColors.ORANGE)
-                            4 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN)
-                            5 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN)
-                            else -> Triple(ThreeStepStatusColors.GRAY, ThreeStepStatusColors.GRAY, ThreeStepStatusColors.GRAY)
-                        }
-                        val finalStepColor = if (result.currentStep == 4) ThreeStepStatusColors.ORANGE else ThreeStepStatusColors.GRAY
                         val finalDescription = if (result.currentStep == 5) "Finalizado com sucesso!" else currentStepDescription
 
-                        _uiState.update {
-                            it.copy(
-                                stepsAndProgress = ThreeStepStatusModel(
-                                    currentStep = finalDescription,
-                                    stepOneColor = stepColors.first,
-                                    stepTwoColor = stepColors.second,
-                                    stepThreeColor = stepColors.third,
-                                    stepFourColor = finalStepColor
-                                )
+                        val stepModel = when (result.currentStep) {
+                            1 -> ThreeStepStatusModel(
+                                currentStep = currentStepDescription,
+                                stepOneColor = ThreeStepStatusColors.ORANGE,
+                                stepTwoColor = ThreeStepStatusColors.GRAY,
+                                stepThreeColor = ThreeStepStatusColors.GRAY,
+                                stepFourColor = ThreeStepStatusColors.GRAY,
+                            )
+                            2 -> ThreeStepStatusModel(
+                                currentStep = currentStepDescription,
+                                stepOneColor = ThreeStepStatusColors.GREEN,
+                                stepTwoColor = ThreeStepStatusColors.ORANGE,
+                                stepThreeColor = ThreeStepStatusColors.GRAY,
+                                stepFourColor = ThreeStepStatusColors.GRAY,
+                            )
+                            3 -> ThreeStepStatusModel(
+                                currentStep = currentStepDescription,
+                                stepOneColor = ThreeStepStatusColors.GREEN,
+                                stepTwoColor = ThreeStepStatusColors.GREEN,
+                                stepThreeColor = ThreeStepStatusColors.ORANGE,
+                                stepFourColor = ThreeStepStatusColors.GRAY,
+                            )
+                            4 -> ThreeStepStatusModel(
+                                currentStep = currentStepDescription,
+                                stepOneColor = ThreeStepStatusColors.GREEN,
+                                stepTwoColor = ThreeStepStatusColors.GREEN,
+                                stepThreeColor = ThreeStepStatusColors.GREEN,
+                                stepFourColor = ThreeStepStatusColors.ORANGE,
+                            )
+                            5 -> ThreeStepStatusModel(
+                                currentStep = finalDescription,
+                                stepOneColor = ThreeStepStatusColors.GREEN,
+                                stepTwoColor = ThreeStepStatusColors.GREEN,
+                                stepThreeColor = ThreeStepStatusColors.GREEN,
+                                stepFourColor = ThreeStepStatusColors.GREEN,
+                            )
+                            else -> ThreeStepStatusModel(
+                                currentStep = "Aguardando...",
+                                stepOneColor = ThreeStepStatusColors.GRAY,
+                                stepTwoColor = ThreeStepStatusColors.GRAY,
+                                stepThreeColor = ThreeStepStatusColors.GRAY,
+                                stepFourColor = ThreeStepStatusColors.GRAY,
                             )
                         }
+
+                        _uiState.update {
+                            it.copy(stepsAndProgress = stepModel)
+                        }
                     }
+
+
                 }
             }
         }
     }
 
     fun onSaveCommitClicked() {
-        /*viewModelScope.launch {
-            _uiState.update { it.copy(isProjectLoading = true) }
-            val commit = CommitDomainModel(0, "", "")
-            when (val result = saveCommitUseCase(commit)) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSavingCommitLoading = true) }
+
+            when (val result = saveCommitUseCase(commitUiModel.toDomain())) {
                 is RequestResult.Success -> {
                     toastViewModel.showToast(
                         ToastUiModel(
@@ -340,7 +375,7 @@ class CommitsTabViewModel(
                     )
                 }
             }
-            _uiState.update { it.copy(isProjectLoading = false) }
-        }*/
+            _uiState.update { it.copy(isSavingCommitLoading = false) }
+        }
     }
 }

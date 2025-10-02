@@ -14,10 +14,14 @@ class CommitLocalDataSource(private val db: CommitSchemaQueries) {
             withContext(Dispatchers.IO){
                 delay(800)
 
-                /*db.insertCommit(
-                    name = commit.name,
-                    directory_path = commit.path
-                )*/
+                db.insertCommit(
+                    project_id = commit.projectId,
+                    branch_name = commit.branchName,
+                    task_objective = commit.taskObjective,
+                    category = commit.category,
+                    summary = commit.summary,
+                    commit_message = commit.commitMessage
+                )
             }
             return ""
         } catch (e: Exception) {

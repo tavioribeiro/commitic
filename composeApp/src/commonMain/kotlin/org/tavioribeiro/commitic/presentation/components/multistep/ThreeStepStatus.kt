@@ -28,6 +28,7 @@ import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusModel
 import org.tavioribeiro.commitic.theme.AppTheme
 
 
+
 @Composable
 fun ThreeStepStatus(
     threeStepStatusModel: ThreeStepStatusModel,
@@ -42,6 +43,7 @@ fun ThreeStepStatus(
                 .height(30.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Box(
                 modifier = Modifier
                     .background(
@@ -56,12 +58,8 @@ fun ThreeStepStatus(
                     .width(18.dp)
                     .height(18.dp),
             )
-
             Icon(
-                modifier = Modifier
-                    .width(30.dp)
-                    .height(30.dp)
-                    .padding(horizontal = 4.dp),
+                modifier = Modifier.width(30.dp).height(30.dp).padding(horizontal = 4.dp),
                 painter = painterResource(Res.drawable.icon_arrow_forward),
                 contentDescription = null,
                 tint = AppTheme.colors.onColor2
@@ -81,12 +79,8 @@ fun ThreeStepStatus(
                     .width(18.dp)
                     .height(18.dp),
             )
-
             Icon(
-                modifier = Modifier
-                    .width(30.dp)
-                    .height(30.dp)
-                    .padding(horizontal = 4.dp),
+                modifier = Modifier.width(30.dp).height(30.dp).padding(horizontal = 4.dp),
                 painter = painterResource(Res.drawable.icon_arrow_forward),
                 contentDescription = null,
                 tint = AppTheme.colors.onColor2
@@ -106,12 +100,8 @@ fun ThreeStepStatus(
                     .width(18.dp)
                     .height(18.dp),
             )
-
             Icon(
-                modifier = Modifier
-                    .width(30.dp)
-                    .height(30.dp)
-                    .padding(horizontal = 4.dp),
+                modifier = Modifier.width(30.dp).height(30.dp).padding(horizontal = 4.dp),
                 painter = painterResource(Res.drawable.icon_arrow_forward),
                 contentDescription = null,
                 tint = AppTheme.colors.onColor2
@@ -131,6 +121,7 @@ fun ThreeStepStatus(
                     .width(18.dp)
                     .height(18.dp),
             )
+
         }
 
         Text(

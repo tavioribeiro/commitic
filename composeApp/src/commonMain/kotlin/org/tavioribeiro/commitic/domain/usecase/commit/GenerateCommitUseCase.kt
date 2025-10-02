@@ -9,39 +9,98 @@ import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.model.project.ProjectDomainModel
 import org.tavioribeiro.commitic.domain.repository.ConsoleRepository
+import org.tavioribeiro.commitic.domain.repository.FileSystemRepository
 import org.tavioribeiro.commitic.domain.repository.LlmRepository
 import org.tavioribeiro.commitic.domain.util.RequestResult
 
 class GenerateCommitUseCase(
     private val llmRepository: LlmRepository,
-    private val consoleRepository: ConsoleRepository
+    private val consoleRepository: ConsoleRepository,
+    private val fileSystemRepository: FileSystemRepository
 ) {
     operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel): Flow<ProgressResult<CommitDomainModel, CommitFailure>> = flow {
+        var currentBranch = ""
+
         emit(ProgressResult.Loading)
 
         if (project.path.isBlank()) {
             emit(ProgressResult.Failure(CommitFailure.InvalidPath("O caminho do projeto não pode ser vazio.")))
             return@flow
         }
+
+
         if (llm.apiToken.isBlank() || llm.model.isBlank() || llm.company.isBlank()) {
             emit(ProgressResult.Failure(CommitFailure.InvalidName("Dados da API LLM (token, modelo, empresa) não podem ser vazios.")))
             return@flow
         }
 
-        val gitInfoResult = consoleRepository.executeCommand(command = "git --no-pager diff -w --unified=0 HEAD", path = project.path)
-        val currentDetailsChanges = when (gitInfoResult) {
-            is RequestResult.Success -> gitInfoResult.data
+
+        when (val checkDirectoryResult = fileSystemRepository.checkDirectoryExists(project.path)) {
             is RequestResult.Failure -> {
-                emit(ProgressResult.Failure(CommitFailure.InvalidPath("Falha ao executar o comando git. Verifique se o caminho do projeto está correto e se é um repositório git.")))
+                emit(ProgressResult.Failure(CommitFailure.InvalidPath("Falha ao verificar o caminho do projeto.")))
                 return@flow
+            }
+            is RequestResult.Success -> {
+                if (!checkDirectoryResult.data) {
+                    emit(ProgressResult.Failure(CommitFailure.InvalidPath("O caminho do projeto especificado não existe.")))
+                    return@flow
+                }
             }
         }
 
+
+        when (val gitCheckResult = consoleRepository.executeCommand(command = "test -d .git", path = project.path)) {
+            is RequestResult.Failure -> {
+                emit(ProgressResult.Failure(CommitFailure.InvalidPath("Falha ao executar o comando git. Verifique se o git está instalado.")))
+                return@flow
+            }
+            is RequestResult.Success -> {
+                if (gitCheckResult.data == "1") {
+                    emit(ProgressResult.Failure(CommitFailure.InvalidPath("O caminho do projeto não é um repositório git válido.")))
+                    return@flow
+                }
+            }
+        }
+
+        when (val gitCheckResult = consoleRepository.executeCommand(command = "test -d .git", path = project.path)) {
+            is RequestResult.Failure -> {
+                emit(ProgressResult.Failure(CommitFailure.InvalidPath("Falha ao executar o comando git. Verifique se o git está instalado.")))
+                return@flow
+            }
+            is RequestResult.Success -> {
+                if (gitCheckResult.data == "1") {
+                    emit(ProgressResult.Failure(CommitFailure.InvalidPath("O caminho do projeto não é um repositório git válido.")))
+                    return@flow
+                }
+            }
+        }
+
+
+        when (val gitBranchResult = consoleRepository.executeCommand(command = "git branch --show-current", path = project.path)) {
+            is RequestResult.Failure -> {
+                emit(ProgressResult.Failure(CommitFailure.InvalidPath("Falha ao executar o comando git. Verifique se o git está instalado.")))
+                return@flow
+            }
+            is RequestResult.Success -> {
+                currentBranch = gitBranchResult.data.trim()
+            }
+        }
+
+
+        val currentDetailsChanges = when (
+            val gitInfoResult = consoleRepository.executeCommand(command = "git --no-pager diff -w --unified=0 HEAD", path = project.path)){
+            is RequestResult.Success -> gitInfoResult.data
+            is RequestResult.Failure -> {
+                emit(ProgressResult.Failure(CommitFailure.InvalidPath("Falha ao obter as mudanças (git diff).")))
+                return@flow
+            }
+        }
 
         if (currentDetailsChanges.isBlank()) {
             emit(ProgressResult.Failure(CommitFailure.InvalidName("Não há mudanças para commitar.")))
             return@flow
         }
+
 
 
         emit(ProgressResult.Progress(1))
@@ -54,9 +113,6 @@ class GenerateCommitUseCase(
             }
         }
 
-
-
-
         emit(ProgressResult.Progress(2))
         val categoryPrompt = LlmAgents.STEP_TWO.instructions + "\n\n" + currentDetailsChanges
         val category = when (val result = llmRepository.textToLlm(categoryPrompt, llm)) {
@@ -66,9 +122,6 @@ class GenerateCommitUseCase(
                 return@flow
             }
         }
-
-
-
 
         emit(ProgressResult.Progress(3))
         val summaryPrompt = """
@@ -85,8 +138,6 @@ class GenerateCommitUseCase(
                 return@flow
             }
         }
-
-
 
         emit(ProgressResult.Progress(4))
         val commitPrompt = """
@@ -107,7 +158,7 @@ class GenerateCommitUseCase(
         if(project.id != null){
             val commitDomainModel = CommitDomainModel(
                 projectId = project.id ,
-                branchName = "main",
+                branchName = currentBranch,
                 taskObjective = taskObjective,
                 category = category,
                 summary = summary,
