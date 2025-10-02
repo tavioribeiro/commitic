@@ -25,6 +25,7 @@ fun SelectInput(
     isBackgroudColorDark: Boolean = false,
     emptyStateText: String = "Não há opções disponíveis"
 ) {
+    //println(initialOption)
     val isEmpty = options.isEmpty()
     var expanded by remember { mutableStateOf(false) }
     var selectedLabel by remember { mutableStateOf("") }

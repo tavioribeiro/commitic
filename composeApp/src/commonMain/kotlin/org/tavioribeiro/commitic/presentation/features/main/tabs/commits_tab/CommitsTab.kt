@@ -75,9 +75,6 @@ fun CommitsTab(
 
     val clipboardManager = LocalClipboardManager.current
 
-    var selectedLlmModelId by remember { mutableStateOf<String>("")}
-    var selectedProjectId by remember { mutableStateOf<String>("")}
-
 
 
 
@@ -159,6 +156,7 @@ fun CommitsTab(
                     style = MaterialTheme.typography.headlineSmall
                 )
 
+                println(commitsTabuiState.selectedProjectIndex)
 
                 SelectInput(
                     title = "Escolha o Projeto",
@@ -167,7 +165,6 @@ fun CommitsTab(
                     initialPosition = commitsTabuiState.selectedProjectIndex,
                     onValueChange = { selectedItemValue ->
                         commitsTabviewModel.onProjectSelected(selectedItemValue)
-                        selectedProjectId = selectedItemValue
                     },
                     modifier = Modifier.padding(top = 0.dp),
                     isBackgroudColorDark = true
@@ -189,7 +186,6 @@ fun CommitsTab(
                     initialPosition = commitsTabuiState.selectedLlmIndex,
                     onValueChange = { newModelId ->
                         commitsTabviewModel.onLlmSelected(newModelId)
-                        selectedLlmModelId = newModelId
                     },
                     modifier = Modifier.padding(top = 0.dp),
                     isBackgroudColorDark = true
@@ -206,7 +202,18 @@ fun CommitsTab(
                         text = "Gerar Commit",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
-                                commitsTabviewModel.onGenerateCommitClicked(selectedProjectId, selectedLlmModelId)
+                                if(commitsTabuiState.selectedProjectIndex != null && commitsTabuiState.selectedLlmIndex != null){
+                                    commitsTabviewModel.onGenerateCommitClicked(commitsTabuiState.selectedProjectIndex!!, commitsTabuiState.selectedLlmIndex!!)
+                                }
+                                else {
+                                    toastViewModel.showToast(
+                                        ToastUiModel(
+                                            title = "Atenção",
+                                            message = "Selecione um projeto e um modelo de LLM.",
+                                            type = ToastType.WARNING
+                                        )
+                                    )
+                                }
                             }
                         },
                         icon = painterResource(Res.drawable.icon_commit),

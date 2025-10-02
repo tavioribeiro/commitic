@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.tavioribeiro.commitic.domain.model.agents.LlmAgents
-import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
@@ -39,14 +38,14 @@ import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusModel
 data class CommitsTabUiState(
     var isProjectLoading: Boolean = false,
     val availableProjectSelectOptions: List<SelectOptionModel> = emptyList(),
-    val selectedProjectIndex: Int? = null, // Modificado
+    val selectedProjectIndex: Int? = null,
 
     var isCurrentBranchLoading: Boolean = false,
     var currentBranch: String = "",
 
     var isLlmLoading: Boolean = false,
     val availableLlmSelectOptions: List<SelectOptionModel> = emptyList(),
-    val selectedLlmIndex: Int? = null, // Modificado
+    val selectedLlmIndex: Int? = null,
 
     var isGenaratingCommitLoading: Boolean = false,
     val commitText: String = "Seu commit aparecerá aqui.",
@@ -111,7 +110,15 @@ class CommitsTabViewModel(
                             availableProjectSelectOptions = selectOptions
                         )
                     }
-                    applySavedProjectSelection()
+
+                    println("Projetos++++++")
+                    availableProjects.forEach {
+                        println("${it.id} - ${it.name} - ${it.path}")
+                    }
+                    println("Projetos++++++")
+
+
+                    getLastSelectedProject()
                 }
 
                 is RequestResult.Failure -> {
@@ -147,7 +154,7 @@ class CommitsTabViewModel(
                             availableLlmSelectOptions = selectOptions
                         )
                     }
-                    applySavedLlmSelection()
+                    getLastSelectedLlm()
                 }
 
                 is RequestResult.Failure -> {
@@ -164,18 +171,12 @@ class CommitsTabViewModel(
         }
     }
 
-    private fun applySavedProjectSelection() {
+    private fun getLastSelectedProject() {
         val savedProjectId = getSelectedProjectUseCase() ?: return
-        val project = availableProjects.firstOrNull { it.id.toString() == savedProjectId } ?: return
-        val savedIndex = availableProjects.indexOf(project)
-
-        if (savedIndex != -1) {
-            _uiState.update { it.copy(selectedProjectIndex = savedIndex) }
-            getCurrentBranch(project.path)
-        }
+        onProjectSelected(savedProjectId)
     }
 
-    private fun applySavedLlmSelection() {
+    private fun getLastSelectedLlm() {
         val savedLlmId = getSelectedLlmUseCase() ?: return
         val savedIndex = availableLlms.indexOfFirst { it.id.toString() == savedLlmId }
 
@@ -186,9 +187,12 @@ class CommitsTabViewModel(
 
     fun onProjectSelected(projectId: String) {
         viewModelScope.launch {
+            println("selected project ID: $projectId")
+
             saveSelectedProjectUseCase(projectId)
 
-            val project = availableProjects.firstOrNull { it.id == projectId.toLong() }
+            val project = availableProjects.firstOrNull { it.id.toString() == projectId }
+
             if (project != null) {
                 val projectIndex = availableProjects.indexOf(project)
                 _uiState.update { it.copy(selectedProjectIndex = projectIndex) }
@@ -233,12 +237,12 @@ class CommitsTabViewModel(
         }
     }
 
-    fun onGenerateCommitClicked(projectId: String, llmId: String) {
+    fun onGenerateCommitClicked(projectIndex: Int, llmIndex: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isGenaratingCommitLoading = true, commitText = "") }
 
-            val projectDomain = availableProjects.firstOrNull { it.id == projectId.toLong() }?.toDomain()
-            val llmDomain = availableLlms.firstOrNull { it.id == llmId.toLong() }?.toDomain()
+            val projectDomain = availableProjects.getOrNull(projectIndex)?.toDomain()
+            val llmDomain = availableLlms.getOrNull(llmIndex)?.toDomain()
 
             if (projectDomain == null || llmDomain == null) {
                 _uiState.update { it.copy(isGenaratingCommitLoading = false) }
@@ -288,6 +292,7 @@ class CommitsTabViewModel(
                             2 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.ORANGE, ThreeStepStatusColors.GRAY)
                             3 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN, ThreeStepStatusColors.ORANGE)
                             4 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN)
+                            5 -> Triple(ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN, ThreeStepStatusColors.GREEN)
                             else -> Triple(ThreeStepStatusColors.GRAY, ThreeStepStatusColors.GRAY, ThreeStepStatusColors.GRAY)
                         }
                         val finalStepColor = if (result.currentStep == 4) ThreeStepStatusColors.ORANGE else ThreeStepStatusColors.GRAY
