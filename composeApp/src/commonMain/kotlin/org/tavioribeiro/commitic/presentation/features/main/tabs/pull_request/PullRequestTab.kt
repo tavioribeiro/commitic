@@ -326,45 +326,6 @@ fun PullRequestTab(
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    AnimatedContent(
-                        targetState = pullRequestTabuiState.isCommitGenerated,
-                        transitionSpec = {
-                            val exit = fadeOut(animationSpec = tween(300))
-
-                            val enter = fadeIn(
-                                animationSpec = tween(
-                                    durationMillis = 300,
-                                    delayMillis = 300
-                                )
-                            )
-
-                            enter togetherWith exit
-                        },
-                        label = "TabContentAnimation"
-                    ) { targetState ->
-                        if(targetState){
-                            IconTextButton(
-                                text = "Salvar Commit Gerado",
-                                onClick = {
-                                    coroutineScope.launch(Dispatchers.Main) {
-                                        pullRequestTabviewModel.onSaveCommitClicked()
-                                    }
-                                },
-                                icon = painterResource(Res.drawable.icon_save),
-                                isLoading = pullRequestTabuiState.isSavingCommitLoading
-                            )
-                        }
-                    }
-                }
             }
         }
     }

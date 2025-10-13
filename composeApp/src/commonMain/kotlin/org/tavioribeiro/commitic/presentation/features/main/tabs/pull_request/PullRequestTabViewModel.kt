@@ -67,7 +67,6 @@ data class PullRequestTabUiState(
 
 class PullRequestTabViewModel(
     private val toastViewModel: ToastViewModel,
-    private val saveCommitUseCase: SaveCommitUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val executeCommandUseCase: ExecuteCommandUseCase,
     private val getLlmsUseCase: GetLlmsUseCase,
@@ -114,13 +113,6 @@ class PullRequestTabViewModel(
                             availableProjectSelectOptions = selectOptions
                         )
                     }
-
-                    println("Projetos++++++")
-                    availableProjects.forEach {
-                        println("${it.id} - ${it.name} - ${it.path}")
-                    }
-                    println("Projetos++++++")
-
 
                     getLastSelectedProject()
                 }
@@ -191,8 +183,6 @@ class PullRequestTabViewModel(
 
     fun onProjectSelected(projectId: String) {
         viewModelScope.launch {
-            println("selected project ID: $projectId")
-
             saveSelectedProjectUseCase(projectId)
 
             val project = availableProjects.firstOrNull { it.id.toString() == projectId }
@@ -347,35 +337,6 @@ class PullRequestTabViewModel(
 
                 }
             }
-        }
-    }
-
-    fun onSaveCommitClicked() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isSavingCommitLoading = true) }
-
-            when (val result = saveCommitUseCase(commitUiModel.toDomain())) {
-                is RequestResult.Success -> {
-                    toastViewModel.showToast(
-                        ToastUiModel(
-                            title = "Sucesso",
-                            message = "Commit salvo com sucesso",
-                            type = ToastType.SUCCESS
-                        )
-                    )
-                }
-
-                is RequestResult.Failure -> {
-                    toastViewModel.showToast(
-                        ToastUiModel(
-                            title = "Erro",
-                            message = "Falha ao salvar commit",
-                            type = ToastType.ERROR
-                        )
-                    )
-                }
-            }
-            _uiState.update { it.copy(isSavingCommitLoading = false) }
         }
     }
 }

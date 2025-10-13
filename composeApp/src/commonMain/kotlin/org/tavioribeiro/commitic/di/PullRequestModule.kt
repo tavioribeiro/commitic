@@ -1,23 +1,31 @@
 package org.tavioribeiro.commitic.di
 
 import org.koin.dsl.module
+import org.tavioribeiro.commitic.data.datasource.local.CommitLocalDataSource
+import org.tavioribeiro.commitic.data.repository.CommitRepositoryImpl
+import org.tavioribeiro.commitic.db.CommitSchemaQueries
+import org.tavioribeiro.commitic.domain.repository.CommitRepository
+import org.tavioribeiro.commitic.domain.usecase.commit.DeleteCommitUseCase
+import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
+import org.tavioribeiro.commitic.domain.usecase.commit.GetCommitsUseCase
+import org.tavioribeiro.commitic.presentation.features.main.tabs.pull_request.PullRequestTabViewModel
 
-/*val pullRequest = module {
+
+val pullrequestModule = module {
+
     // data
-    single { PullRequestSchemaQueries(driver = get()) }
-    single { PullRequestLocalDataSource(get()) }
-    single<PullRequestRepository> { PullRequestRepositoryImpl(get()) }
+    single { CommitSchemaQueries(driver = get()) }
+    single { CommitLocalDataSource(get()) }
+    single<CommitRepository> { CommitRepositoryImpl(get()) }
 
     // domain
-    factory { SavePullRequestUseCase(get()) }
-    factory { GetPullRequestsUseCase(get()) }
-    factory { DeletePullRequestUseCase(get()) }
-    factory { GeneratePullRequestUseCase(get(), get(), get()) }
+    factory { GetCommitsUseCase(get()) }
+    factory { DeleteCommitUseCase(get()) }
+    factory { GenerateCommitUseCase(get(), get(), get()) }
 
     // presentation
     factory {
-        PullRequestsTabViewModel(
-            get(),
+        PullRequestTabViewModel(
             get(),
             get(),
             get(),
@@ -29,4 +37,4 @@ import org.koin.dsl.module
             get()
         )
     }
-}*/
+}
