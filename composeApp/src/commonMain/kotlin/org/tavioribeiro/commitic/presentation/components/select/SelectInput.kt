@@ -7,11 +7,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 import org.tavioribeiro.commitic.theme.AppTheme
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,16 +18,25 @@ fun SelectInput(
     title: String,
     placeholder: String,
     options: List<SelectOptionModel>,
-    initialValue: String? = null,
+    initialOption: SelectOptionModel? = null, //1°
+    initialPosition: Int? = null,  //2°
+    initialValue: String? = null, //3°
     onValueChange: (String) -> Unit,
-    isBackgroudColorDark: Boolean = false
+    isBackgroudColorDark: Boolean = false,
+    emptyStateText: String = "Não há opções disponíveis"
 ) {
+    //println(initialOption)
+    val isEmpty = options.isEmpty()
     var expanded by remember { mutableStateOf(false) }
-    val initialLabel = options.find { it.value == initialValue }?.label ?: ""
-    var selectedLabel by remember { mutableStateOf(initialLabel) }
+    var selectedLabel by remember { mutableStateOf("") }
 
-    LaunchedEffect(initialValue, options) {
-        selectedLabel = options.find { it.value == initialValue }?.label ?: ""
+    LaunchedEffect(initialValue, initialOption, initialPosition, options) {
+        if (!isEmpty) {
+            val label = initialOption?.label
+                ?: options.getOrNull(initialPosition ?: -1)?.label
+                ?: options.find { it.value == initialValue }?.label
+            selectedLabel = label ?: ""
+        }
     }
 
     Column(
@@ -46,19 +53,22 @@ fun SelectInput(
 
         ExposedDropdownMenuBox(
             expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
+            onExpandedChange = { if (!isEmpty) expanded = !expanded }
         ) {
+            val placeholderColor = if (isBackgroudColorDark) AppTheme.colors.color6 else AppTheme.colors.color6
+
             OutlinedTextField(
-                value = selectedLabel,
+                value = if (isEmpty) emptyStateText else selectedLabel,
                 onValueChange = {},
                 readOnly = true,
+                enabled = !isEmpty,
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor(),
                 placeholder = {
                     Text(
                         text = placeholder,
-                        color = if (isBackgroudColorDark) AppTheme.colors.color6 else AppTheme.colors.color6
+                        color = placeholderColor
                     )
                 },
                 shape = RoundedCornerShape(8.dp),
@@ -73,23 +83,27 @@ fun SelectInput(
                     focusedBorderColor = AppTheme.colors.color7,
                     focusedTrailingIconColor = AppTheme.colors.color7,
                     unfocusedTrailingIconColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
-                    disabledTrailingIconColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3
+                    disabledTrailingIconColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
+                    disabledTextColor = placeholderColor,
+                    disabledBorderColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
                 )
             )
 
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                options.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption.label) },
-                        onClick = {
-                            selectedLabel = selectionOption.label
-                            onValueChange(selectionOption.value)
-                            expanded = false
-                        }
-                    )
+            if (!isEmpty) {
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    options.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            text = { Text(selectionOption.label) },
+                            onClick = {
+                                selectedLabel = selectionOption.label
+                                onValueChange(selectionOption.value)
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
         }

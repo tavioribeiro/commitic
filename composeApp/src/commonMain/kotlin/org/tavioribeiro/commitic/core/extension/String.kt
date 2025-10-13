@@ -10,3 +10,8 @@ fun String.maskStart(prefixLength: Int = 5): String {
         prefix + asterisks
     }
 }
+
+
+fun String.toSingleLine(): String {
+    return this.replace(Regex("(\\r\\n|\\n|\\r)"), " ").trim()
+}

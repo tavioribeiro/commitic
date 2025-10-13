@@ -1,6 +1,6 @@
 package org.tavioribeiro.commitic.data.mapper
 
-import org.tavioribeiro.commitic.data.model.ProjectDTOModel
+import org.tavioribeiro.commitic.data.model.dtos.ProjectDTOModel
 import org.tavioribeiro.commitic.domain.model.project.ProjectDomainModel
 
 

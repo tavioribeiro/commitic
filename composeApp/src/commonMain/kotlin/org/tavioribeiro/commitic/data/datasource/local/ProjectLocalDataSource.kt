@@ -3,7 +3,7 @@ package org.tavioribeiro.commitic.data.datasource.local
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import org.tavioribeiro.commitic.data.model.ProjectDTOModel
+import org.tavioribeiro.commitic.data.model.dtos.ProjectDTOModel
 import org.tavioribeiro.commitic.db.ProjectSchemaQueries
 
 
@@ -34,7 +34,7 @@ class ProjectLocalDataSource(private val db: ProjectSchemaQueries) {
 
                 projectsFromDb.map { projectEntity ->
                     ProjectDTOModel(
-                        id = projectEntity.project_id,
+                        id = projectEntity.id,
                         name = projectEntity.name,
                         path = projectEntity.directory_path
                     )

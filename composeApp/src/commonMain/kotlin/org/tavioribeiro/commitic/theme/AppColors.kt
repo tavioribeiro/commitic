@@ -51,25 +51,31 @@ val darkColors = AppColors(
 )
 
 val lightColors = AppColors(
+    // Tons de cinza invertidos (de escuro para claro)
     color1 = Color(0xFFFFFFFF),   // Branco
-    color2 = Color(0xFFF7F7F7),   // Cinza muito claro
-    color3 = Color(0xFFECECEC),   // Cinza claro
-    color4 = Color(0xFFE2E2E2),   // Cinza médio-claro
-    color5 = Color(0xFFD4D4D4),   // Cinza médio suave
-    color6 = Color(0xFF9C9C9C),   // Cinza médio-escuro suave
-    color7 = Color(0xFF86D10A),   // Verde escuro
-    color8 = Color(0xFF1D6E07),   // Verde muito escuro
-    color9 = Color(0xFF66BB6A),   // Verde médio
-    color10 = Color(0xFFFFB84D),  // Laranja/Amarelo suave
+    color2 = Color(0xFFF5F5F5),   // Cinza muito claro
+    color3 = Color(0xFFEBEBEB),   // Cinza claro
+    color4 = Color(0xFFDCDCDC),   // Cinza claro médio
+    color5 = Color(0xFFC8C8C8),   // Cinza médio claro
+    color6 = Color(0xFFBEBEBE),   // Cinza médio
 
+    // Cores de destaque mantidas
+    color7 = Color(0xFF94E60E),   // Verde vibrante
+    color8 = Color(0xFF00B84A),   // Verde escuro
+    color9 = Color(0xFF69E09A),   // Verde claro
+    color10 = Color(0xFFFFD24D),  // Amarelo suave
+
+    // Cores "on" invertidas para garantir contraste no fundo claro
     onColor1 = Color(0xFF1A1A1A), // Preto suave
     onColor2 = Color(0xFF1A1A1A), // Preto suave
-    onColor3 = Color(0xFF2A2A2A), // Cinza bem escuro
-    onColor4 = Color(0xFF2A2A2A), // Cinza bem escuro
-    onColor5 = Color(0xFF2A2A2A), // Cinza bem escuro
-    onColor6 = Color(0xFFEAEAEA), // Branco suave
+    onColor3 = Color(0xFF1A1A1A), // Preto suave
+    onColor4 = Color(0xFF1A1A1A), // Preto suave
+    onColor5 = Color(0xFF1A1A1A), // Preto suave
+    onColor6 = Color(0xFF1A1A1A), // Preto suave
+
+    // Cores "on" para os destaques, garantindo legibilidade
     onColor7 = Color(0xFF1A1A1A), // Preto suave
-    onColor8 = Color(0xFFEAEAEA), // Branco suave
+    onColor8 = Color(0xFFFFFFFF), // Branco (para contraste com o verde escuro)
     onColor9 = Color(0xFF1A1A1A), // Preto suave
     onColor10 = Color(0xFF1A1A1A) // Preto suave
 )

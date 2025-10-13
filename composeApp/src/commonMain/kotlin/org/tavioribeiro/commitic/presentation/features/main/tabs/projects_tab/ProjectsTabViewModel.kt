@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.tavioribeiro.commitic.domain.model.project.ProjectFailure
+import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.DeleteProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.SaveProjectUseCase
@@ -30,7 +31,8 @@ class ProjectsTabViewModel(
     private val toastViewModel: ToastViewModel,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val saveProjectUseCase: SaveProjectUseCase,
-    private val deleteProjectUseCase: DeleteProjectUseCase
+    private val deleteProjectUseCase: DeleteProjectUseCase,
+    private val executeCommandUseCase: ExecuteCommandUseCase
 ): ViewModel(){
 
     private val _uiState = MutableStateFlow(ProjectsTabUiState())
@@ -123,7 +125,18 @@ class ProjectsTabViewModel(
                         }
 
                         is ProjectFailure.InvalidPath -> {
-                            _pathInputWarningState.update { "O caminho não pode ser vazio." }
+                            _pathInputWarningState.update { "O caminho está vazio ou não há um projeto git inicializado!" }
+                        }
+
+                        is ProjectFailure.NotFoundPath -> {
+                            toastViewModel.showToast(
+                                ToastUiModel(
+                                    title = "Erro",
+                                    message = "Não foi possível encontrar a pasta do projeto.",
+                                    type = ToastType.ERROR,
+                                    duration = 3000
+                                )
+                            )
                         }
 
                         is ProjectFailure.Unexpected -> {
