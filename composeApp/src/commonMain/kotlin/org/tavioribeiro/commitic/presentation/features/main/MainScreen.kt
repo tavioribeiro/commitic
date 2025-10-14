@@ -42,6 +42,7 @@ import commitic.composeapp.generated.resources.icon_history
 import commitic.composeapp.generated.resources.icon_merge
 import commitic.composeapp.generated.resources.icon_plus
 import commitic.composeapp.generated.resources.icon_robot
+import commitic.composeapp.generated.resources.icon_routine
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.presentation.components.buttons.IconTextButton
 import org.tavioribeiro.commitic.presentation.components.buttons.UnderlineButton
@@ -92,11 +93,11 @@ fun CalculatorScreen() {
             }
 
             IconTextButton(
-                text = "Novo Projeto",
+                text = "Alterar Tema",
                 onClick = {
                     ThemeState.toggleTheme()
                 },
-                icon = painterResource(Res.drawable.icon_plus),
+                icon = painterResource(Res.drawable.icon_routine),
                 modifier = Modifier.padding(16.dp)
             )
         }
