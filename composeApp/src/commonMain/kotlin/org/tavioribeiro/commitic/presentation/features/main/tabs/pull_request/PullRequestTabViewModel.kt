@@ -46,19 +46,9 @@ data class PullRequestTabUiState(
     val availableLlmSelectOptions: List<SelectOptionModel> = emptyList(),
     val selectedLlmIndex: Int? = null,
 
-    var isGenaratingCommitLoading: Boolean = false,
-    val commitText: String = "Seu commit aparecerá aqui.",
-    val stepsAndProgress: FiveStepStatusModel = FiveStepStatusModel(
-        currentStep = "Não iniciado",
-        stepOneColor = FiveStepStatusColors.GRAY,
-        stepTwoColor = FiveStepStatusColors.GRAY,
-        stepThreeColor = FiveStepStatusColors.GRAY,
-        stepFourColor = FiveStepStatusColors.GRAY
-    ),
+    var isGenaratingPullRequestLoading: Boolean = false,
+    val pullRequestText: String = "O texto da Pull Request irá aparecer aqui.",
 
-    var isSavingCommitLoading: Boolean = false,
-
-    var isCommitGenerated: Boolean = false
 )
 
 
@@ -232,13 +222,13 @@ class PullRequestTabViewModel(
 
     fun onGenerateCommitClicked(projectIndex: Int, llmIndex: Int) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isGenaratingCommitLoading = true, commitText = "") }
+            _uiState.update { it.copy(isGenaratingPullRequestLoading = true, pullRequestText = "") }
 
             val projectDomain = availableProjects.getOrNull(projectIndex)?.toDomain()
             val llmDomain = availableLlms.getOrNull(llmIndex)?.toDomain()
 
             if (projectDomain == null || llmDomain == null) {
-                _uiState.update { it.copy(isGenaratingCommitLoading = false) }
+                _uiState.update { it.copy(isGenaratingPullRequestLoading = false) }
                 toastViewModel.showToast(
                     ToastUiModel(
                         title = "Atenção",
@@ -252,7 +242,7 @@ class PullRequestTabViewModel(
             generateCommitUseCase(projectDomain, llmDomain).collect { result ->
                 when (result) {
                     is ProgressResult.Loading -> {
-                        _uiState.update { it.copy(isGenaratingCommitLoading = true) }
+                        _uiState.update { it.copy(isGenaratingPullRequestLoading = true) }
                     }
 
                     is ProgressResult.Success -> {
@@ -261,15 +251,14 @@ class PullRequestTabViewModel(
 
                         _uiState.update {
                             it.copy(
-                                isGenaratingCommitLoading = false,
-                                isCommitGenerated = true,
-                                commitText = result.value.commitMessage
+                                isGenaratingPullRequestLoading = false,
+                                pullRequestText = result.value.commitMessage
                             )
                         }
                     }
 
                     is ProgressResult.Failure -> {
-                        _uiState.update { it.copy(isGenaratingCommitLoading = false) }
+                        _uiState.update { it.copy(isGenaratingPullRequestLoading = false) }
                         toastViewModel.showToast(
                             ToastUiModel(
                                 title = "Erro",
@@ -278,62 +267,7 @@ class PullRequestTabViewModel(
                             )
                         )
                     }
-
-                    is ProgressResult.Progress -> {
-                        val currentStepDescription = LlmAgents.fromValue(result.currentStep)?.taskDescription ?: "Processando..."
-                        val finalDescription = if (result.currentStep == 5) "Finalizado com sucesso!" else currentStepDescription
-
-                        val stepModel = when (result.currentStep) {
-                            1 -> FiveStepStatusModel(
-                                currentStep = currentStepDescription,
-                                stepOneColor = FiveStepStatusColors.ORANGE,
-                                stepTwoColor = FiveStepStatusColors.GRAY,
-                                stepThreeColor = FiveStepStatusColors.GRAY,
-                                stepFourColor = FiveStepStatusColors.GRAY,
-                            )
-                            2 -> FiveStepStatusModel(
-                                currentStep = currentStepDescription,
-                                stepOneColor = FiveStepStatusColors.GREEN,
-                                stepTwoColor = FiveStepStatusColors.ORANGE,
-                                stepThreeColor = FiveStepStatusColors.GRAY,
-                                stepFourColor = FiveStepStatusColors.GRAY,
-                            )
-                            3 -> FiveStepStatusModel(
-                                currentStep = currentStepDescription,
-                                stepOneColor = FiveStepStatusColors.GREEN,
-                                stepTwoColor = FiveStepStatusColors.GREEN,
-                                stepThreeColor = FiveStepStatusColors.ORANGE,
-                                stepFourColor = FiveStepStatusColors.GRAY,
-                            )
-                            4 -> FiveStepStatusModel(
-                                currentStep = currentStepDescription,
-                                stepOneColor = FiveStepStatusColors.GREEN,
-                                stepTwoColor = FiveStepStatusColors.GREEN,
-                                stepThreeColor = FiveStepStatusColors.GREEN,
-                                stepFourColor = FiveStepStatusColors.ORANGE,
-                            )
-                            5 -> FiveStepStatusModel(
-                                currentStep = finalDescription,
-                                stepOneColor = FiveStepStatusColors.GREEN,
-                                stepTwoColor = FiveStepStatusColors.GREEN,
-                                stepThreeColor = FiveStepStatusColors.GREEN,
-                                stepFourColor = FiveStepStatusColors.GREEN,
-                            )
-                            else -> FiveStepStatusModel(
-                                currentStep = "Aguardando...",
-                                stepOneColor = FiveStepStatusColors.GRAY,
-                                stepTwoColor = FiveStepStatusColors.GRAY,
-                                stepThreeColor = FiveStepStatusColors.GRAY,
-                                stepFourColor = FiveStepStatusColors.GRAY,
-                            )
-                        }
-
-                        _uiState.update {
-                            it.copy(stepsAndProgress = stepModel)
-                        }
-                    }
-
-
+                    else -> {}
                 }
             }
         }

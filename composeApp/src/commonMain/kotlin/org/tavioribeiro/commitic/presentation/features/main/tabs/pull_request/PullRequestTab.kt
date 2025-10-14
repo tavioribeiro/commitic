@@ -48,7 +48,6 @@ import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_copy
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
-import org.tavioribeiro.commitic.presentation.components.multistep.FiveStepStatus
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
@@ -223,7 +222,7 @@ fun PullRequestTab(
                             }
                         },
                         icon = painterResource(Res.drawable.icon_commit),
-                        isLoading = pullRequestTabuiState.isGenaratingCommitLoading
+                        isLoading = pullRequestTabuiState.isGenaratingPullRequestLoading
                     )
                 }
             }
@@ -251,17 +250,11 @@ fun PullRequestTab(
 
 
 
-                FiveStepStatus(
-                    fiveStepStatusModel = pullRequestTabuiState.stepsAndProgress,
-                    modifier = Modifier.padding(top = 10.dp)
-                )
-
-
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Box(
                     modifier = Modifier
-                        .height(300.dp)
+                        .height(440.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
                         .background(AppTheme.colors.color2)
@@ -271,7 +264,7 @@ fun PullRequestTab(
                     val scrollState = rememberScrollState()
 
                     BasicTextField(
-                        value = pullRequestTabuiState.commitText,
+                        value = pullRequestTabuiState.pullRequestText,
                         onValueChange = {},
                         readOnly = true,
                         textStyle = TextStyle(color = AppTheme.colors.onColor1),
@@ -283,7 +276,7 @@ fun PullRequestTab(
                     IconButton(
                         modifier = Modifier.align(Alignment.TopEnd),
                         onClick = {
-                            clipboardManager.setText(AnnotatedString(pullRequestTabuiState.commitText))
+                            clipboardManager.setText(AnnotatedString(pullRequestTabuiState.pullRequestText))
 
                             toastViewModel.showToast(
                                 ToastUiModel(
@@ -306,7 +299,7 @@ fun PullRequestTab(
                     }
 
                     AnimatedContent(
-                        targetState = pullRequestTabuiState.isGenaratingCommitLoading,
+                        targetState = pullRequestTabuiState.isGenaratingPullRequestLoading,
                         modifier = Modifier.fillMaxSize(),
                         transitionSpec = {
                             val exit = fadeOut(animationSpec = tween(300))
