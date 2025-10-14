@@ -1,13 +1,10 @@
 package org.tavioribeiro.commitic.data.repository
 
 import org.tavioribeiro.commitic.data.datasource.local.CommitLocalDataSource
-import org.tavioribeiro.commitic.data.datasource.remote.LlmRemoteDataSource
 import org.tavioribeiro.commitic.data.mapper.toDomain
 import org.tavioribeiro.commitic.data.mapper.toDto
 import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
-import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
-import org.tavioribeiro.commitic.domain.model.project.ProjectDomainModel
 import org.tavioribeiro.commitic.domain.repository.CommitRepository
 import org.tavioribeiro.commitic.domain.util.RequestResult
 
@@ -31,9 +28,9 @@ class CommitRepositoryImpl(
     }
 
 
-    override suspend fun getCommits(): RequestResult<List<CommitDomainModel>, CommitFailure> {
+    override suspend fun getCommitsByProjectIdAndBranch(projectId: Long, branchName: String): RequestResult<List<CommitDomainModel>, CommitFailure> {
         return try {
-            val commitsDto = localDataSource.getCommits()
+            val commitsDto = localDataSource.getCommitsByProjectIdAndBranch(projectId, branchName)
             val commitsDomain = commitsDto.map { it.toDomain() }
 
             RequestResult.Success(commitsDomain)

@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.tavioribeiro.commitic.domain.model.agents.LlmAgents
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
@@ -18,6 +17,7 @@ import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedProjectUs
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
+import org.tavioribeiro.commitic.domain.usecase.pull_request.GeneratePullRequestUseCase
 import org.tavioribeiro.commitic.domain.util.RequestResult
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
@@ -27,11 +27,8 @@ import org.tavioribeiro.commitic.presentation.mapper.toUiModel
 import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 import org.tavioribeiro.commitic.presentation.model.LlmUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
+import org.tavioribeiro.commitic.presentation.model.PullRequestUiModel
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
-import org.tavioribeiro.commitic.presentation.model.FiveStepStatusColors
-import org.tavioribeiro.commitic.presentation.model.FiveStepStatusModel
-
-
 
 
 data class PullRequestTabUiState(
@@ -60,6 +57,7 @@ class PullRequestTabViewModel(
     private val executeCommandUseCase: ExecuteCommandUseCase,
     private val getLlmsUseCase: GetLlmsUseCase,
     private val generateCommitUseCase: GenerateCommitUseCase,
+    private val generatePullRequestUseCase: GeneratePullRequestUseCase,
     private val getSelectedProjectUseCase: GetSelectedProjectUseCase,
     private val saveSelectedProjectUseCase: SaveSelectedProjectUseCase,
     private val getSelectedLlmUseCase: GetSelectedLlmUseCase,
@@ -72,14 +70,9 @@ class PullRequestTabViewModel(
     private var availableProjects = emptyList<ProjectUiModel>()
     private var availableLlms = emptyList<LlmUiModel>()
 
-    private var commitUiModel = CommitUiModel(
+    private var commitUiModel = PullRequestUiModel(
         id = null,
-        projectId = 0,
-        branchName = "",
-        taskObjective = "",
-        category = "",
-        summary = "",
-        commitMessage = ""
+        text = ""
     )
 
     init {
@@ -239,7 +232,7 @@ class PullRequestTabViewModel(
                 return@launch
             }
 
-            generateCommitUseCase(projectDomain, llmDomain).collect { result ->
+            generatePullRequestUseCase(projectDomain, llmDomain).collect { result ->
                 when (result) {
                     is ProgressResult.Loading -> {
                         _uiState.update { it.copy(isGenaratingPullRequestLoading = true) }
@@ -252,7 +245,7 @@ class PullRequestTabViewModel(
                         _uiState.update {
                             it.copy(
                                 isGenaratingPullRequestLoading = false,
-                                pullRequestText = result.value.commitMessage
+                                pullRequestText = result.value.text
                             )
                         }
                     }

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.tavioribeiro.commitic.domain.model.agents.LlmAgents
+import org.tavioribeiro.commitic.domain.model.agent.LlmAgents
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
