@@ -28,9 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,13 +49,11 @@ import commitic.composeapp.generated.resources.icon_copy
 import commitic.composeapp.generated.resources.icon_save
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
-import org.tavioribeiro.commitic.presentation.components.multistep.ThreeStepStatus
+import org.tavioribeiro.commitic.presentation.components.multistep.FiveStepStatus
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
-import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusColors
-import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusModel
 
 @Composable
 fun CommitsTab(
@@ -245,7 +240,7 @@ fun CommitsTab(
 
 
 
-                ThreeStepStatus(
+                FiveStepStatus(
                     threeStepStatusModel = commitsTabuiState.stepsAndProgress,
                     modifier = Modifier.padding(top = 10.dp)
                 )

@@ -46,10 +46,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_copy
-import commitic.composeapp.generated.resources.icon_save
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
-import org.tavioribeiro.commitic.presentation.components.multistep.ThreeStepStatus
+import org.tavioribeiro.commitic.presentation.components.multistep.FiveStepStatus
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
@@ -252,7 +251,7 @@ fun PullRequestTab(
 
 
 
-                ThreeStepStatus(
+                FiveStepStatus(
                     threeStepStatusModel = pullRequestTabuiState.stepsAndProgress,
                     modifier = Modifier.padding(top = 10.dp)
                 )
