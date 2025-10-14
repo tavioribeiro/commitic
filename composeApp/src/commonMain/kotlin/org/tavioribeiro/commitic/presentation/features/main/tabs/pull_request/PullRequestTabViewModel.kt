@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
-import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
+import org.tavioribeiro.commitic.domain.usecase.commit.GetCommitsByprojectIdAndBranchUseCase
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.GetLlmsUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedLlmUseCase
@@ -24,7 +24,6 @@ import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
 import org.tavioribeiro.commitic.presentation.mapper.toDomain
 import org.tavioribeiro.commitic.presentation.mapper.toUiModel
-import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 import org.tavioribeiro.commitic.presentation.model.LlmUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 import org.tavioribeiro.commitic.presentation.model.PullRequestUiModel
@@ -46,6 +45,7 @@ data class PullRequestTabUiState(
     var isGenaratingPullRequestLoading: Boolean = false,
     val pullRequestText: String = "O texto da Pull Request irá aparecer aqui.",
 
+    var commitText: String = ""
 )
 
 
@@ -56,7 +56,7 @@ class PullRequestTabViewModel(
     private val getProjectsUseCase: GetProjectsUseCase,
     private val executeCommandUseCase: ExecuteCommandUseCase,
     private val getLlmsUseCase: GetLlmsUseCase,
-    private val generateCommitUseCase: GenerateCommitUseCase,
+    private val getCommitsByprojectIdAndBranchUseCase: GetCommitsByprojectIdAndBranchUseCase,
     private val generatePullRequestUseCase: GeneratePullRequestUseCase,
     private val getSelectedProjectUseCase: GetSelectedProjectUseCase,
     private val saveSelectedProjectUseCase: SaveSelectedProjectUseCase,
@@ -213,7 +213,7 @@ class PullRequestTabViewModel(
         }
     }
 
-    fun onGenerateCommitClicked(projectIndex: Int, llmIndex: Int) {
+    fun onGeneratePullRequestClicked(projectIndex: Int, llmIndex: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isGenaratingPullRequestLoading = true, pullRequestText = "") }
 
@@ -246,6 +246,57 @@ class PullRequestTabViewModel(
                             it.copy(
                                 isGenaratingPullRequestLoading = false,
                                 pullRequestText = result.value.text
+                            )
+                        }
+                    }
+
+                    is ProgressResult.Failure -> {
+                        _uiState.update { it.copy(isGenaratingPullRequestLoading = false) }
+                        toastViewModel.showToast(
+                            ToastUiModel(
+                                title = "Erro",
+                                message = "Falha ao gerar commit: ${result.error}",
+                                type = ToastType.ERROR
+                            )
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+
+    fun onCopyCommitsClicked(projectIndex: Int, llmIndex: Int) {
+        viewModelScope.launch {
+
+            val projectDomain = availableProjects.getOrNull(projectIndex)?.toDomain()
+            val llmDomain = availableLlms.getOrNull(llmIndex)?.toDomain()
+
+            if (projectDomain == null || llmDomain == null) {
+                _uiState.update { it.copy(isGenaratingPullRequestLoading = false) }
+                toastViewModel.showToast(
+                    ToastUiModel(
+                        title = "Atenção",
+                        message = "Selecione um projeto e um modelo de LLM.",
+                        type = ToastType.WARNING
+                    )
+                )
+                return@launch
+            }
+
+            _uiState.update {
+                it.copy(commitText = "")
+            }
+
+            getCommitsByprojectIdAndBranchUseCase(projectDomain, llmDomain).collect { result ->
+                when (result) {
+
+                    is ProgressResult.Success -> {
+
+                        _uiState.update {
+                            it.copy(
+                                commitText = result.value
                             )
                         }
                     }

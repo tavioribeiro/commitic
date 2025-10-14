@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.TextStyle
 import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_copy
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.compose.koinInject
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
@@ -64,17 +66,27 @@ fun PullRequestTab(
     val pullRequestTabuiState by pullRequestTabviewModel.uiState.collectAsState()
 
 
-    //LaunchedEffect(Unit) {}
-
     val clipboardManager = LocalClipboardManager.current
-
-
-
-
-
 
     val coroutineScope = rememberCoroutineScope()
 
+
+
+
+    LaunchedEffect(pullRequestTabuiState.commitText) {
+        if(pullRequestTabuiState.commitText != ""){
+            clipboardManager.setText(AnnotatedString(pullRequestTabuiState.commitText))
+
+            toastViewModel.showToast(
+                ToastUiModel(
+                    title = "Sucesso",
+                    message = "Copiado!",
+                    type = ToastType.SUCCESS,
+                    duration = 2000L
+                )
+            )
+        }
+    }
 
 
 
@@ -208,7 +220,7 @@ fun PullRequestTab(
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 if(pullRequestTabuiState.selectedProjectIndex != null && pullRequestTabuiState.selectedLlmIndex != null){
-                                    pullRequestTabviewModel.onGenerateCommitClicked(pullRequestTabuiState.selectedProjectIndex!!, pullRequestTabuiState.selectedLlmIndex!!)
+                                    pullRequestTabviewModel.onGeneratePullRequestClicked(pullRequestTabuiState.selectedProjectIndex!!, pullRequestTabuiState.selectedLlmIndex!!)
                                 }
                                 else {
                                     toastViewModel.showToast(
@@ -254,7 +266,7 @@ fun PullRequestTab(
 
                 Box(
                     modifier = Modifier
-                        .height(440.dp)
+                        .height(360.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
                         .background(AppTheme.colors.color2)
@@ -329,6 +341,23 @@ fun PullRequestTab(
                             }
                         }
                     }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    IconTextButton(
+                        text = "Copiar histórico de commits",
+                        onClick = {
+                            pullRequestTabviewModel.onCopyCommitsClicked(pullRequestTabuiState.selectedProjectIndex!!, pullRequestTabuiState.selectedLlmIndex!!)
+                        },
+                        icon = painterResource(Res.drawable.icon_copy),
+                    )
                 }
             }
         }
