@@ -146,12 +146,10 @@ fun PullRequestTab(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Gerar Commit",
+                    text = "Gerar Pull Request",
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
                 )
-
-                println(pullRequestTabuiState.selectedProjectIndex)
 
                 SelectInput(
                     title = "Escolha o Projeto",
@@ -171,6 +169,13 @@ fun PullRequestTab(
                     modifier = Modifier.padding(start = 8.dp, top = 10.dp)
                 )
 
+                Text(
+                    text = "O texto da PR será gerado baseado nos commits gerados anteriormente nesse branch.",
+                    color = AppTheme.colors.onColor5,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, top = 10.dp)
+                )
+
 
 
 
@@ -186,6 +191,13 @@ fun PullRequestTab(
                     isBackgroudColorDark = true
                 )
 
+                Text(
+                    text = "Geralmente modelos e API's com janelas de contexto maiores, performam melhor nessa tarefa.",
+                    color = AppTheme.colors.onColor5,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, top = 10.dp)
+                )
+
                 Spacer(modifier = Modifier.weight(1f))
 
                 Box(
@@ -194,7 +206,7 @@ fun PullRequestTab(
                 ){
                     IconTextButton(
                         modifier = Modifier.padding(top = 52.dp),
-                        text = "Gerar Commit",
+                        text = "Gerar Pull Request",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 if(pullRequestTabuiState.selectedProjectIndex != null && pullRequestTabuiState.selectedLlmIndex != null){
