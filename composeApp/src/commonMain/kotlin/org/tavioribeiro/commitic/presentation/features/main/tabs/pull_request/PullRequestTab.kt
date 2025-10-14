@@ -252,7 +252,7 @@ fun PullRequestTab(
 
 
                 FiveStepStatus(
-                    threeStepStatusModel = pullRequestTabuiState.stepsAndProgress,
+                    fiveStepStatusModel = pullRequestTabuiState.stepsAndProgress,
                     modifier = Modifier.padding(top = 10.dp)
                 )
 

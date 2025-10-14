@@ -241,7 +241,7 @@ fun CommitsTab(
 
 
                 FiveStepStatus(
-                    threeStepStatusModel = commitsTabuiState.stepsAndProgress,
+                    fiveStepStatusModel = commitsTabuiState.stepsAndProgress,
                     modifier = Modifier.padding(top = 10.dp)
                 )
 

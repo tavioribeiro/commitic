@@ -29,8 +29,8 @@ import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 import org.tavioribeiro.commitic.presentation.model.LlmUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
-import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusColors
-import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusModel
+import org.tavioribeiro.commitic.presentation.model.FiveStepStatusColors
+import org.tavioribeiro.commitic.presentation.model.FiveStepStatusModel
 
 
 
@@ -49,12 +49,12 @@ data class CommitsTabUiState(
 
     var isGenaratingCommitLoading: Boolean = false,
     val commitText: String = "Seu commit aparecerá aqui.",
-    val stepsAndProgress: ThreeStepStatusModel = ThreeStepStatusModel(
+    val stepsAndProgress: FiveStepStatusModel = FiveStepStatusModel(
         currentStep = "Não iniciado",
-        stepOneColor = ThreeStepStatusColors.GRAY,
-        stepTwoColor = ThreeStepStatusColors.GRAY,
-        stepThreeColor = ThreeStepStatusColors.GRAY,
-        stepFourColor = ThreeStepStatusColors.GRAY
+        stepOneColor = FiveStepStatusColors.GRAY,
+        stepTwoColor = FiveStepStatusColors.GRAY,
+        stepThreeColor = FiveStepStatusColors.GRAY,
+        stepFourColor = FiveStepStatusColors.GRAY
     ),
 
     var isSavingCommitLoading: Boolean = false,
@@ -295,47 +295,47 @@ class CommitsTabViewModel(
                         val finalDescription = if (result.currentStep == 5) "Finalizado com sucesso!" else currentStepDescription
 
                         val stepModel = when (result.currentStep) {
-                            1 -> ThreeStepStatusModel(
+                            1 -> FiveStepStatusModel(
                                 currentStep = currentStepDescription,
-                                stepOneColor = ThreeStepStatusColors.ORANGE,
-                                stepTwoColor = ThreeStepStatusColors.GRAY,
-                                stepThreeColor = ThreeStepStatusColors.GRAY,
-                                stepFourColor = ThreeStepStatusColors.GRAY,
+                                stepOneColor = FiveStepStatusColors.ORANGE,
+                                stepTwoColor = FiveStepStatusColors.GRAY,
+                                stepThreeColor = FiveStepStatusColors.GRAY,
+                                stepFourColor = FiveStepStatusColors.GRAY,
                             )
-                            2 -> ThreeStepStatusModel(
+                            2 -> FiveStepStatusModel(
                                 currentStep = currentStepDescription,
-                                stepOneColor = ThreeStepStatusColors.GREEN,
-                                stepTwoColor = ThreeStepStatusColors.ORANGE,
-                                stepThreeColor = ThreeStepStatusColors.GRAY,
-                                stepFourColor = ThreeStepStatusColors.GRAY,
+                                stepOneColor = FiveStepStatusColors.GREEN,
+                                stepTwoColor = FiveStepStatusColors.ORANGE,
+                                stepThreeColor = FiveStepStatusColors.GRAY,
+                                stepFourColor = FiveStepStatusColors.GRAY,
                             )
-                            3 -> ThreeStepStatusModel(
+                            3 -> FiveStepStatusModel(
                                 currentStep = currentStepDescription,
-                                stepOneColor = ThreeStepStatusColors.GREEN,
-                                stepTwoColor = ThreeStepStatusColors.GREEN,
-                                stepThreeColor = ThreeStepStatusColors.ORANGE,
-                                stepFourColor = ThreeStepStatusColors.GRAY,
+                                stepOneColor = FiveStepStatusColors.GREEN,
+                                stepTwoColor = FiveStepStatusColors.GREEN,
+                                stepThreeColor = FiveStepStatusColors.ORANGE,
+                                stepFourColor = FiveStepStatusColors.GRAY,
                             )
-                            4 -> ThreeStepStatusModel(
+                            4 -> FiveStepStatusModel(
                                 currentStep = currentStepDescription,
-                                stepOneColor = ThreeStepStatusColors.GREEN,
-                                stepTwoColor = ThreeStepStatusColors.GREEN,
-                                stepThreeColor = ThreeStepStatusColors.GREEN,
-                                stepFourColor = ThreeStepStatusColors.ORANGE,
+                                stepOneColor = FiveStepStatusColors.GREEN,
+                                stepTwoColor = FiveStepStatusColors.GREEN,
+                                stepThreeColor = FiveStepStatusColors.GREEN,
+                                stepFourColor = FiveStepStatusColors.ORANGE,
                             )
-                            5 -> ThreeStepStatusModel(
+                            5 -> FiveStepStatusModel(
                                 currentStep = finalDescription,
-                                stepOneColor = ThreeStepStatusColors.GREEN,
-                                stepTwoColor = ThreeStepStatusColors.GREEN,
-                                stepThreeColor = ThreeStepStatusColors.GREEN,
-                                stepFourColor = ThreeStepStatusColors.GREEN,
+                                stepOneColor = FiveStepStatusColors.GREEN,
+                                stepTwoColor = FiveStepStatusColors.GREEN,
+                                stepThreeColor = FiveStepStatusColors.GREEN,
+                                stepFourColor = FiveStepStatusColors.GREEN,
                             )
-                            else -> ThreeStepStatusModel(
+                            else -> FiveStepStatusModel(
                                 currentStep = "Aguardando...",
-                                stepOneColor = ThreeStepStatusColors.GRAY,
-                                stepTwoColor = ThreeStepStatusColors.GRAY,
-                                stepThreeColor = ThreeStepStatusColors.GRAY,
-                                stepFourColor = ThreeStepStatusColors.GRAY,
+                                stepOneColor = FiveStepStatusColors.GRAY,
+                                stepTwoColor = FiveStepStatusColors.GRAY,
+                                stepThreeColor = FiveStepStatusColors.GRAY,
+                                stepFourColor = FiveStepStatusColors.GRAY,
                             )
                         }
 

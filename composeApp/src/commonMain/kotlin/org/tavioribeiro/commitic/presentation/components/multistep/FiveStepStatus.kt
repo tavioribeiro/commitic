@@ -22,15 +22,15 @@ import androidx.compose.ui.unit.dp
 import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.icon_arrow_forward
 import org.jetbrains.compose.resources.painterResource
-import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusColors
-import org.tavioribeiro.commitic.presentation.model.ThreeStepStatusModel
+import org.tavioribeiro.commitic.presentation.model.FiveStepStatusColors
+import org.tavioribeiro.commitic.presentation.model.FiveStepStatusModel
 import org.tavioribeiro.commitic.theme.AppTheme
 
 
 
 @Composable
 fun FiveStepStatus(
-    threeStepStatusModel: ThreeStepStatusModel,
+    fiveStepStatusModel: FiveStepStatusModel,
     modifier: Modifier = Modifier
 ){
     Column(
@@ -46,11 +46,11 @@ fun FiveStepStatus(
             Box(
                 modifier = Modifier
                     .background(
-                        color = when(threeStepStatusModel.stepOneColor){
-                            ThreeStepStatusColors.GRAY -> Color.Gray
-                            ThreeStepStatusColors.ORANGE -> Color.Yellow
-                            ThreeStepStatusColors.GREEN -> Color.Green
-                            ThreeStepStatusColors.RED -> Color.Red
+                        color = when(fiveStepStatusModel.stepOneColor){
+                            FiveStepStatusColors.GRAY -> Color.Gray
+                            FiveStepStatusColors.ORANGE -> Color.Yellow
+                            FiveStepStatusColors.GREEN -> Color.Green
+                            FiveStepStatusColors.RED -> Color.Red
                         },
                         shape = RoundedCornerShape(50.dp)
                     )
@@ -67,11 +67,11 @@ fun FiveStepStatus(
             Box(
                 modifier = Modifier
                     .background(
-                        color = when(threeStepStatusModel.stepTwoColor){
-                            ThreeStepStatusColors.GRAY -> Color.Gray
-                            ThreeStepStatusColors.ORANGE -> Color.Yellow
-                            ThreeStepStatusColors.GREEN -> Color.Green
-                            ThreeStepStatusColors.RED -> Color.Red
+                        color = when(fiveStepStatusModel.stepTwoColor){
+                            FiveStepStatusColors.GRAY -> Color.Gray
+                            FiveStepStatusColors.ORANGE -> Color.Yellow
+                            FiveStepStatusColors.GREEN -> Color.Green
+                            FiveStepStatusColors.RED -> Color.Red
                         },
                         shape = RoundedCornerShape(50.dp)
                     )
@@ -88,11 +88,11 @@ fun FiveStepStatus(
             Box(
                 modifier = Modifier
                     .background(
-                        color = when(threeStepStatusModel.stepThreeColor){
-                            ThreeStepStatusColors.GRAY -> Color.Gray
-                            ThreeStepStatusColors.ORANGE -> Color.Yellow
-                            ThreeStepStatusColors.GREEN -> Color.Green
-                            ThreeStepStatusColors.RED -> Color.Red
+                        color = when(fiveStepStatusModel.stepThreeColor){
+                            FiveStepStatusColors.GRAY -> Color.Gray
+                            FiveStepStatusColors.ORANGE -> Color.Yellow
+                            FiveStepStatusColors.GREEN -> Color.Green
+                            FiveStepStatusColors.RED -> Color.Red
                         },
                         shape = RoundedCornerShape(50.dp)
                     )
@@ -109,11 +109,11 @@ fun FiveStepStatus(
             Box(
                 modifier = Modifier
                     .background(
-                        color = when(threeStepStatusModel.stepFourColor){
-                            ThreeStepStatusColors.GRAY -> Color.Gray
-                            ThreeStepStatusColors.ORANGE -> Color.Yellow
-                            ThreeStepStatusColors.GREEN -> Color.Green
-                            ThreeStepStatusColors.RED -> Color.Red
+                        color = when(fiveStepStatusModel.stepFourColor){
+                            FiveStepStatusColors.GRAY -> Color.Gray
+                            FiveStepStatusColors.ORANGE -> Color.Yellow
+                            FiveStepStatusColors.GREEN -> Color.Green
+                            FiveStepStatusColors.RED -> Color.Red
                         },
                         shape = RoundedCornerShape(50.dp)
                     )
@@ -125,7 +125,7 @@ fun FiveStepStatus(
 
         Text(
             modifier = Modifier.padding(vertical = 4.dp),
-            text = threeStepStatusModel.currentStep,
+            text = fiveStepStatusModel.currentStep,
             color = AppTheme.colors.onColor2,
             style = MaterialTheme.typography.bodyMedium,
             fontStyle = FontStyle.Italic
