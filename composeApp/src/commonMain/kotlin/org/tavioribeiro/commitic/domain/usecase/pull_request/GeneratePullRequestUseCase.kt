@@ -101,13 +101,50 @@ class GeneratePullRequestUseCase(
 
 
         val commitPrompt = """
-            Escreva um pull requests para esses commits: 
+            **Tarefa:** Gerar uma descrição de Pull Request (PR) a partir do texto de análise de commit fornecido.
+
+            **INPUT:**
+            Você receberá um texto com as seções: `CONTEXTO`, `MUDANÇAS` e `COMMIT GERADO`.
+            
+            **OUTPUT (Siga este formato estritamente):**
+            
+            ---
+            
+            `TIPO #TICKET: Título derivado do COMMIT GERADO`
+            
+            #### 📜 Descrição
+            
+            Parágrafo narrativo que elabora o `CONTEXTO.Objetivo`. Explique **o quê** a mudança faz e **por quê** ela é importante. Seja direto e informativo.
+            
+            #### 📑 Mudanças Principais
+            
+            Analise a seção `MUDANÇAS` e siga estas regras:
+            *   Agrupe as alterações por temas lógicos em **subtítulos em negrito**. Não agrupe por nome de arquivo.
+            *   Dentro de cada tema, liste as alterações usando bullet points (`*`).
+            *   **Não copie o texto de `MUDANÇAS`**. Reescreva cada ponto para explicar a alteração de forma clara para um revisor.
+            
+            ---
+            
+            **Regras Adicionais:**
+            *   **TIPO do Título:** Use `FEAT` para `CONTEXTO.Categoria: FEATURE`. Use `FIX` para `CONTEXTO.Categoria: BUGFIX`.
+            *   **#TICKET:** Use `#TICKET` como um placeholder.
+
+            **INFORMAÇÕES DO COMMIT:**
             ${
-                commitList.forEach { 
-                    it.toUiModel()
-                }
+            commitList.joinToString(separator = "\n") { commit ->
+                """
+                    █████████████████████████████████████████████
+                        Nome da Branch: ${commit.branchName}
+                        Objetivo da Tarefa: ${commit.taskObjective}
+                        Categoria: ${commit.category}
+                        Resumo: ${commit.summary}
+                        Mensagem do Commit: ${commit.commitMessage}
+                        --------------------------------------------------
+                    """.trimIndent()
             }
+        }
         """.trimIndent()
+
         val pullRequestText = when (val result = llmRepository.textToLlm(commitPrompt, llm)) {
             is RequestResult.Success -> result.data.trim()
             is RequestResult.Failure -> {
