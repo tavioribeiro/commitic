@@ -14,7 +14,7 @@ Conecte seu modelo de IA preferido, aponte para seus repositórios e deixe que a
 
 A instalação é simples e direta. Nenhum pré-requisito adicional é necessário!
 
-Basta baixar o arquivo apropriado para seu sistema operacional na **[página de Releases](URL_DA_SUA_PAGINA_DE_RELEASES)** do projeto.
+Basta baixar o arquivo apropriado para seu sistema operacional na **[página de Releases](https://github.com/tavioribeiro/commitic/releases)** do projeto.
 
 *   **Windows**: Baixe o instalador `.exe`
 *   **macOS**: Baixe o arquivo `.dmg`
