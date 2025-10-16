@@ -86,9 +86,6 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-
-
-
     if (isMedium) {
         Column(
             modifier = Modifier
@@ -99,7 +96,6 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Column(
                 Modifier
                     .height(391.dp)
@@ -120,7 +116,6 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
 
             }
             Spacer(modifier = Modifier.height(30.dp))
-
             Column(
                 Modifier
                     .height(391.dp)
@@ -199,25 +194,22 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
                     }
                 )
 
-
-                 Box(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
-                 ){
-
-                     IconTextButton(
-                         modifier = Modifier.padding(16.dp),
-                         text = "Adicionar esse projeto",
-                         onClick = {
-                             //ThemeState.toggleTheme()
-                             coroutineScope.launch(Dispatchers.Main) {
-                                 projectsTabviewModel.onSaveProjectClicked(newProjectUiModel)
-                             }
-                         },
-                         icon = painterResource(Res.drawable.icon_plus),
-                         isLoading = projectsTabuiState.isLoading
-                     )
+                ){
+                    IconTextButton(
+                        modifier = Modifier.padding(16.dp),
+                        text = "Adicionar esse projeto",
+                        onClick = {
+                            coroutineScope.launch(Dispatchers.Main) {
+                                projectsTabviewModel.onSaveProjectClicked(newProjectUiModel)
+                            }
+                        },
+                        icon = painterResource(Res.drawable.icon_plus),
+                        isLoading = projectsTabuiState.isLoading
+                    )
                 }
             }
             Spacer(modifier = Modifier.width(30.dp))

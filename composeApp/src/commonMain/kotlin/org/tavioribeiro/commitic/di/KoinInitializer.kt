@@ -16,7 +16,8 @@ fun initKoin() {
             llmModule,
             commitModule,
             consoleModule,
-            preferencesModule
+            preferencesModule,
+            pullrequestModule
         )
     }
 }

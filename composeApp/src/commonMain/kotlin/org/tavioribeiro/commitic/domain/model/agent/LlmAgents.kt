@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.domain.model.agents
+package org.tavioribeiro.commitic.domain.model.agent
 
 enum class LlmAgents(val value: Int, val taskDescription: String, val instructions: String) {
     STEP_ONE(

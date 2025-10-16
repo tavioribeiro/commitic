@@ -76,18 +76,20 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "org.tavioribeiro.commitic.MainKt"
-
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.tavioribeiro.commitic"
-            packageVersion = "1.0.0"
+            packageName = "Commitic"
+            packageVersion = "1.0.1"
+
+            modules("java.sql")
 
             linux {
-                iconFile.set(project.file("composeApp/src/commonMain/composeResources/drawable/logo3.png"))
+                iconFile.set(project.file("/home/otavio/AndroidStudioProjects/CalculatorDPI/composeApp/src/commonMain/composeResources/drawable/logo3.png"))
             }
         }
     }
 }
+
 
 
 sqldelight {

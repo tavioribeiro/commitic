@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.commits_tab
+package org.tavioribeiro.commitic.presentation.features.main.tabs.pull_request
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,37 +47,46 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_copy
-import commitic.composeapp.generated.resources.icon_save
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.compose.koinInject
-import org.tavioribeiro.commitic.presentation.components.multistep.FiveStepStatus
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
 
 @Composable
-fun CommitsTab(
-    commitsTabviewModel: CommitsTabViewModel = koinInject(),
+fun PullRequestTab(
+    pullRequestTabviewModel: PullRequestTabViewModel = koinInject(),
     toastViewModel: ToastViewModel = koinInject(),
 ) {
     val windowSize = getWindowSize()
     val isMedium = windowSize.width == WindowType.Medium
 
-    val commitsTabuiState by commitsTabviewModel.uiState.collectAsState()
+    val pullRequestTabuiState by pullRequestTabviewModel.uiState.collectAsState()
 
-
-    //LaunchedEffect(Unit) {}
 
     val clipboardManager = LocalClipboardManager.current
 
-
-
-
-
-
     val coroutineScope = rememberCoroutineScope()
 
+
+
+
+    LaunchedEffect(pullRequestTabuiState.commitText) {
+        if(pullRequestTabuiState.commitText != ""){
+            clipboardManager.setText(AnnotatedString(pullRequestTabuiState.commitText))
+
+            toastViewModel.showToast(
+                ToastUiModel(
+                    title = "Sucesso",
+                    message = "Copiado!",
+                    type = ToastType.SUCCESS,
+                    duration = 2000L
+                )
+            )
+        }
+    }
 
 
 
@@ -146,28 +156,33 @@ fun CommitsTab(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Gerar Commit",
+                    text = "Gerar Pull Request",
                     color = AppTheme.colors.onColor5,
                     style = MaterialTheme.typography.headlineSmall
                 )
 
-                println(commitsTabuiState.selectedProjectIndex)
-
                 SelectInput(
                     title = "Escolha o Projeto",
                     placeholder = "Seu projeto favorito",
-                    options = commitsTabuiState.availableProjectSelectOptions,
-                    initialPosition = commitsTabuiState.selectedProjectIndex,
+                    options = pullRequestTabuiState.availableProjectSelectOptions,
+                    initialPosition = pullRequestTabuiState.selectedProjectIndex,
                     onValueChange = { selectedItemValue ->
-                        commitsTabviewModel.onProjectSelected(selectedItemValue)
+                        pullRequestTabviewModel.onProjectSelected(selectedItemValue)
                     },
                     modifier = Modifier.padding(top = 0.dp),
                     isBackgroudColorDark = true
                 )
                 Text(
-                    text = commitsTabuiState.currentBranch,
+                    text = pullRequestTabuiState.currentBranch,
                     color = AppTheme.colors.color7,
                     style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 8.dp, top = 10.dp)
+                )
+
+                Text(
+                    text = "O texto da PR será gerado baseado nos commits gerados anteriormente nesse branch.",
+                    color = AppTheme.colors.onColor5,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 8.dp, top = 10.dp)
                 )
 
@@ -177,13 +192,20 @@ fun CommitsTab(
                 SelectInput(
                     title = "Escolha o Modelo",
                     placeholder = "Seu modelo favorito",
-                    options = commitsTabuiState.availableLlmSelectOptions,
-                    initialPosition = commitsTabuiState.selectedLlmIndex,
+                    options = pullRequestTabuiState.availableLlmSelectOptions,
+                    initialPosition = pullRequestTabuiState.selectedLlmIndex,
                     onValueChange = { newModelId ->
-                        commitsTabviewModel.onLlmSelected(newModelId)
+                        pullRequestTabviewModel.onLlmSelected(newModelId)
                     },
                     modifier = Modifier.padding(top = 0.dp),
                     isBackgroudColorDark = true
+                )
+
+                Text(
+                    text = "Geralmente modelos e API's com janelas de contexto maiores, performam melhor nessa tarefa.",
+                    color = AppTheme.colors.onColor5,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, top = 10.dp)
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -194,11 +216,11 @@ fun CommitsTab(
                 ){
                     IconTextButton(
                         modifier = Modifier.padding(top = 52.dp),
-                        text = "Gerar Commit",
+                        text = "Gerar Pull Request",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
-                                if(commitsTabuiState.selectedProjectIndex != null && commitsTabuiState.selectedLlmIndex != null){
-                                    commitsTabviewModel.onGenerateCommitClicked(commitsTabuiState.selectedProjectIndex!!, commitsTabuiState.selectedLlmIndex!!)
+                                if(pullRequestTabuiState.selectedProjectIndex != null && pullRequestTabuiState.selectedLlmIndex != null){
+                                    pullRequestTabviewModel.onGeneratePullRequestClicked(pullRequestTabuiState.selectedProjectIndex!!, pullRequestTabuiState.selectedLlmIndex!!)
                                 }
                                 else {
                                     toastViewModel.showToast(
@@ -212,7 +234,7 @@ fun CommitsTab(
                             }
                         },
                         icon = painterResource(Res.drawable.icon_commit),
-                        isLoading = commitsTabuiState.isGenaratingCommitLoading
+                        isLoading = pullRequestTabuiState.isGenaratingPullRequestLoading
                     )
                 }
             }
@@ -240,17 +262,11 @@ fun CommitsTab(
 
 
 
-                FiveStepStatus(
-                    fiveStepStatusModel = commitsTabuiState.stepsAndProgress,
-                    modifier = Modifier.padding(top = 10.dp)
-                )
-
-
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Box(
                     modifier = Modifier
-                        .height(300.dp)
+                        .height(360.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
                         .background(AppTheme.colors.color2)
@@ -260,7 +276,7 @@ fun CommitsTab(
                     val scrollState = rememberScrollState()
 
                     BasicTextField(
-                        value = commitsTabuiState.commitText,
+                        value = pullRequestTabuiState.pullRequestText,
                         onValueChange = {},
                         readOnly = true,
                         textStyle = TextStyle(color = AppTheme.colors.onColor1),
@@ -272,7 +288,7 @@ fun CommitsTab(
                     IconButton(
                         modifier = Modifier.align(Alignment.TopEnd),
                         onClick = {
-                            clipboardManager.setText(AnnotatedString(commitsTabuiState.commitText))
+                            clipboardManager.setText(AnnotatedString(pullRequestTabuiState.pullRequestText))
 
                             toastViewModel.showToast(
                                 ToastUiModel(
@@ -295,7 +311,7 @@ fun CommitsTab(
                     }
 
                     AnimatedContent(
-                        targetState = commitsTabuiState.isGenaratingCommitLoading,
+                        targetState = pullRequestTabuiState.isGenaratingPullRequestLoading,
                         modifier = Modifier.fillMaxSize(),
                         transitionSpec = {
                             val exit = fadeOut(animationSpec = tween(300))
@@ -335,35 +351,13 @@ fun CommitsTab(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    AnimatedContent(
-                        targetState = commitsTabuiState.isCommitGenerated,
-                        transitionSpec = {
-                            val exit = fadeOut(animationSpec = tween(300))
-
-                            val enter = fadeIn(
-                                animationSpec = tween(
-                                    durationMillis = 300,
-                                    delayMillis = 300
-                                )
-                            )
-
-                            enter togetherWith exit
+                    IconTextButton(
+                        text = "Copiar histórico de commits",
+                        onClick = {
+                            pullRequestTabviewModel.onCopyCommitsClicked(pullRequestTabuiState.selectedProjectIndex!!, pullRequestTabuiState.selectedLlmIndex!!)
                         },
-                        label = "TabContentAnimation"
-                    ) { targetState ->
-                        if(targetState){
-                            IconTextButton(
-                                text = "Salvar Commit Gerado",
-                                onClick = {
-                                    coroutineScope.launch(Dispatchers.Main) {
-                                        commitsTabviewModel.onSaveCommitClicked()
-                                    }
-                                },
-                                icon = painterResource(Res.drawable.icon_save),
-                                isLoading = commitsTabuiState.isSavingCommitLoading
-                            )
-                        }
-                    }
+                        icon = painterResource(Res.drawable.icon_copy),
+                    )
                 }
             }
         }

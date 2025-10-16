@@ -31,20 +31,22 @@ class CommitLocalDataSource(private val db: CommitSchemaQueries) {
 
 
 
-    suspend fun getCommits(): List<CommitDTOModel> {
+    suspend fun getCommitsByProjectIdAndBranch(projectId: Long, branchName: String): List<CommitDTOModel> {
         return withContext(Dispatchers.IO){
             try {
-                emptyList<CommitDTOModel>()
-
-                /*val commitsFromDb = db.selectAllCommits().executeAsList()
+                val commitsFromDb = db.selectAllByProjectIdAndBranchName(projectId, branchName).executeAsList()
 
                 commitsFromDb.map { commitEntity ->
                     CommitDTOModel(
-                        id = commitEntity.commit_id,
-                        name = commitEntity.name,
-                        path = commitEntity.directory_path
+                        id = commitEntity.id,
+                        projectId = commitEntity.project_id,
+                        branchName = commitEntity.branch_name,
+                        taskObjective = commitEntity.task_objective,
+                        category = commitEntity.category,
+                        summary = commitEntity.summary,
+                        commitMessage = commitEntity.commit_message
                     )
-                }*/
+                }
             } catch (e: Exception) {
                 throw e
             }

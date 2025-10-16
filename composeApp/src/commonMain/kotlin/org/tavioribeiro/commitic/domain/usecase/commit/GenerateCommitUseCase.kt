@@ -2,7 +2,7 @@ package org.tavioribeiro.commitic.domain.usecase.commit
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.tavioribeiro.commitic.domain.model.agents.LlmAgents
+import org.tavioribeiro.commitic.domain.model.agent.LlmAgents
 import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
 import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel

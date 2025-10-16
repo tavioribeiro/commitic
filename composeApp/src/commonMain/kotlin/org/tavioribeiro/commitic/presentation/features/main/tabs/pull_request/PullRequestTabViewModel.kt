@@ -1,4 +1,4 @@
-package org.tavioribeiro.commitic.presentation.features.main.tabs.commits_tab
+package org.tavioribeiro.commitic.presentation.features.main.tabs.pull_request
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,11 +7,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.tavioribeiro.commitic.domain.model.agent.LlmAgents
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
-import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
-import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
+import org.tavioribeiro.commitic.domain.usecase.commit.GetCommitsByprojectIdAndBranchUseCase
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.GetLlmsUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedLlmUseCase
@@ -19,23 +17,20 @@ import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedProjectUs
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
+import org.tavioribeiro.commitic.domain.usecase.pull_request.GeneratePullRequestUseCase
 import org.tavioribeiro.commitic.domain.util.RequestResult
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
 import org.tavioribeiro.commitic.presentation.mapper.toDomain
 import org.tavioribeiro.commitic.presentation.mapper.toUiModel
-import org.tavioribeiro.commitic.presentation.model.CommitUiModel
 import org.tavioribeiro.commitic.presentation.model.LlmUiModel
 import org.tavioribeiro.commitic.presentation.model.ProjectUiModel
+import org.tavioribeiro.commitic.presentation.model.PullRequestUiModel
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
-import org.tavioribeiro.commitic.presentation.model.FiveStepStatusColors
-import org.tavioribeiro.commitic.presentation.model.FiveStepStatusModel
 
 
-
-
-data class CommitsTabUiState(
+data class PullRequestTabUiState(
     var isProjectLoading: Boolean = false,
     val availableProjectSelectOptions: List<SelectOptionModel> = emptyList(),
     val selectedProjectIndex: Int? = null,
@@ -47,51 +42,37 @@ data class CommitsTabUiState(
     val availableLlmSelectOptions: List<SelectOptionModel> = emptyList(),
     val selectedLlmIndex: Int? = null,
 
-    var isGenaratingCommitLoading: Boolean = false,
-    val commitText: String = "Seu commit aparecerá aqui.",
-    val stepsAndProgress: FiveStepStatusModel = FiveStepStatusModel(
-        currentStep = "Não iniciado",
-        stepOneColor = FiveStepStatusColors.GRAY,
-        stepTwoColor = FiveStepStatusColors.GRAY,
-        stepThreeColor = FiveStepStatusColors.GRAY,
-        stepFourColor = FiveStepStatusColors.GRAY
-    ),
+    var isGenaratingPullRequestLoading: Boolean = false,
+    val pullRequestText: String = "O texto da Pull Request irá aparecer aqui.",
 
-    var isSavingCommitLoading: Boolean = false,
-
-    var isCommitGenerated: Boolean = false
+    var commitText: String = ""
 )
 
 
 
 
-class CommitsTabViewModel(
+class PullRequestTabViewModel(
     private val toastViewModel: ToastViewModel,
-    private val saveCommitUseCase: SaveCommitUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val executeCommandUseCase: ExecuteCommandUseCase,
     private val getLlmsUseCase: GetLlmsUseCase,
-    private val generateCommitUseCase: GenerateCommitUseCase,
+    private val getCommitsByprojectIdAndBranchUseCase: GetCommitsByprojectIdAndBranchUseCase,
+    private val generatePullRequestUseCase: GeneratePullRequestUseCase,
     private val getSelectedProjectUseCase: GetSelectedProjectUseCase,
     private val saveSelectedProjectUseCase: SaveSelectedProjectUseCase,
     private val getSelectedLlmUseCase: GetSelectedLlmUseCase,
     private val saveSelectedLlmUseCase: SaveSelectedLlmUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CommitsTabUiState())
-    val uiState: StateFlow<CommitsTabUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(PullRequestTabUiState())
+    val uiState: StateFlow<PullRequestTabUiState> = _uiState.asStateFlow()
 
     private var availableProjects = emptyList<ProjectUiModel>()
     private var availableLlms = emptyList<LlmUiModel>()
 
-    private var commitUiModel = CommitUiModel(
+    private var commitUiModel = PullRequestUiModel(
         id = null,
-        projectId = 0,
-        branchName = "",
-        taskObjective = "",
-        category = "",
-        summary = "",
-        commitMessage = ""
+        text = ""
     )
 
     init {
@@ -114,13 +95,6 @@ class CommitsTabViewModel(
                             availableProjectSelectOptions = selectOptions
                         )
                     }
-
-                    println("Projetos++++++")
-                    availableProjects.forEach {
-                        println("${it.id} - ${it.name} - ${it.path}")
-                    }
-                    println("Projetos++++++")
-
 
                     getLastSelectedProject()
                 }
@@ -191,8 +165,6 @@ class CommitsTabViewModel(
 
     fun onProjectSelected(projectId: String) {
         viewModelScope.launch {
-            println("selected project ID: $projectId")
-
             saveSelectedProjectUseCase(projectId)
 
             val project = availableProjects.firstOrNull { it.id.toString() == projectId }
@@ -241,15 +213,15 @@ class CommitsTabViewModel(
         }
     }
 
-    fun onGenerateCommitClicked(projectIndex: Int, llmIndex: Int) {
+    fun onGeneratePullRequestClicked(projectIndex: Int, llmIndex: Int) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isGenaratingCommitLoading = true, commitText = "") }
+            _uiState.update { it.copy(isGenaratingPullRequestLoading = true, pullRequestText = "") }
 
             val projectDomain = availableProjects.getOrNull(projectIndex)?.toDomain()
             val llmDomain = availableLlms.getOrNull(llmIndex)?.toDomain()
 
             if (projectDomain == null || llmDomain == null) {
-                _uiState.update { it.copy(isGenaratingCommitLoading = false) }
+                _uiState.update { it.copy(isGenaratingPullRequestLoading = false) }
                 toastViewModel.showToast(
                     ToastUiModel(
                         title = "Atenção",
@@ -260,10 +232,10 @@ class CommitsTabViewModel(
                 return@launch
             }
 
-            generateCommitUseCase(projectDomain, llmDomain).collect { result ->
+            generatePullRequestUseCase(projectDomain, llmDomain).collect { result ->
                 when (result) {
                     is ProgressResult.Loading -> {
-                        _uiState.update { it.copy(isGenaratingCommitLoading = true) }
+                        _uiState.update { it.copy(isGenaratingPullRequestLoading = true) }
                     }
 
                     is ProgressResult.Success -> {
@@ -272,15 +244,14 @@ class CommitsTabViewModel(
 
                         _uiState.update {
                             it.copy(
-                                isGenaratingCommitLoading = false,
-                                isCommitGenerated = true,
-                                commitText = result.value.commitMessage
+                                isGenaratingPullRequestLoading = false,
+                                pullRequestText = result.value.text
                             )
                         }
                     }
 
                     is ProgressResult.Failure -> {
-                        _uiState.update { it.copy(isGenaratingCommitLoading = false) }
+                        _uiState.update { it.copy(isGenaratingPullRequestLoading = false) }
                         toastViewModel.showToast(
                             ToastUiModel(
                                 title = "Erro",
@@ -289,93 +260,60 @@ class CommitsTabViewModel(
                             )
                         )
                     }
-
-                    is ProgressResult.Progress -> {
-                        val currentStepDescription = LlmAgents.fromValue(result.currentStep)?.taskDescription ?: "Processando..."
-                        val finalDescription = if (result.currentStep == 5) "Finalizado com sucesso!" else currentStepDescription
-
-                        val stepModel = when (result.currentStep) {
-                            1 -> FiveStepStatusModel(
-                                currentStep = currentStepDescription,
-                                stepOneColor = FiveStepStatusColors.ORANGE,
-                                stepTwoColor = FiveStepStatusColors.GRAY,
-                                stepThreeColor = FiveStepStatusColors.GRAY,
-                                stepFourColor = FiveStepStatusColors.GRAY,
-                            )
-                            2 -> FiveStepStatusModel(
-                                currentStep = currentStepDescription,
-                                stepOneColor = FiveStepStatusColors.GREEN,
-                                stepTwoColor = FiveStepStatusColors.ORANGE,
-                                stepThreeColor = FiveStepStatusColors.GRAY,
-                                stepFourColor = FiveStepStatusColors.GRAY,
-                            )
-                            3 -> FiveStepStatusModel(
-                                currentStep = currentStepDescription,
-                                stepOneColor = FiveStepStatusColors.GREEN,
-                                stepTwoColor = FiveStepStatusColors.GREEN,
-                                stepThreeColor = FiveStepStatusColors.ORANGE,
-                                stepFourColor = FiveStepStatusColors.GRAY,
-                            )
-                            4 -> FiveStepStatusModel(
-                                currentStep = currentStepDescription,
-                                stepOneColor = FiveStepStatusColors.GREEN,
-                                stepTwoColor = FiveStepStatusColors.GREEN,
-                                stepThreeColor = FiveStepStatusColors.GREEN,
-                                stepFourColor = FiveStepStatusColors.ORANGE,
-                            )
-                            5 -> FiveStepStatusModel(
-                                currentStep = finalDescription,
-                                stepOneColor = FiveStepStatusColors.GREEN,
-                                stepTwoColor = FiveStepStatusColors.GREEN,
-                                stepThreeColor = FiveStepStatusColors.GREEN,
-                                stepFourColor = FiveStepStatusColors.GREEN,
-                            )
-                            else -> FiveStepStatusModel(
-                                currentStep = "Aguardando...",
-                                stepOneColor = FiveStepStatusColors.GRAY,
-                                stepTwoColor = FiveStepStatusColors.GRAY,
-                                stepThreeColor = FiveStepStatusColors.GRAY,
-                                stepFourColor = FiveStepStatusColors.GRAY,
-                            )
-                        }
-
-                        _uiState.update {
-                            it.copy(stepsAndProgress = stepModel)
-                        }
-                    }
-
-
+                    else -> {}
                 }
             }
         }
     }
 
-    fun onSaveCommitClicked() {
+
+    fun onCopyCommitsClicked(projectIndex: Int, llmIndex: Int) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isSavingCommitLoading = true) }
 
-            when (val result = saveCommitUseCase(commitUiModel.toDomain())) {
-                is RequestResult.Success -> {
-                    toastViewModel.showToast(
-                        ToastUiModel(
-                            title = "Sucesso",
-                            message = "Commit salvo com sucesso",
-                            type = ToastType.SUCCESS
-                        )
-                    )
-                }
+            val projectDomain = availableProjects.getOrNull(projectIndex)?.toDomain()
+            val llmDomain = availableLlms.getOrNull(llmIndex)?.toDomain()
 
-                is RequestResult.Failure -> {
-                    toastViewModel.showToast(
-                        ToastUiModel(
-                            title = "Erro",
-                            message = "Falha ao salvar commit",
-                            type = ToastType.ERROR
-                        )
+            if (projectDomain == null || llmDomain == null) {
+                _uiState.update { it.copy(isGenaratingPullRequestLoading = false) }
+                toastViewModel.showToast(
+                    ToastUiModel(
+                        title = "Atenção",
+                        message = "Selecione um projeto e um modelo de LLM.",
+                        type = ToastType.WARNING
                     )
+                )
+                return@launch
+            }
+
+            _uiState.update {
+                it.copy(commitText = "")
+            }
+
+            getCommitsByprojectIdAndBranchUseCase(projectDomain, llmDomain).collect { result ->
+                when (result) {
+
+                    is ProgressResult.Success -> {
+
+                        _uiState.update {
+                            it.copy(
+                                commitText = result.value
+                            )
+                        }
+                    }
+
+                    is ProgressResult.Failure -> {
+                        _uiState.update { it.copy(isGenaratingPullRequestLoading = false) }
+                        toastViewModel.showToast(
+                            ToastUiModel(
+                                title = "Erro",
+                                message = "Falha ao gerar commit: ${result.error}",
+                                type = ToastType.ERROR
+                            )
+                        )
+                    }
+                    else -> {}
                 }
             }
-            _uiState.update { it.copy(isSavingCommitLoading = false) }
         }
     }
 }

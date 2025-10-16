@@ -40,7 +40,6 @@ data class LlmsTabUiState(
     val error: String? = null
 )
 
-
 class LlmsTabViewModel(
     private val toastViewModel: ToastViewModel,
     private val getLlmsUseCase: GetLlmsUseCase,
@@ -50,7 +49,6 @@ class LlmsTabViewModel(
 
     private val _uiState = MutableStateFlow(LlmsTabUiState())
     val uiState: StateFlow<LlmsTabUiState> = _uiState.asStateFlow()
-
 
     private val _llmNameInputWarningState = MutableStateFlow("")
     val llmNameInputWarningState = _llmNameInputWarningState.asStateFlow()
@@ -67,11 +65,8 @@ class LlmsTabViewModel(
         _uiState.update { it.copy(apiOptions = options) }
     }
 
-
     fun loadLlms() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
             val result = getLlmsUseCase()
 
             when (result) {
@@ -129,21 +124,17 @@ class LlmsTabViewModel(
         }
     }
 
-
     fun onSaveLlmClicked(llmToSave: LlmUiModel) {
         viewModelScope.launch {
             if(!_uiState.value.isLoading){
                 _uiState.update { it.copy(isLoading = true) }
             }
 
-
             val llm = llmToSave.toDomain()
             val result = saveLlmUseCase(llm)
 
-
             _llmNameInputWarningState.update { "" }
             _pathInputWarningState.update { "" }
-
 
             when (result) {
                 is RequestResult.Success -> {
@@ -187,14 +178,12 @@ class LlmsTabViewModel(
         }
     }
 
-
     fun deleteLlm(llmToDelete: LlmUiModel) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             val llm = llmToDelete.toDomain()
             val result = deleteLlmUseCase(llm)
-
 
             when (result) {
                 is RequestResult.Success -> {
@@ -224,6 +213,7 @@ class LlmsTabViewModel(
                         }
                         else -> {}
                     }
+                    _uiState.update { it.copy(isLoading = false) }
                 }
             }
         }
