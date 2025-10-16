@@ -79,7 +79,10 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Commitic"
-            packageVersion = "1.0.1"
+            packageVersion = "1.0.0"
+            description = "Uma breve descrição do seu aplicativo."
+            copyright = "© 2025 Seu Nome ou Empresa. Todos os direitos reservados."
+            vendor = "Nome do Vendedor ou Empresa"
 
             modules("java.sql")
 
