@@ -8,27 +8,29 @@ import commitic.composeapp.generated.resources.Res
 import commitic.composeapp.generated.resources.logo3
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.di.initKoin
-import java.awt.Dimension // Importe novamente a classe Dimension
+import java.awt.Dimension
 
-fun main() = application {
+fun main() {
+    // MUDANÇA 2: Defina a propriedade AQUI, antes de chamar o application
+    System.setProperty("sun.awt.wm.class", "commitic")
 
-    initKoin()
+    // Só agora chamamos o application
+    application {
+        initKoin()
 
-    val windowInitialState = rememberWindowState(
-        width = 1440.dp,
-        height = 804.dp
-    )
+        val windowInitialState = rememberWindowState(
+            width = 1440.dp,
+            height = 804.dp
+        )
 
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Commitic",
-        icon = painterResource(Res.drawable.logo3),
-        state = windowInitialState,
-        //resizable = false
-    ) {
-        window.minimumSize = Dimension(903, 700)
-        //window.maximumSize = Dimension(1200, 900)
-
-        App()
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "Commitic",
+            icon = painterResource(Res.drawable.logo3),
+            state = windowInitialState,
+        ) {
+            window.minimumSize = Dimension(903, 700)
+            App()
+        }
     }
 }

@@ -76,23 +76,48 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "org.tavioribeiro.commitic.MainKt"
+        jvmArgs += listOf("-Dsun.awt.wm.class=commitic")
+
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Commitic"
+            packageName = "commitic"
             packageVersion = "1.0.0"
-            description = "Uma breve descrição do seu aplicativo."
-            copyright = "© 2025 Seu Nome ou Empresa. Todos os direitos reservados."
-            vendor = "Nome do Vendedor ou Empresa"
+            description = "Commit-AI: Automatize suas mensagens de commit."
+            copyright = "Desenvolvido por @tavioribeiro."
+            vendor = "tavioribeiro"
 
-            modules("java.sql")
+
+            includeAllModules = true
 
             linux {
-                iconFile.set(project.file("/home/otavio/AndroidStudioProjects/CalculatorDPI/composeApp/src/commonMain/composeResources/drawable/logo3.png"))
+                shortcut = true
+                debMaintainer = "tavioribeiro <seu@email.com>"
+                appCategory = "Development"
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.png"))
+            }
+
+
+            windows {
+                menu = true
+                shortcut = true
+
+
+                upgradeUuid = "54284915-2388-4509-9864-379089432415"
+
+
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.ico"))
+
+
+                perUserInstall = true
+            }
+
+            macOS {
+                bundleID = "org.tavioribeiro.commitic"
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.icns"))
             }
         }
     }
 }
-
 
 
 sqldelight {
@@ -102,3 +127,7 @@ sqldelight {
         }
     }
 }
+
+
+
+
