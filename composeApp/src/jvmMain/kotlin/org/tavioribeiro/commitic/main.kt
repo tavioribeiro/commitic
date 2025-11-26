@@ -11,10 +11,7 @@ import org.tavioribeiro.commitic.di.initKoin
 import java.awt.Dimension
 
 fun main() {
-    // MUDANÇA 2: Defina a propriedade AQUI, antes de chamar o application
-    System.setProperty("sun.awt.wm.class", "commitic")
 
-    // Só agora chamamos o application
     application {
         initKoin()
 

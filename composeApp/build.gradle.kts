@@ -97,6 +97,7 @@ compose.desktop {
             }
 
 
+
             windows {
                 menu = true
                 shortcut = true
