@@ -6,9 +6,13 @@ Conecte seu modelo de IA preferido, aponte para seus repositórios e deixe que a
 
 <img width="1599" height="823" alt="image" src="https://github.com/user-attachments/assets/be145386-cef3-47d2-bcfb-747677ad7eda" />
 
+<img width="1599" height="825" alt="image" src="https://github.com/user-attachments/assets/94588255-22f5-4a10-abdf-c2f6d324e762" />
+
 <img width="1599" height="823" alt="image" src="https://github.com/user-attachments/assets/46f61979-bdb1-4a45-aaf1-ff262b6ac864" />
 
 <img width="1599" height="860" alt="image" src="https://github.com/user-attachments/assets/2806e581-d16e-44ec-a861-70e4cf56a1e5" />
+
+
 
 ## 🚀 Começando
 
