@@ -80,9 +80,9 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "commitic"
-            packageVersion = "1.0.0"
-            description = "Commit-AI: Automatize suas mensagens de commit."
+            packageName = "Commitic"
+            packageVersion = "1.0.1"
+            description = "Um assistente inteligente que usa LLMs para gerar automaticamente mensagens de commit e descrições de pull requests no Git."
             copyright = "Desenvolvido por @tavioribeiro."
             vendor = "tavioribeiro"
 
@@ -91,8 +91,8 @@ compose.desktop {
 
             linux {
                 shortcut = true
-                debMaintainer = "tavioribeiro <seu@email.com>"
-                appCategory = "Development"
+                debMaintainer = "@tavioribeiro | otavio123ribeiro@gmail.com"
+                appCategory = "LLM, Desenvolvimento, Agentes IA, IA."
                 iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.png"))
             }
 
@@ -101,14 +101,8 @@ compose.desktop {
             windows {
                 menu = true
                 shortcut = true
-
-
                 upgradeUuid = "54284915-2388-4509-9864-379089432415"
-
-
-                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.ico"))
-
-
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3_windows.ico"))
                 perUserInstall = true
             }
 
