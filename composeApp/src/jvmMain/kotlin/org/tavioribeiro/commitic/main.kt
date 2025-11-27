@@ -10,6 +10,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.di.initKoin
 import java.awt.Dimension
 
+
 fun main() {
 
     application {
