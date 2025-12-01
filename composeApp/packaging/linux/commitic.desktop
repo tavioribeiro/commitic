@@ -7,4 +7,4 @@ Exec=/opt/commitic/bin/commitic
 Icon=commitic
 Terminal=false
 Categories=Development;Utility;
-StartupWMClass=commitic
+StartupWMClass=org-tavioribeiro-commitic-MainKt
