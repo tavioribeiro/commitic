@@ -1,6 +1,9 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.desktop.application.tasks.AbstractJPackageTask
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -13,7 +16,7 @@ plugins {
 
 kotlin {
     jvm()
-    
+
     /*@OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         outputModuleName.set("composeApp")
@@ -32,7 +35,7 @@ kotlin {
         }
         binaries.executable()
     }*/
-    
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -49,12 +52,9 @@ kotlin {
 
             implementation(libs.sqldelight.coroutines.extensions)
 
-
             implementation("io.ktor:ktor-client-core:3.3.0")
             implementation("io.ktor:ktor-client-content-negotiation:3.3.0")
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.0")
-
-
 
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
         }
@@ -72,31 +72,29 @@ kotlin {
     }
 }
 
-
 compose.desktop {
     application {
         mainClass = "org.tavioribeiro.commitic.MainKt"
+
+
         jvmArgs += listOf("-Dsun.awt.wm.class=commitic")
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Commitic"
+            packageName = "commitic"
             packageVersion = "1.0.1"
             description = "Um assistente inteligente que usa LLMs para gerar automaticamente mensagens de commit e descrições de pull requests no Git."
             copyright = "Desenvolvido por @tavioribeiro."
             vendor = "tavioribeiro"
-
-
             includeAllModules = true
+
 
             linux {
                 shortcut = true
-                debMaintainer = "@tavioribeiro | otavio123ribeiro@gmail.com"
-                appCategory = "LLM, Desenvolvimento, Agentes IA, IA."
+                debMaintainer = "@tavioribeiro"
+                appCategory = "Development"
                 iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.png"))
             }
-
-
 
             windows {
                 menu = true
@@ -114,7 +112,6 @@ compose.desktop {
     }
 }
 
-
 sqldelight {
     databases {
         create("CommiticDatabase") {
@@ -122,7 +119,4 @@ sqldelight {
         }
     }
 }
-
-
-
 

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=@version@
+Type=Application
+Name=Commitic
+Comment=Um assistente inteligente de commits e PRs.
+Exec=/opt/commitic/bin/commitic
+Icon=commitic
+Terminal=false
+Categories=Development;Utility;
+StartupWMClass=commitic
