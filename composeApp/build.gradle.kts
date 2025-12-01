@@ -1,6 +1,9 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.desktop.application.tasks.AbstractJPackageTask
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -13,26 +16,8 @@ plugins {
 
 kotlin {
     jvm()
-    
-    /*@OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        outputModuleName.set("composeApp")
-        browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        add(rootDirPath)
-                        add(projectDirPath)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }*/
-    
+
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -49,12 +34,9 @@ kotlin {
 
             implementation(libs.sqldelight.coroutines.extensions)
 
-
             implementation("io.ktor:ktor-client-core:3.3.0")
             implementation("io.ktor:ktor-client-content-negotiation:3.3.0")
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.0")
-
-
 
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
         }
@@ -72,28 +54,45 @@ kotlin {
     }
 }
 
-
 compose.desktop {
     application {
         mainClass = "org.tavioribeiro.commitic.MainKt"
+
+
+        jvmArgs += listOf("-Dsun.awt.wm.class=commitic")
+
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Commitic"
-            packageVersion = "1.0.0"
-            description = "Uma breve descrição do seu aplicativo."
-            copyright = "© 2025 Seu Nome ou Empresa. Todos os direitos reservados."
-            vendor = "Nome do Vendedor ou Empresa"
+            packageName = "commitic"
+            packageVersion = "1.0.1"
+            description = "Um assistente inteligente que usa LLMs para gerar automaticamente mensagens de commit e descrições de pull requests no Git."
+            copyright = "Desenvolvido por @tavioribeiro."
+            vendor = "tavioribeiro"
+            includeAllModules = true
 
-            modules("java.sql")
 
             linux {
-                iconFile.set(project.file("/home/otavio/AndroidStudioProjects/CalculatorDPI/composeApp/src/commonMain/composeResources/drawable/logo3.png"))
+                shortcut = true
+                debMaintainer = "@tavioribeiro"
+                appCategory = "Development"
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.png"))
+            }
+
+            windows {
+                menu = true
+                shortcut = true
+                upgradeUuid = "54284915-2388-4509-9864-379089432415"
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3_windows.ico"))
+                perUserInstall = true
+            }
+
+            macOS {
+                bundleID = "org.tavioribeiro.commitic"
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.icns"))
             }
         }
     }
 }
-
-
 
 sqldelight {
     databases {
@@ -102,3 +101,4 @@ sqldelight {
         }
     }
 }
+
