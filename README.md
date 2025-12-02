@@ -45,6 +45,16 @@ Basta baixar o arquivo apropriado para seu sistema operacional na **[página de 
 *   **Windows**: Baixe o instalador `.exe`
 
 
+Você também pode instalar o pacote debian via terminal:
+
+```console
+# Adiciona o repo aos fontes
+echo "deb [trusted=yes] https://apt.fury.io/tavioribeirodev/ /" | sudo tee /etc/apt/sources.list.d/commitic.list
+
+sudo apt update
+sudo apt install commitic
+```
+
 <br>
 
 ---
