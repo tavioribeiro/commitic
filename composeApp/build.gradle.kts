@@ -75,20 +75,20 @@ compose.desktop {
                 shortcut = true
                 debMaintainer = "@tavioribeiro"
                 appCategory = "Development"
-                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.png"))
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon.png"))
             }
 
             windows {
                 menu = true
                 shortcut = true
                 upgradeUuid = "54284915-2388-4509-9864-379089432415"
-                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3_windows.ico"))
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon.ico"))
                 perUserInstall = true
             }
 
             macOS {
                 bundleID = "org.tavioribeiro.commitic"
-                iconFile.set(project.file("src/commonMain/composeResources/drawable/logo3.icns"))
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon.icns"))
             }
         }
     }
