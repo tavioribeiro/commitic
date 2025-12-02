@@ -1,0 +1,36 @@
+name: Build Desktop App (macOS)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build_dmg:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Dar permissão de execução ao Gradlew
+        run: chmod +x gradlew
+
+      - name: Buildar o DMG
+        run: ./gradlew packageReleaseDmg --info
+
+      - name: Upload do Artefato (DMG)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Commitic-macOS-Installer
+          path: build/compose/binaries/main/dmg/*.dmg
+          if-no-files-found: error
