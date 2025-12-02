@@ -1,6 +1,6 @@
 # Commit 🤖✍️
 
-Cansado de pensar em mensagens de commit? **Commit** é a sua ferramenta definitiva para automatizar e aprimorar seu fluxo de trabalho no Git. Utilizando o poder de modelos de linguagem (LLMs), ela transforma suas alterações de código em mensagens de commit e descrições de Pull Request claras, contextuais e profissionais.
+**Commit** é uma ferramenta para automatizar e aprimorar seu fluxo de trabalho no Git. Utilizando o poder de modelos de linguagem (LLMs), ela transforma suas alterações de código em mensagens de commit e descrições de Pull Request claras, contextuais e profissionais.
 
 Conecte seu modelo de IA preferido, aponte para seus repositórios e deixe que a automação cuide do trabalho repetitivo. Mantenha um histórico de versionamento limpo e significativo sem esforço.
 
