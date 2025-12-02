@@ -63,7 +63,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "commitic"
+            packageName = "Commitic"
             packageVersion = "1.0.1"
             description = "Um assistente inteligente que usa LLMs para gerar automaticamente mensagens de commit e descrições de pull requests no Git."
             copyright = "Desenvolvido por @tavioribeiro."
