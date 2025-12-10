@@ -7,7 +7,6 @@ class PreferencesRepositoryImpl(
     private val localDataSource: PreferencesLocalDataSource
 ) : PreferencesRepository {
     override fun saveSelectedProjectId(id: String) {
-        println("Saving selected Project ID: $id")
         localDataSource.saveSelectedProjectId(id)
     }
 
@@ -16,11 +15,18 @@ class PreferencesRepositoryImpl(
     }
 
     override fun saveSelectedLlmId(id: String) {
-        println("Saving selected LLM ID: $id")
         localDataSource.saveSelectedLlmId(id)
     }
 
     override fun getSelectedLlmId(): String? {
         return localDataSource.getSelectedLlmId()
+    }
+
+    override fun saveSelectedDelayBetweenStepsValue(seconds: Int) {
+        localDataSource.saveSelectedDelayBetweenStepsValue(seconds)
+    }
+
+    override fun getSelectedDelayBetweenStepsValue(): Int {
+        return localDataSource.getSelectedDelayBetweenStepsValue()
     }
 }

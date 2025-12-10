@@ -14,8 +14,10 @@ import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.GetLlmsUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedDelayBetweenStepsUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedProjectUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedDelayBetweenStepsUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
@@ -47,6 +49,8 @@ data class CommitsTabUiState(
     val availableLlmSelectOptions: List<SelectOptionModel> = emptyList(),
     val selectedLlmIndex: Int? = null,
 
+    val delayBetweenSteps:Int = 0,
+
     var isGenaratingCommitLoading: Boolean = false,
     val commitText: String = "Seu commit aparecerá aqui.",
     val stepsAndProgress: FiveStepStatusModel = FiveStepStatusModel(
@@ -75,7 +79,9 @@ class CommitsTabViewModel(
     private val getSelectedProjectUseCase: GetSelectedProjectUseCase,
     private val saveSelectedProjectUseCase: SaveSelectedProjectUseCase,
     private val getSelectedLlmUseCase: GetSelectedLlmUseCase,
-    private val saveSelectedLlmUseCase: SaveSelectedLlmUseCase
+    private val saveSelectedLlmUseCase: SaveSelectedLlmUseCase,
+    private val getSelectedDelayBetweenStepsUseCase: GetSelectedDelayBetweenStepsUseCase,
+    private val saveSelectedDelayBetweenStepsUseCase: SaveSelectedDelayBetweenStepsUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CommitsTabUiState())
@@ -97,6 +103,7 @@ class CommitsTabViewModel(
     init {
         loadProjects()
         loadLlms()
+        getSelectedDelayBetweenSteps()
     }
 
     private fun loadProjects() {
@@ -189,9 +196,13 @@ class CommitsTabViewModel(
         }
     }
 
+    private fun getSelectedDelayBetweenSteps() {
+        val delayBetweenSteps = getSelectedDelayBetweenStepsUseCase()
+        _uiState.update { it.copy(delayBetweenSteps = delayBetweenSteps) }
+    }
+
     fun onProjectSelected(projectId: String) {
         viewModelScope.launch {
-            println("selected project ID: $projectId")
 
             saveSelectedProjectUseCase(projectId)
 
@@ -241,6 +252,15 @@ class CommitsTabViewModel(
         }
     }
 
+    fun onChangeDelayBetweenSteps(newDelay: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(delayBetweenSteps = newDelay) }
+            saveSelectedDelayBetweenStepsUseCase(newDelay)
+        }
+    }
+
+
+
     fun onGenerateCommitClicked(projectIndex: Int, llmIndex: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isGenaratingCommitLoading = true, commitText = "") }
@@ -260,7 +280,7 @@ class CommitsTabViewModel(
                 return@launch
             }
 
-            generateCommitUseCase(projectDomain, llmDomain).collect { result ->
+            generateCommitUseCase(projectDomain, llmDomain, delayBetweenSteps = uiState.value.delayBetweenSteps).collect { result ->
                 when (result) {
                     is ProgressResult.Loading -> {
                         _uiState.update { it.copy(isGenaratingCommitLoading = true) }

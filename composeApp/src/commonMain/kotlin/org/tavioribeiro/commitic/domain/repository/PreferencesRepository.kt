@@ -6,4 +6,6 @@ interface PreferencesRepository {
     fun getSelectedProjectId(): String?
     fun saveSelectedLlmId(id: String)
     fun getSelectedLlmId(): String?
+    fun saveSelectedDelayBetweenStepsValue(seconds: Int)
+    fun getSelectedDelayBetweenStepsValue(): Int
 }

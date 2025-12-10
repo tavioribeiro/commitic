@@ -194,13 +194,15 @@ fun ProjectsTab(projectsTabviewModel: ProjectsTabViewModel = koinInject()) {
                     }
                 )
 
+                Spacer(modifier = Modifier.weight(1f))
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ){
                     IconTextButton(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(0.dp),
                         text = "Adicionar esse projeto",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {

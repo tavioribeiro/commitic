@@ -1,5 +1,6 @@
 package org.tavioribeiro.commitic.domain.usecase.commit
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.tavioribeiro.commitic.domain.model.agent.LlmAgents
@@ -18,7 +19,7 @@ class GenerateCommitUseCase(
     private val consoleRepository: ConsoleRepository,
     private val fileSystemRepository: FileSystemRepository
 ) {
-    operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel): Flow<ProgressResult<CommitDomainModel, CommitFailure>> = flow {
+    operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel, delayBetweenSteps: Int): Flow<ProgressResult<CommitDomainModel, CommitFailure>> = flow {
         var currentBranch = ""
 
         emit(ProgressResult.Loading)
@@ -113,6 +114,14 @@ class GenerateCommitUseCase(
             }
         }
 
+
+
+
+        if (delayBetweenSteps > 0) delay(delayBetweenSteps.toLong() * 1000)
+
+
+
+
         emit(ProgressResult.Progress(2))
         val categoryPrompt = LlmAgents.STEP_TWO.instructions + "\n\n" + currentDetailsChanges
         val category = when (val result = llmRepository.textToLlm(categoryPrompt, llm)) {
@@ -122,6 +131,10 @@ class GenerateCommitUseCase(
                 return@flow
             }
         }
+
+
+        if (delayBetweenSteps > 0) delay(delayBetweenSteps.toLong() * 1000)
+
 
         emit(ProgressResult.Progress(3))
         val summaryPrompt = """
@@ -138,6 +151,10 @@ class GenerateCommitUseCase(
                 return@flow
             }
         }
+
+
+        if (delayBetweenSteps > 0) delay(delayBetweenSteps.toLong() * 1000)
+
 
         emit(ProgressResult.Progress(4))
         val commitPrompt = """

@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -39,16 +40,22 @@ import org.tavioribeiro.commitic.theme.AppTheme
 import org.tavioribeiro.commitic.core.utils.WindowType
 import org.tavioribeiro.commitic.core.utils.getWindowSize
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_copy
 import commitic.composeapp.generated.resources.icon_save
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.presentation.components.multistep.FiveStepStatus
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
@@ -66,6 +73,7 @@ fun CommitsTab(
     val commitsTabuiState by commitsTabviewModel.uiState.collectAsState()
 
 
+    var delayBetweenStepsInputWarningState by remember { mutableStateOf("") }
     //LaunchedEffect(Unit) {}
 
     val clipboardManager = LocalClipboardManager.current
@@ -173,7 +181,6 @@ fun CommitsTab(
 
 
 
-
                 SelectInput(
                     title = "Escolha o Modelo",
                     placeholder = "Seu modelo favorito",
@@ -186,6 +193,44 @@ fun CommitsTab(
                     isBackgroudColorDark = true
                 )
 
+
+                FullInput(
+                    modifier = Modifier
+                        .padding(top = 4.dp),
+                    title = "Delay entre passos",
+                    suffixText = "segundos",
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    placeholder = commitsTabuiState.delayBetweenSteps.toString(),
+                    warning = delayBetweenStepsInputWarningState,
+                    initialValue = commitsTabuiState.delayBetweenSteps.toString(),
+                    onValueChange = { seconds ->
+                        if (seconds.isBlank()) {
+                            delayBetweenStepsInputWarningState = ""
+                            commitsTabviewModel.onChangeDelayBetweenSteps(0)
+
+                        }
+
+                        val number = seconds.toIntOrNull()
+
+                        if (number != null) {
+                            delayBetweenStepsInputWarningState = ""
+                            commitsTabviewModel.onChangeDelayBetweenSteps(number)
+                        } else {
+                            delayBetweenStepsInputWarningState = "O valor deve ser um número inteiro."
+                        }
+                    },
+                    isBackgroudColorDark = true
+                )
+                Text(
+                    text = "Algumas API's, possuem um intervalo de segundos entre as chamadas.",
+                    color = AppTheme.colors.onColor5,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                )
+
+
+
+
                 Spacer(modifier = Modifier.weight(1f))
 
                 Box(
@@ -195,6 +240,7 @@ fun CommitsTab(
                     IconTextButton(
                         modifier = Modifier.padding(top = 52.dp),
                         text = "Gerar Commit",
+                        enabled = delayBetweenStepsInputWarningState.isEmpty(),
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 if(commitsTabuiState.selectedProjectIndex != null && commitsTabuiState.selectedLlmIndex != null){

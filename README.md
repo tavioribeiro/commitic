@@ -61,11 +61,11 @@ sudo apt install commitic
 
 ## 💻 Compatibilidade
 
-| SO | Status |
-| :--- | :---: |
-| 🐧 Linux | ✅ |
-| 🪟 Windows | ✅ |
-| 🍏 Mac | ⏳ |
+| SO                            | Status |
+|:------------------------------|:------:|
+| 🐧 Linux (Debian e derivados) |   ✅    |
+| 🪟 Windows                    |   ✅    |
+| 🍏 Mac                        |    ✅    |
 
 
 <br>

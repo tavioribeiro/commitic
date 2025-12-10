@@ -82,13 +82,13 @@ compose.desktop {
                 menu = true
                 shortcut = true
                 upgradeUuid = "54284915-2388-4509-9864-379089432415"
-                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon.ico"))
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon_w.ico"))
                 perUserInstall = true
             }
 
             macOS {
                 bundleID = "org.tavioribeiro.commitic"
-                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon.icns"))
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon_m.icns"))
             }
         }
     }

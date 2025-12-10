@@ -20,10 +20,13 @@ val commitModule = module {
     factory { SaveCommitUseCase(get()) }
     factory { DeleteCommitUseCase(get()) }
     factory { GenerateCommitUseCase(get(), get(), get()) }
+    factory {  }
 
     // presentation
     factory {
         CommitsTabViewModel(
+            get(),
+            get(),
             get(),
             get(),
             get(),
