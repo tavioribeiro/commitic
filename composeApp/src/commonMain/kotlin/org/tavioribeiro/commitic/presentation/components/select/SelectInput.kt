@@ -1,12 +1,15 @@
 package org.tavioribeiro.commitic.presentation.components.select
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 import org.tavioribeiro.commitic.theme.AppTheme
@@ -18,17 +21,18 @@ fun SelectInput(
     title: String,
     placeholder: String,
     options: List<SelectOptionModel>,
-    initialOption: SelectOptionModel? = null, //1°
-    initialPosition: Int? = null,  //2°
-    initialValue: String? = null, //3°
+    initialOption: SelectOptionModel? = null,
+    initialPosition: Int? = null,
+    initialValue: String? = null,
     onValueChange: (String) -> Unit,
     isBackgroudColorDark: Boolean = false,
     emptyStateText: String = "Não há opções disponíveis"
 ) {
-    //println(initialOption)
     val isEmpty = options.isEmpty()
     var expanded by remember { mutableStateOf(false) }
     var selectedLabel by remember { mutableStateOf("") }
+
+    val interactionSource = remember { MutableInteractionSource() }
 
     LaunchedEffect(initialValue, initialOption, initialPosition, options) {
         if (!isEmpty) {
@@ -38,6 +42,21 @@ fun SelectInput(
             selectedLabel = label ?: ""
         }
     }
+
+    val placeholderColor = if (isBackgroudColorDark) AppTheme.colors.color6 else AppTheme.colors.color6
+    val colors = OutlinedTextFieldDefaults.colors(
+        focusedTextColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
+        unfocusedTextColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
+        unfocusedBorderColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
+        focusedBorderColor = AppTheme.colors.color7,
+        focusedTrailingIconColor = AppTheme.colors.color7,
+        unfocusedTrailingIconColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
+        disabledTrailingIconColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
+        disabledTextColor = placeholderColor,
+        disabledBorderColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent
+    )
 
     Column(
         modifier = modifier
@@ -55,38 +74,53 @@ fun SelectInput(
             expanded = expanded,
             onExpandedChange = { if (!isEmpty) expanded = !expanded }
         ) {
-            val placeholderColor = if (isBackgroudColorDark) AppTheme.colors.color6 else AppTheme.colors.color6
-
-            OutlinedTextField(
+            BasicTextField(
                 value = if (isEmpty) emptyStateText else selectedLabel,
                 onValueChange = {},
                 readOnly = true,
                 enabled = !isEmpty,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .menuAnchor(),
-                placeholder = {
-                    Text(
-                        text = placeholder,
-                        color = placeholderColor
-                    )
-                },
-                shape = RoundedCornerShape(8.dp),
+                    .menuAnchor()
+                    .height(44.dp),
                 singleLine = true,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
-                    unfocusedTextColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
-                    unfocusedBorderColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
-                    focusedBorderColor = AppTheme.colors.color7,
-                    focusedTrailingIconColor = AppTheme.colors.color7,
-                    unfocusedTrailingIconColor = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2,
-                    disabledTrailingIconColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
-                    disabledTextColor = placeholderColor,
-                    disabledBorderColor = if (isBackgroudColorDark) AppTheme.colors.onColor3 else AppTheme.colors.color3,
-                )
+                interactionSource = interactionSource,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    color = if (isEmpty) placeholderColor else (if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2)
+                ),
+                cursorBrush = SolidColor(Color.Transparent),
+                decorationBox = { innerTextField ->
+                    OutlinedTextFieldDefaults.DecorationBox(
+                        value = if (isEmpty) emptyStateText else selectedLabel,
+                        visualTransformation = VisualTransformation.None,
+                        innerTextField = innerTextField,
+                        placeholder = {
+                            Text(
+                                text = placeholder,
+                                color = placeholderColor
+                            )
+                        },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                        },
+                        singleLine = true,
+                        enabled = !isEmpty,
+                        interactionSource = interactionSource,
+                        contentPadding = PaddingValues(start = 12.dp, top = 0.dp, bottom = 0.dp, end = 0.dp),
+                        colors = colors,
+                        container = {
+                            OutlinedTextFieldDefaults.ContainerBox(
+                                enabled = !isEmpty,
+                                isError = false,
+                                interactionSource = interactionSource,
+                                colors = colors,
+                                shape = RoundedCornerShape(8.dp),
+                                focusedBorderThickness = 1.dp,
+                                unfocusedBorderThickness = 1.dp
+                            )
+                        }
+                    )
+                }
             )
 
             if (!isEmpty) {

@@ -49,6 +49,7 @@ import commitic.composeapp.generated.resources.icon_copy
 import commitic.composeapp.generated.resources.icon_save
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.presentation.components.multistep.FiveStepStatus
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
@@ -173,7 +174,6 @@ fun CommitsTab(
 
 
 
-
                 SelectInput(
                     title = "Escolha o Modelo",
                     placeholder = "Seu modelo favorito",
@@ -185,6 +185,30 @@ fun CommitsTab(
                     modifier = Modifier.padding(top = 0.dp),
                     isBackgroudColorDark = true
                 )
+
+
+                FullInput(
+                    modifier = Modifier
+                        .padding(top = 4.dp),
+                    title = "Delay entre passos",
+                    suffixText = "segundos",
+                    placeholder = "0",
+                    //warning = projectNameInputWarningState,
+                    initialValue = "0",
+                    onValueChange = { newName ->
+                        //newProjectUiModel.name = newName
+                    },
+                    isBackgroudColorDark = true
+                )
+                Text(
+                    text = "Algumas API's, possuem um intervalo de segundos entre as chamadas.",
+                    color = AppTheme.colors.onColor5,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                )
+
+
+
 
                 Spacer(modifier = Modifier.weight(1f))
 
