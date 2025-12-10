@@ -33,15 +33,19 @@ fun IconTextButton(
     text: String,
     onClick: () -> Unit,
     icon: Painter,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = {
             if(!isLoading) onClick()
         },
+        enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = AppTheme.colors.color7,
-            contentColor = AppTheme.colors.onColor7
+            contentColor = AppTheme.colors.onColor7,
+            disabledContainerColor = AppTheme.colors.color5,
+            disabledContentColor = AppTheme.colors.onColor5
         ),
         contentPadding = PaddingValues(
             start = 16.dp,

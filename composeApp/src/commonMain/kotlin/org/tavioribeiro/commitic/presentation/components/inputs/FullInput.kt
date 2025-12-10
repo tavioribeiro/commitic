@@ -4,6 +4,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ fun FullInput(
     warning: String = "",
     initialValue: String = "",
     suffixText: String? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit,
     isBackgroudColorDark: Boolean = false
 ) {
@@ -60,6 +62,7 @@ fun FullInput(
                 .fillMaxWidth()
                 .height(44.dp),
             singleLine = true,
+            keyboardOptions = keyboardOptions,
             interactionSource = interactionSource,
             textStyle = MaterialTheme.typography.bodyLarge.copy(
                 color = if (isBackgroudColorDark) AppTheme.colors.onColor2 else AppTheme.colors.color2
@@ -86,7 +89,6 @@ fun FullInput(
                             )
                         }
                     } else null,
-
                     singleLine = true,
                     enabled = true,
                     interactionSource = interactionSource,
