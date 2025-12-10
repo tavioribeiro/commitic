@@ -167,7 +167,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                 )
 
                 FullInput(
-                    modifier = Modifier.padding(top = 20.dp),
+                    modifier = Modifier.padding(top = 4.dp),
                     title = "ID do Modelo",
                     placeholder = "deepseek-chat-v3.1",
                     warning = llmNameInputWarningState,
@@ -179,7 +179,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                 )
 
                 FullInput(
-                    modifier = Modifier.padding(top = 0.dp),
+                    modifier = Modifier.padding(top = 4.dp),
                     title = "Chave da API",
                     placeholder = "f07c1367716290d39235cf642580ad2c",
                     warning = pathInputWarningState,
@@ -190,6 +190,8 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                     isBackgroudColorDark = true
                 )
 
+                Spacer(modifier = Modifier.weight(1f))
+
 
                 Box(
                     modifier = Modifier
@@ -198,7 +200,7 @@ fun LlmsTab(llmsTabviewModel: LlmsTabViewModel = koinInject()) {
                 ){
 
                     IconTextButton(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(0.dp),
                         text = "Adicionar esse Modelo",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {

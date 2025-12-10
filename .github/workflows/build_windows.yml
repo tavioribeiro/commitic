@@ -1,0 +1,32 @@
+name: Build Desktop App (Windows)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build_msi:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Buildar o MSI
+        run: .\gradlew.bat packageReleaseMsi --info
+
+      - name: Upload do Artefato (MSI)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Commitic-Windows-Installer
+          path: composeApp/build/compose/binaries/main-release/msi/*.msi
