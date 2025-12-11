@@ -5,7 +5,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import commitic.composeapp.generated.resources.Res
-import commitic.composeapp.generated.resources.commitic_icon
+import commitic.composeapp.generated.resources.commitic_icon_l
 import org.jetbrains.compose.resources.painterResource
 import org.tavioribeiro.commitic.di.initKoin
 import java.awt.Dimension
@@ -24,7 +24,7 @@ fun main() {
         Window(
             onCloseRequest = ::exitApplication,
             title = "Commitic",
-            icon = painterResource(Res.drawable.commitic_icon),
+            icon = painterResource(Res.drawable.commitic_icon_l),
             state = windowInitialState,
         ) {
             window.minimumSize = Dimension(903, 700)

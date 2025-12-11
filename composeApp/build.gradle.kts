@@ -75,7 +75,7 @@ compose.desktop {
                 shortcut = true
                 debMaintainer = "@tavioribeiro"
                 appCategory = "Development"
-                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon.png"))
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/commitic_icon_l.png"))
             }
 
             windows {

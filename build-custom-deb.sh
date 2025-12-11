@@ -82,12 +82,13 @@ if [ -f "$ICON_SOURCE_PATH" ]; then
 fi
 
 
-# reempacotar 
-FINAL_DEB_NAME="${APP_NAME}_${VERSION}_${DEB_ARCH}_custom.deb"
+# reempacotar
+FINAL_DEB_NAME="Commitic-${VERSION}.deb"
 FINAL_DEB_PATH="$FINAL_DEB_DIR/$FINAL_DEB_NAME"
 mkdir -p "$FINAL_DEB_DIR"
 echo "### 5. Reempacotando..."
 
+# O comando dpkg-deb cria o pacote
 dpkg-deb --root-owner-group -b "$WORK_DIR" "$FINAL_DEB_PATH"
 
 echo ""
