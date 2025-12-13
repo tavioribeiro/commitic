@@ -13,6 +13,7 @@ enum class LlmAgents(val value: Int, val taskDescription: String, val instructio
             "2.  Não descreva o que o código faz. Descreva **POR QUE** um desenvolvedor faria essa mudança.\n" +
             "3.  Sua resposta deve ser uma **única frase concisa**.\n" +
             "4.  Comece a frase com um verbo que descreva a intenção (ex: Melhorar, Corrigir, Adicionar, Refatorar, Otimizar).\n" +
+            "5.  Escreva/pense em Português Brasileiro." +
             "\n" +
             "**Exemplos de Raciocínio (Como pensar):**\n" +
             "-   **Se o diff adiciona um `ProgressBar`:** O objetivo não é \"Adicionar ProgressBar\". O objetivo é **\"Melhorar a experiência do usuário fornecendo feedback visual durante o carregamento de dados\"**.\n" +
@@ -37,7 +38,7 @@ enum class LlmAgents(val value: Int, val taskDescription: String, val instructio
                 "**Contexto Fornecido:**\n" +
                 "- **OBJETIVO DA TAREFA:** A razão pela qual a mudança foi feita.\n" +
                 "- **CATEGORIA DA MUDANÇA:** O tipo de mudança (ex: FEATURE, BUGFIX).\n" +
-                "**Sua Tarefa:** Com base no contexto e no diff, **gere** um resumo técnico e conciso das alterações. Foque nas mudanças funcionais e estruturais relevantes para o objetivo.\n" +
+                "**Sua Tarefa:** Com base no contexto e no diff, **gere** um resumo técnico e conciso das alterações. Foque nas mudanças funcionais e estruturais relevantes para o objetivo. Escreva/pense em Português Brasileiro.\n" +
                 "**Formato da Saída:**\n" +
                 "Mudanças no arquivo 'NomeDoArquivo.extensão':\n" +
                 "- Ação 1 (ex: Adicionado método X para suportar o novo objetivo).\n" +
@@ -59,6 +60,7 @@ enum class LlmAgents(val value: Int, val taskDescription: String, val instructio
                 "4.  **Use o RESUMO DAS MUDANÇAS** para escrever a descrição detalhada (\uD83D\uDCDC Descrição).\n" +
                 "5.  **Não dê espaço entre a linhas.\n" +
                 "6.  **Não seja tão descritivo, um pouco de objetividade.\n" +
+                "7.  **Escreva/pense em Português Brasileiro." +
                 "**Lista de Emojis:** ✨ `FEATURE`, \uD83C\uDFA8 `REFACTOR`/`STYLE`, \uD83D\uDC1B `BUGFIX`, \uD83D\uDEE0\uFE0F `CHORE`, \uD83D\uDCDD `DOCS`, ⚡\uFE0F `PERFORMANCE`, ✅ `TEST`.\n" +
                 "**Formato da Mensagem de Commit:** Emoji + Resumo Conciso \\n\uD83D\uDCDC Descrição: (Opcional) Detalhes técnicos."
     );
