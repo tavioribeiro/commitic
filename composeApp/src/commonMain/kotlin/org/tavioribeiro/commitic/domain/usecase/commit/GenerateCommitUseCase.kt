@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.flow
 import org.tavioribeiro.commitic.domain.model.agent.LlmAgents
 import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
+import org.tavioribeiro.commitic.domain.model.commit.CommitLanguage
+import org.tavioribeiro.commitic.domain.model.commit.CommitStyle
 import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.model.project.ProjectDomainModel
@@ -19,7 +21,7 @@ class GenerateCommitUseCase(
     private val consoleRepository: ConsoleRepository,
     private val fileSystemRepository: FileSystemRepository
 ) {
-    operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel, delayBetweenSteps: Int): Flow<ProgressResult<CommitDomainModel, CommitFailure>> = flow {
+    operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel, delayBetweenSteps: Int, language: CommitLanguage = CommitLanguage.PORTUGUES, style: CommitStyle = CommitStyle.PROFISSIONAL): Flow<ProgressResult<CommitDomainModel, CommitFailure>> = flow {
         var currentBranch = ""
 
         emit(ProgressResult.Loading)
@@ -105,7 +107,8 @@ class GenerateCommitUseCase(
 
 
         emit(ProgressResult.Progress(1))
-        val taskObjectivePrompt = LlmAgents.STEP_ONE.instructions + "\n\n" + currentDetailsChanges
+        val stepOneInstructions = LlmAgents.buildPrompt(LlmAgents.STEP_ONE.instructions, language, style)
+        val taskObjectivePrompt = stepOneInstructions + "\n\n" + currentDetailsChanges
         val taskObjective = when (val result = llmRepository.textToLlm(taskObjectivePrompt, llm)) {
             is RequestResult.Success -> result.data.trim()
             is RequestResult.Failure -> {
@@ -137,13 +140,14 @@ class GenerateCommitUseCase(
 
 
         emit(ProgressResult.Progress(3))
+        val stepThreeInstructions = LlmAgents.buildPrompt(LlmAgents.STEP_THREE.instructions, language, style)
         val summaryPrompt = """
             OBJETIVO DA TAREFA: $taskObjective
             CATEGORIA DA MUDANÇA: $category
 
             MUDANÇAS ATUAIS (DIFF):
             $currentDetailsChanges
-        """.trimIndent() + "\n\n" + LlmAgents.STEP_THREE.instructions
+        """.trimIndent() + "\n\n" + stepThreeInstructions
         val summary = when (val result = llmRepository.textToLlm(summaryPrompt, llm)) {
             is RequestResult.Success -> result.data.trim()
             is RequestResult.Failure -> {
@@ -157,13 +161,14 @@ class GenerateCommitUseCase(
 
 
         emit(ProgressResult.Progress(4))
+        val stepFourInstructions = LlmAgents.buildPrompt(LlmAgents.STEP_FOUR.instructions, language, style)
         val commitPrompt = """
             OBJETIVO DA TAREFA: $taskObjective
             CATEGORIA DA MUDANÇA: $category
 
             RESUMO DAS MUDANÇAS:
             $summary
-        """.trimIndent() + "\n\n" + LlmAgents.STEP_FOUR.instructions
+        """.trimIndent() + "\n\n" + stepFourInstructions
         val commitMessage = when (val result = llmRepository.textToLlm(commitPrompt, llm)) {
             is RequestResult.Success -> result.data.trim()
             is RequestResult.Failure -> {

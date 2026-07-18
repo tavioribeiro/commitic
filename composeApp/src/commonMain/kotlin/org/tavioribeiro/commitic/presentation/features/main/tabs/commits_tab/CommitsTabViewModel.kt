@@ -8,15 +8,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.tavioribeiro.commitic.domain.model.agent.LlmAgents
+import org.tavioribeiro.commitic.domain.model.commit.CommitLanguage
+import org.tavioribeiro.commitic.domain.model.commit.CommitStyle
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.GetLlmsUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.GetCommitLanguageUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.GetCommitStyleUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedDelayBetweenStepsUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedProjectUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.SaveCommitLanguageUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.SaveCommitStyleUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedDelayBetweenStepsUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedProjectUseCase
@@ -51,6 +57,10 @@ data class CommitsTabUiState(
 
     val delayBetweenSteps:Int = 0,
 
+    val selectedLanguage: CommitLanguage = CommitLanguage.PORTUGUES,
+    val selectedStyle: CommitStyle = CommitStyle.PROFISSIONAL,
+    val isOptionsPopupVisible: Boolean = false,
+
     var isGenaratingCommitLoading: Boolean = false,
     val commitText: String = "Seu commit aparecerá aqui.",
     val stepsAndProgress: FiveStepStatusModel = FiveStepStatusModel(
@@ -82,6 +92,10 @@ class CommitsTabViewModel(
     private val saveSelectedLlmUseCase: SaveSelectedLlmUseCase,
     private val getSelectedDelayBetweenStepsUseCase: GetSelectedDelayBetweenStepsUseCase,
     private val saveSelectedDelayBetweenStepsUseCase: SaveSelectedDelayBetweenStepsUseCase,
+    private val getCommitLanguageUseCase: GetCommitLanguageUseCase,
+    private val saveCommitLanguageUseCase: SaveCommitLanguageUseCase,
+    private val getCommitStyleUseCase: GetCommitStyleUseCase,
+    private val saveCommitStyleUseCase: SaveCommitStyleUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CommitsTabUiState())
@@ -104,6 +118,8 @@ class CommitsTabViewModel(
         loadProjects()
         loadLlms()
         getSelectedDelayBetweenSteps()
+        getSavedCommitLanguage()
+        getSavedCommitStyle()
     }
 
     private fun loadProjects() {
@@ -261,6 +277,44 @@ class CommitsTabViewModel(
 
 
 
+    private fun getSavedCommitLanguage() {
+        val savedLanguage = getCommitLanguageUseCase()
+        if (savedLanguage != null) {
+            val language = try { CommitLanguage.valueOf(savedLanguage) } catch (e: IllegalArgumentException) { null }
+            if (language != null) {
+                _uiState.update { it.copy(selectedLanguage = language) }
+            }
+        }
+    }
+
+    private fun getSavedCommitStyle() {
+        val savedStyle = getCommitStyleUseCase()
+        if (savedStyle != null) {
+            val style = try { CommitStyle.valueOf(savedStyle) } catch (e: IllegalArgumentException) { null }
+            if (style != null) {
+                _uiState.update { it.copy(selectedStyle = style) }
+            }
+        }
+    }
+
+    fun onLanguageSelected(language: CommitLanguage) {
+        viewModelScope.launch {
+            saveCommitLanguageUseCase(language.name)
+            _uiState.update { it.copy(selectedLanguage = language) }
+        }
+    }
+
+    fun onStyleSelected(style: CommitStyle) {
+        viewModelScope.launch {
+            saveCommitStyleUseCase(style.name)
+            _uiState.update { it.copy(selectedStyle = style) }
+        }
+    }
+
+    fun onToggleOptionsPopup() {
+        _uiState.update { it.copy(isOptionsPopupVisible = !it.isOptionsPopupVisible) }
+    }
+
     fun onGenerateCommitClicked(projectIndex: Int, llmIndex: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isGenaratingCommitLoading = true, commitText = "") }
@@ -280,7 +334,10 @@ class CommitsTabViewModel(
                 return@launch
             }
 
-            generateCommitUseCase(projectDomain, llmDomain, delayBetweenSteps = uiState.value.delayBetweenSteps).collect { result ->
+            val currentLanguage = uiState.value.selectedLanguage
+            val currentStyle = uiState.value.selectedStyle
+
+            generateCommitUseCase(projectDomain, llmDomain, delayBetweenSteps = uiState.value.delayBetweenSteps, language = currentLanguage, style = currentStyle).collect { result ->
                 when (result) {
                     is ProgressResult.Loading -> {
                         _uiState.update { it.copy(isGenaratingCommitLoading = true) }

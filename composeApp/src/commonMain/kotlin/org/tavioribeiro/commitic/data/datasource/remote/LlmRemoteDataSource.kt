@@ -8,6 +8,7 @@ import io.ktor.http.*
 import org.tavioribeiro.commitic.data.model.apis.ClaudeRequest
 import org.tavioribeiro.commitic.data.model.apis.Content
 import org.tavioribeiro.commitic.data.model.apis.GeminiRequest
+import org.tavioribeiro.commitic.data.model.apis.GeminiResponse
 import org.tavioribeiro.commitic.data.model.apis.HuggingFaceRequest
 import org.tavioribeiro.commitic.data.model.apis.Message
 import org.tavioribeiro.commitic.data.model.apis.OpenAiApiResponse
@@ -43,12 +44,27 @@ class LlmRemoteDataSource(private val client: HttpClient)  {
             throw Exception("Erro na API [${response.status}]: ${response.bodyAsText()}")
         }
 
-         val apiResponse = when (LlmAvailableApis.fromValue(llmDomainModel.company)) {
+         val apiType = LlmAvailableApis.fromValue(llmDomainModel.company)
+
+         if (apiType == LlmAvailableApis.GEMINI) {
+             val geminiResponse = response.body<GeminiResponse>()
+             if (geminiResponse.error != null) {
+                 throw Exception("Erro da API: ${geminiResponse.error.message ?: "Erro desconhecido"}")
+             }
+             return geminiResponse.candidates.firstOrNull()?.content?.parts?.firstOrNull()?.text
+                 ?: throw Exception("A resposta da API Gemini não é válida.")
+         }
+
+         val apiResponse = when (apiType) {
              LlmAvailableApis.OPENAI -> response.body<OpenAiApiResponse>()
              LlmAvailableApis.GROQ -> response.body<OpenAiApiResponse>()
              LlmAvailableApis.DEEPSEEK -> response.body<OpenAiApiResponse>()
              LlmAvailableApis.OPEN_ROUTER -> response.body<OpenAiApiResponse>()
              else -> response.body<OpenAiApiResponse>()
+         }
+
+         if (apiResponse.error != null) {
+             throw Exception("Erro da API: ${apiResponse.error.message ?: "Erro desconhecido"}")
          }
 
          return apiResponse.choices.firstOrNull()?.message?.content?: throw Exception("A resposta da API não é válida.")
@@ -69,7 +85,7 @@ class LlmRemoteDataSource(private val client: HttpClient)  {
     private suspend fun callGeminiApi(prompt: String, config: LlmDomainModel): HttpResponse {
         val requestBody = GeminiRequest(contents = listOf(Content(parts = listOf(Part(text = prompt)))))
         return client.post("https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent") {
-            url { parameters.append("key", config.apiToken) }
+            header("x-goog-api-key", config.apiToken)
             contentType(ContentType.Application.Json)
             setBody(requestBody)
         }

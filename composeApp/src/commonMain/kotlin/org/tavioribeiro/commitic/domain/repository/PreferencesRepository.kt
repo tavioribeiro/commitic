@@ -8,4 +8,8 @@ interface PreferencesRepository {
     fun getSelectedLlmId(): String?
     fun saveSelectedDelayBetweenStepsValue(seconds: Int)
     fun getSelectedDelayBetweenStepsValue(): Int
+    fun saveCommitLanguage(language: String)
+    fun getCommitLanguage(): String?
+    fun saveCommitStyle(style: String)
+    fun getCommitStyle(): String?
 }

@@ -29,4 +29,20 @@ class PreferencesRepositoryImpl(
     override fun getSelectedDelayBetweenStepsValue(): Int {
         return localDataSource.getSelectedDelayBetweenStepsValue()
     }
+
+    override fun saveCommitLanguage(language: String) {
+        localDataSource.saveCommitLanguage(language)
+    }
+
+    override fun getCommitLanguage(): String? {
+        return localDataSource.getCommitLanguage()
+    }
+
+    override fun saveCommitStyle(style: String) {
+        localDataSource.saveCommitStyle(style)
+    }
+
+    override fun getCommitStyle(): String? {
+        return localDataSource.getCommitStyle()
+    }
 }

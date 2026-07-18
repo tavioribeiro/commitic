@@ -22,11 +22,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -52,15 +54,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_copy
 import commitic.composeapp.generated.resources.icon_save
+import commitic.composeapp.generated.resources.icon_voice_style
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.domain.model.commit.CommitLanguage
+import org.tavioribeiro.commitic.domain.model.commit.CommitStyle
 import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
 import org.tavioribeiro.commitic.presentation.components.multistep.FiveStepStatus
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
+import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 
 @Composable
 fun CommitsTab(
@@ -233,12 +239,30 @@ fun CommitsTab(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Box(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ){
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = { commitsTabviewModel.onToggleOptionsPopup() },
+                        modifier = Modifier
+                            .height(48.dp)
+                            .width(48.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(AppTheme.colors.color5)
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.icon_voice_style),
+                            contentDescription = "Opções de Commit",
+                            tint = AppTheme.colors.onColor5,
+                            modifier = Modifier.height(24.dp).width(24.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
                     IconTextButton(
-                        modifier = Modifier.padding(top = 52.dp),
                         text = "Gerar Commit",
                         enabled = delayBetweenStepsInputWarningState.isEmpty(),
                         onClick = {
@@ -261,11 +285,19 @@ fun CommitsTab(
                         isLoading = commitsTabuiState.isGenaratingCommitLoading
                     )
                 }
+
+                if (commitsTabuiState.isOptionsPopupVisible) {
+                    CommitOptionsPopup(
+                        selectedLanguage = commitsTabuiState.selectedLanguage,
+                        selectedStyle = commitsTabuiState.selectedStyle,
+                        onLanguageSelected = { commitsTabviewModel.onLanguageSelected(it) },
+                        onStyleSelected = { commitsTabviewModel.onStyleSelected(it) },
+                        onDismiss = { commitsTabviewModel.onToggleOptionsPopup() }
+                    )
+                }
             }
 
-
             Spacer(modifier = Modifier.width(30.dp))
-
 
             Column(
                 Modifier
@@ -284,13 +316,10 @@ fun CommitsTab(
                     style = MaterialTheme.typography.headlineSmall
                 )
 
-
-
                 FiveStepStatus(
                     fiveStepStatusModel = commitsTabuiState.stepsAndProgress,
                     modifier = Modifier.padding(top = 10.dp)
                 )
-
 
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -414,4 +443,68 @@ fun CommitsTab(
             }
         }
     }
+}
+
+@Composable
+private fun CommitOptionsPopup(
+    selectedLanguage: CommitLanguage,
+    selectedStyle: CommitStyle,
+    onLanguageSelected: (CommitLanguage) -> Unit,
+    onStyleSelected: (CommitStyle) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val languageOptions = CommitLanguage.entries.map {
+        SelectOptionModel(label = it.displayName, value = it.name)
+    }
+    val styleOptions = CommitStyle.entries.map {
+        SelectOptionModel(label = it.displayName, value = it.name)
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Opções de Commit",
+                color = AppTheme.colors.onColor2,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
+        text = {
+            Column {
+                SelectInput(
+                    title = "Idioma",
+                    placeholder = "Selecione o idioma",
+                    options = languageOptions,
+                    initialValue = selectedLanguage.name,
+                    onValueChange = { value ->
+                        val language = try { CommitLanguage.valueOf(value) } catch (e: IllegalArgumentException) { null }
+                        if (language != null) onLanguageSelected(language)
+                    },
+                    isBackgroudColorDark = true
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                SelectInput(
+                    title = "Estilo",
+                    placeholder = "Selecione o estilo",
+                    options = styleOptions,
+                    initialValue = selectedStyle.name,
+                    onValueChange = { value ->
+                        val style = try { CommitStyle.valueOf(value) } catch (e: IllegalArgumentException) { null }
+                        if (style != null) onStyleSelected(style)
+                    },
+                    isBackgroudColorDark = true
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Fechar", color = AppTheme.colors.color7)
+            }
+        },
+        containerColor = AppTheme.colors.color3,
+        titleContentColor = AppTheme.colors.onColor2,
+        textContentColor = AppTheme.colors.onColor2
+    )
 }
