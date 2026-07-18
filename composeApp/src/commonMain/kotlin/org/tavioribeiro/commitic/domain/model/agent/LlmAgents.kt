@@ -41,7 +41,7 @@ enum class LlmAgents(val value: Int, val taskDescription: String, val instructio
                 "**Contexto Fornecido:**\n" +
                 "- **OBJETIVO DA TAREFA:** A razão pela qual a mudança foi feita.\n" +
                 "- **CATEGORIA DA MUDANÇA:** O tipo de mudança (ex: FEATURE, BUGFIX).\n" +
-                "**Sua Tarefa:** Com base no contexto e no diff, **gere** um resumo técnico e conciso das alterações. Foque nas mudanças funcionais e estruturais relevantes para o objetivo. {language}\n" +
+                "**Sua Tarefa:** Com base no contexto e no diff, **gere** um resumo técnico e conciso das alterações. Foque nas mudanças funcionais e estruturais relevantes para o objetivo. {language} {style}\n" +
                 "**Formato da Saída:**\n" +
                 "Mudanças no arquivo 'NomeDoArquivo.extensão':\n" +
                 "- Ação 1 (ex: Adicionado método X para suportar o novo objetivo).\n" +
@@ -55,18 +55,16 @@ enum class LlmAgents(val value: Int, val taskDescription: String, val instructio
                 "- **OBJETIVO DA TAREFA:** A razão principal da mudança.\n" +
                 "- **CATEGORIA DA MUDANÇA:** O tipo de mudança (ex: FEATURE, BUGFIX).\n" +
                 "- **RESUMO DAS MUDANÇAS:** Uma lista detalhada do que foi alterado.\n" +
-                "**Sua Tarefa:** Com base em todo o contexto fornecido, **crie** uma mensagem de commit Git formatada, seguindo o padrão de emojis e estrutura.\n" +
+                "**Sua Tarefa:** Com base em todo o contexto fornecido, **crie** uma mensagem de commit Git formatada, seguindo rigorosamente o formato descrito em sua instrução de estilo ({style}).\n" +
                 "**Instruções:**\n" +
                 "1.  **Analise** o objetivo, a categoria e o resumo.\n" +
-                "2.  **Use a CATEGORIA** para ajudar a escolher o emoji mais apropriado.\n" +
-                "3.  **Use o OBJETIVO** para escrever o resumo conciso (a primeira linha do commit).\n" +
-                "4.  **Use o RESUMO DAS MUDANÇAS** para escrever a descrição detalhada (\uD83D\uDCDC Descrição).\n" +
-                "5.  **Não dê espaço entre a linhas.\n" +
-                "6.  **Não seja tão descritivo, um pouco de objetividade.\n" +
+                "2.  **Use a CATEGORIA** para determinar o prefixo/tipo do commit (FEATURE -> feat, BUGFIX -> fix, REFACTOR -> refactor, STYLE -> style, DOCS -> docs, CHORE -> chore, PERFORMANCE -> perf, TEST -> test).\n" +
+                "3.  **Use o OBJETIVO** para escrever o título conciso.\n" +
+                "4.  **Use o RESUMO DAS MUDANÇAS** para escrever o corpo da descrição.\n" +
+                "5.  O título deve ter no máximo 72 caracteres.\n" +
+                "6.  Separe o título do corpo com uma linha em branco.\n" +
                 "7.  {language}\n" +
-                "8.  {style}\n" +
-                "**Lista de Emojis:** ✨ `FEATURE`, \uD83C\uDFA8 `REFACTOR`/`STYLE`, \uD83D\uDC1B `BUGFIX`, \uD83D\uDEE0\uFE0F `CHORE`, \uD83D\uDCDD `DOCS`, ⚡\uFE0F `PERFORMANCE`, ✅ `TEST`.\n" +
-                "**Formato da Mensagem de Commit:** Emoji + Resumo Conciso \\n\uD83D\uDCDC Descrição: (Opcional) Detalhes técnicos."
+                "8.  {style}\n"
     );
 
 
