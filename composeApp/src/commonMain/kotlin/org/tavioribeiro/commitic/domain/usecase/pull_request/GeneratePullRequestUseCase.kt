@@ -101,44 +101,44 @@ class GeneratePullRequestUseCase(
 
 
         val commitPrompt = """
-            **Tarefa:** Gerar uma descrição de Pull Request (PR) a partir do texto de análise de commit fornecido.
+            **Task:** Generate a Pull Request (PR) description from the provided commit analysis text.
 
             **INPUT:**
-            Você receberá um texto com as seções: `CONTEXTO`, `MUDANÇAS` e `COMMIT GERADO`.
+            You will receive a text with the following sections: `CONTEXT`, `CHANGES`, and `GENERATED COMMIT`.
             
-            **OUTPUT (Siga este formato estritamente):**
-            
-            ---
-            
-            `TIPO #TICKET: Título derivado do COMMIT GERADO`
-            
-            #### 📜 Descrição
-            
-            Parágrafo narrativo que elabora o `CONTEXTO.Objetivo`. Explique **o quê** a mudança faz e **por quê** ela é importante. Seja direto e informativo.
-            
-            #### 📑 Mudanças Principais
-            
-            Analise a seção `MUDANÇAS` e siga estas regras:
-            *   Agrupe as alterações por temas lógicos em **subtítulos em negrito**. Não agrupe por nome de arquivo.
-            *   Dentro de cada tema, liste as alterações usando bullet points (`*`).
-            *   **Não copie o texto de `MUDANÇAS`**. Reescreva cada ponto para explicar a alteração de forma clara para um revisor.
+            **OUTPUT (Follow this format strictly):**
             
             ---
             
-            **Regras Adicionais:**
-            *   **TIPO do Título:** Use `FEAT` para `CONTEXTO.Categoria: FEATURE`. Use `FIX` para `CONTEXTO.Categoria: BUGFIX`.
-            *   **#TICKET:** Use `#TICKET` como um placeholder.
+            `TYPE #TICKET: Title derived from GENERATED COMMIT`
+            
+            #### 📜 Description
+            
+            Narrative paragraph that elaborates on `CONTEXT.Objective`. Explain **what** the change does and **why** it matters. Be direct and informative.
+            
+            #### 📑 Main Changes
+            
+            Analyze the `CHANGES` section and follow these rules:
+            *   Group changes by logical themes into **bold subtitles**. Do not group by file name.
+            *   Within each theme, list the changes using bullet points (`*`).
+            *   **Do not copy the `CHANGES` text**. Rewrite each point to explain the change clearly for a reviewer.
+            
+            ---
+            
+            **Additional Rules:**
+            *   **Title TYPE:** Use `FEAT` for `CONTEXT.Category: FEATURE`. Use `FIX` for `CONTEXT.Category: BUGFIX`.
+            *   **#TICKET:** Use `#TICKET` as a placeholder.
 
-            **INFORMAÇÕES DO COMMIT:**
+            **COMMIT INFORMATION:**
             ${
             commitList.joinToString(separator = "\n") { commit ->
                 """
                     █████████████████████████████████████████████
-                        Nome da Branch: ${commit.branchName}
-                        Objetivo da Tarefa: ${commit.taskObjective}
-                        Categoria: ${commit.category}
-                        Resumo: ${commit.summary}
-                        Mensagem do Commit: ${commit.commitMessage}
+                        Branch Name: ${commit.branchName}
+                        Task Objective: ${commit.taskObjective}
+                        Category: ${commit.category}
+                        Summary: ${commit.summary}
+                        Commit Message: ${commit.commitMessage}
                         --------------------------------------------------
                     """.trimIndent()
             }

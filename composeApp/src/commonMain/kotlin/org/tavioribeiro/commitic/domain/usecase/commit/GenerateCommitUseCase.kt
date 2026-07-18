@@ -142,10 +142,10 @@ class GenerateCommitUseCase(
         emit(ProgressResult.Progress(3))
         val stepThreeInstructions = LlmAgents.buildPrompt(LlmAgents.STEP_THREE.instructions, language, style)
         val summaryPrompt = """
-            OBJETIVO DA TAREFA: $taskObjective
-            CATEGORIA DA MUDANÇA: $category
+            TASK OBJECTIVE: $taskObjective
+            CHANGE CATEGORY: $category
 
-            MUDANÇAS ATUAIS (DIFF):
+            CURRENT CHANGES (DIFF):
             $currentDetailsChanges
         """.trimIndent() + "\n\n" + stepThreeInstructions
         val summary = when (val result = llmRepository.textToLlm(summaryPrompt, llm)) {
@@ -163,10 +163,10 @@ class GenerateCommitUseCase(
         emit(ProgressResult.Progress(4))
         val stepFourInstructions = LlmAgents.buildPrompt(LlmAgents.STEP_FOUR.instructions, language, style)
         val commitPrompt = """
-            OBJETIVO DA TAREFA: $taskObjective
-            CATEGORIA DA MUDANÇA: $category
+            TASK OBJECTIVE: $taskObjective
+            CHANGE CATEGORY: $category
 
-            RESUMO DAS MUDANÇAS:
+            CHANGE SUMMARY:
             $summary
         """.trimIndent() + "\n\n" + stepFourInstructions
         val commitMessage = when (val result = llmRepository.textToLlm(commitPrompt, llm)) {

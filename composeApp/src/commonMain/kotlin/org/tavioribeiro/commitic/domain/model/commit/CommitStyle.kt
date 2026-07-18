@@ -1,8 +1,8 @@
 package org.tavioribeiro.commitic.domain.model.commit
 
 enum class CommitStyle(val displayName: String, val instruction: String) {
-    PROFISSIONAL("Profissional", "Use um tom profissional e formal. Não use emojis ou emoticons. Formato do commit: {título (máx 72 caracteres)}\\n\\n{corpo opcional com descrição detalhada}"),
-    CASUAL("Casual/Descontraído", "Use um tom casual e descontraído, com linguagem mais leve. O PRIMEIRO caractere do título DEVE ser o emoji correspondente à CATEGORIA da mudança, usando EXATAMENTE esta tabela: FEATURE -> ✨, REFACTOR -> 🎨, STYLE -> 🎨, BUGFIX -> 🐛, CHORE -> 🛠️, DOCS -> 📝, PERFORMANCE -> ⚡️, TEST -> ✅. NÃO use nenhum outro emoji. Após os dois-pontos (:), a primeira letra DEVE ser maiúscula. Formato do commit: {emoji} {tipo}: {Título}\n\nDescrição:\n- bullet point 1\n- bullet point 2\nCada bullet point deve descrever uma mudança específica de forma clara e detalhada."),
-    TECNICO("Técnico/Detalhado", "Seja extremamente técnico e detalhado, focando em aspectos de implementação. Não use emojis ou emoticons."),
-    MINIMALISTA("Minimalista", "Seja minimalista e conciso, apenas o essencial. Não use emojis ou emoticons. Apenas uma única linha de resumo, sem corpo.")
+    PROFISSIONAL("Profissional", "Use a professional and formal tone. Do not use emojis or emoticons. Commit format: {title (max 72 characters)}\\n\\n{optional body with detailed description}"),
+    CASUAL("Casual/Descontraído", "Use a casual and relaxed tone with lighter language. The FIRST character of the title MUST be the emoji corresponding to the CHANGE CATEGORY, using EXACTLY this table: FEATURE -> ✨, REFACTOR -> 🎨, STYLE -> 🎨, BUGFIX -> 🐛, CHORE -> 🛠️, DOCS -> 📝, PERFORMANCE -> ⚡️, TEST -> ✅. Do NOT use any other emoji. After the colon (:), the first letter MUST be uppercase. Commit format: {emoji} {type}: {Title}\n\nDescription:\n- bullet point 1\n- bullet point 2\nEach bullet point must describe a specific change clearly and in detail."),
+    TECNICO("Técnico/Detalhado", "Be extremely technical and detailed, focusing on implementation aspects. Do not use emojis or emoticons."),
+    MINIMALISTA("Minimalista", "Be minimalist and concise, only the essentials. Do not use emojis or emoticons. Only a single summary line, no body.")
 }
