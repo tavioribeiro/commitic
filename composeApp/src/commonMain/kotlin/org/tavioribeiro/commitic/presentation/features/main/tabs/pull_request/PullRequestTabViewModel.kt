@@ -7,13 +7,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.tavioribeiro.commitic.domain.model.commit.CommitLanguage
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.usecase.commit.GetCommitsByprojectIdAndBranchUseCase
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
 import org.tavioribeiro.commitic.domain.usecase.llm.GetLlmsUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.GetPrLanguageUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedProjectUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.SavePrLanguageUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.project.GetProjectsUseCase
@@ -45,7 +48,10 @@ data class PullRequestTabUiState(
     var isGenaratingPullRequestLoading: Boolean = false,
     val pullRequestText: String = "O texto da Pull Request irá aparecer aqui.",
 
-    var commitText: String = ""
+    var commitText: String = "",
+
+    val selectedLanguage: CommitLanguage = CommitLanguage.PORTUGUES,
+    val isOptionsPopupVisible: Boolean = false
 )
 
 
@@ -61,7 +67,9 @@ class PullRequestTabViewModel(
     private val getSelectedProjectUseCase: GetSelectedProjectUseCase,
     private val saveSelectedProjectUseCase: SaveSelectedProjectUseCase,
     private val getSelectedLlmUseCase: GetSelectedLlmUseCase,
-    private val saveSelectedLlmUseCase: SaveSelectedLlmUseCase
+    private val saveSelectedLlmUseCase: SaveSelectedLlmUseCase,
+    private val getPrLanguageUseCase: GetPrLanguageUseCase,
+    private val savePrLanguageUseCase: SavePrLanguageUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PullRequestTabUiState())
@@ -78,6 +86,7 @@ class PullRequestTabViewModel(
     init {
         loadProjects()
         loadLlms()
+        getSavedPrLanguage()
     }
 
     private fun loadProjects() {
@@ -213,6 +222,27 @@ class PullRequestTabViewModel(
         }
     }
 
+    private fun getSavedPrLanguage() {
+        val savedLanguage = getPrLanguageUseCase()
+        if (savedLanguage != null) {
+            val language = try { CommitLanguage.valueOf(savedLanguage) } catch (e: IllegalArgumentException) { null }
+            if (language != null) {
+                _uiState.update { it.copy(selectedLanguage = language) }
+            }
+        }
+    }
+
+    fun onLanguageSelected(language: CommitLanguage) {
+        viewModelScope.launch {
+            savePrLanguageUseCase(language.name)
+            _uiState.update { it.copy(selectedLanguage = language) }
+        }
+    }
+
+    fun onToggleOptionsPopup() {
+        _uiState.update { it.copy(isOptionsPopupVisible = !it.isOptionsPopupVisible) }
+    }
+
     fun onGeneratePullRequestClicked(projectIndex: Int, llmIndex: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isGenaratingPullRequestLoading = true, pullRequestText = "") }
@@ -232,7 +262,9 @@ class PullRequestTabViewModel(
                 return@launch
             }
 
-            generatePullRequestUseCase(projectDomain, llmDomain).collect { result ->
+            val currentLanguage = _uiState.value.selectedLanguage
+
+            generatePullRequestUseCase(projectDomain, llmDomain, language = currentLanguage).collect { result ->
                 when (result) {
                     is ProgressResult.Loading -> {
                         _uiState.update { it.copy(isGenaratingPullRequestLoading = true) }

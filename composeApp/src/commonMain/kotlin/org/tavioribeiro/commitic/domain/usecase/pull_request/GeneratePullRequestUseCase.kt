@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.tavioribeiro.commitic.domain.model.commit.CommitDomainModel
 import org.tavioribeiro.commitic.domain.model.commit.CommitFailure
+import org.tavioribeiro.commitic.domain.model.commit.CommitLanguage
 import org.tavioribeiro.commitic.domain.model.llm.LlmDomainModel
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
 import org.tavioribeiro.commitic.domain.model.project.ProjectDomainModel
@@ -21,7 +22,7 @@ class GeneratePullRequestUseCase(
     private val consoleRepository: ConsoleRepository,
     private val fileSystemRepository: FileSystemRepository
 ) {
-    operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel): Flow<ProgressResult<PullRequestDomainModel, CommitFailure>> = flow {
+    operator fun invoke(project: ProjectDomainModel, llm: LlmDomainModel, language: CommitLanguage = CommitLanguage.PORTUGUES): Flow<ProgressResult<PullRequestDomainModel, CommitFailure>> = flow {
         var currentBranch = ""
         val commitList: List<CommitDomainModel>
 
@@ -100,7 +101,7 @@ class GeneratePullRequestUseCase(
         }
 
 
-        val commitPrompt = """
+        val rawPrompt = """
             **Task:** Generate a Pull Request (PR) description from the provided commit analysis text.
 
             **INPUT:**
@@ -128,6 +129,7 @@ class GeneratePullRequestUseCase(
             **Additional Rules:**
             *   **Title TYPE:** Use `FEAT` for `CONTEXT.Category: FEATURE`. Use `FIX` for `CONTEXT.Category: BUGFIX`.
             *   **#TICKET:** Use `#TICKET` as a placeholder.
+            *   **Language:** Generate the ENTIRE output in ${language.displayName} — title, section headers, description, and main changes. Every word must be in ${language.displayName}.
 
             **COMMIT INFORMATION:**
             ${
@@ -145,7 +147,7 @@ class GeneratePullRequestUseCase(
         }
         """.trimIndent()
 
-        val pullRequestText = when (val result = llmRepository.textToLlm(commitPrompt, llm)) {
+        val pullRequestText = when (val result = llmRepository.textToLlm(rawPrompt, llm)) {
             is RequestResult.Success -> result.data.trim()
             is RequestResult.Failure -> {
                 emit(ProgressResult.Failure(result.failure))

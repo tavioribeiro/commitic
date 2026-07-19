@@ -14,6 +14,8 @@ class PreferencesLocalDataSource(
         private const val KEY_SELECTED_DELAY_BETWEEN_STEPS = "selected_delay_between_steps"
         private const val KEY_COMMIT_LANGUAGE = "commit_language"
         private const val KEY_COMMIT_STYLE = "commit_style"
+        private const val KEY_PR_LANGUAGE = "pr_language"
+        private const val KEY_PR_STYLE = "pr_style"
     }
 
     fun saveSelectedProjectId(id: String) {
@@ -55,5 +57,21 @@ class PreferencesLocalDataSource(
 
     fun getCommitStyle(): String? {
         return settings[KEY_COMMIT_STYLE]
+    }
+
+    fun savePrLanguage(language: String) {
+        settings[KEY_PR_LANGUAGE] = language
+    }
+
+    fun getPrLanguage(): String? {
+        return settings[KEY_PR_LANGUAGE]
+    }
+
+    fun savePrStyle(style: String) {
+        settings[KEY_PR_STYLE] = style
+    }
+
+    fun getPrStyle(): String? {
+        return settings[KEY_PR_STYLE]
     }
 }

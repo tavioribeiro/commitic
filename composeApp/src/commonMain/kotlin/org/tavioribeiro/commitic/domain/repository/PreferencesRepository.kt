@@ -12,4 +12,8 @@ interface PreferencesRepository {
     fun getCommitLanguage(): String?
     fun saveCommitStyle(style: String)
     fun getCommitStyle(): String?
+    fun savePrLanguage(language: String)
+    fun getPrLanguage(): String?
+    fun savePrStyle(style: String)
+    fun getPrStyle(): String?
 }

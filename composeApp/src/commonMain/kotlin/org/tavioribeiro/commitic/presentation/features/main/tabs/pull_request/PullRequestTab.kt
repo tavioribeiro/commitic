@@ -21,11 +21,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,11 +49,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_copy
+import commitic.composeapp.generated.resources.icon_voice_style
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.compose.koinInject
+import org.tavioribeiro.commitic.domain.model.commit.CommitLanguage
 import org.tavioribeiro.commitic.presentation.components.select.SelectInput
 import org.tavioribeiro.commitic.presentation.components.toast.ToastViewModel
+import org.tavioribeiro.commitic.presentation.model.SelectOptionModel
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastType
 import org.tavioribeiro.commitic.presentation.components.toast.model.ToastUiModel
 
@@ -210,12 +215,30 @@ fun PullRequestTab(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Box(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ){
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = { pullRequestTabviewModel.onToggleOptionsPopup() },
+                        modifier = Modifier
+                            .height(48.dp)
+                            .width(48.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(AppTheme.colors.color5)
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.icon_voice_style),
+                            contentDescription = "Opções da PR",
+                            tint = AppTheme.colors.onColor5,
+                            modifier = Modifier.height(24.dp).width(24.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
                     IconTextButton(
-                        modifier = Modifier.padding(top = 52.dp),
                         text = "Gerar Pull Request",
                         onClick = {
                             coroutineScope.launch(Dispatchers.Main) {
@@ -235,6 +258,14 @@ fun PullRequestTab(
                         },
                         icon = painterResource(Res.drawable.icon_commit),
                         isLoading = pullRequestTabuiState.isGenaratingPullRequestLoading
+                    )
+                }
+
+                if (pullRequestTabuiState.isOptionsPopupVisible) {
+                    PullRequestOptionsPopup(
+                        selectedLanguage = pullRequestTabuiState.selectedLanguage,
+                        onLanguageSelected = { pullRequestTabviewModel.onLanguageSelected(it) },
+                        onDismiss = { pullRequestTabviewModel.onToggleOptionsPopup() }
                     )
                 }
             }
@@ -362,4 +393,49 @@ fun PullRequestTab(
             }
         }
     }
+}
+
+@Composable
+private fun PullRequestOptionsPopup(
+    selectedLanguage: CommitLanguage,
+    onLanguageSelected: (CommitLanguage) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val languageOptions = CommitLanguage.entries.map {
+        SelectOptionModel(label = it.displayName, value = it.name)
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Opções da Pull Request",
+                color = AppTheme.colors.onColor2,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
+        text = {
+            Column {
+                SelectInput(
+                    title = "Idioma",
+                    placeholder = "Selecione o idioma",
+                    options = languageOptions,
+                    initialValue = selectedLanguage.name,
+                    onValueChange = { value ->
+                        val language = try { CommitLanguage.valueOf(value) } catch (e: IllegalArgumentException) { null }
+                        if (language != null) onLanguageSelected(language)
+                    },
+                    isBackgroudColorDark = true
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Fechar", color = AppTheme.colors.color7)
+            }
+        },
+        containerColor = AppTheme.colors.color3,
+        titleContentColor = AppTheme.colors.onColor2,
+        textContentColor = AppTheme.colors.onColor2
+    )
 }

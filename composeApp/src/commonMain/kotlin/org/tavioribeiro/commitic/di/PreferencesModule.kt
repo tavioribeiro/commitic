@@ -7,11 +7,15 @@ import org.tavioribeiro.commitic.data.repository.PreferencesRepositoryImpl
 import org.tavioribeiro.commitic.domain.repository.PreferencesRepository
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetCommitLanguageUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetCommitStyleUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.GetPrLanguageUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.GetPrStyleUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedDelayBetweenStepsUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.GetSelectedProjectUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveCommitLanguageUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveCommitStyleUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.SavePrLanguageUseCase
+import org.tavioribeiro.commitic.domain.usecase.preferences.SavePrStyleUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedDelayBetweenStepsUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedLlmUseCase
 import org.tavioribeiro.commitic.domain.usecase.preferences.SaveSelectedProjectUseCase
@@ -34,4 +38,8 @@ val preferencesModule = module {
     factory { GetCommitLanguageUseCase(preferencesRepository = get()) }
     factory { SaveCommitStyleUseCase(preferencesRepository = get()) }
     factory { GetCommitStyleUseCase(preferencesRepository = get()) }
+    factory { SavePrLanguageUseCase(preferencesRepository = get()) }
+    factory { GetPrLanguageUseCase(preferencesRepository = get()) }
+    factory { SavePrStyleUseCase(preferencesRepository = get()) }
+    factory { GetPrStyleUseCase(preferencesRepository = get()) }
 }

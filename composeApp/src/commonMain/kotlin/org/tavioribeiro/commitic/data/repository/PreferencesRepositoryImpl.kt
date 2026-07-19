@@ -45,4 +45,20 @@ class PreferencesRepositoryImpl(
     override fun getCommitStyle(): String? {
         return localDataSource.getCommitStyle()
     }
+
+    override fun savePrLanguage(language: String) {
+        localDataSource.savePrLanguage(language)
+    }
+
+    override fun getPrLanguage(): String? {
+        return localDataSource.getPrLanguage()
+    }
+
+    override fun savePrStyle(style: String) {
+        localDataSource.savePrStyle(style)
+    }
+
+    override fun getPrStyle(): String? {
+        return localDataSource.getPrStyle()
+    }
 }
