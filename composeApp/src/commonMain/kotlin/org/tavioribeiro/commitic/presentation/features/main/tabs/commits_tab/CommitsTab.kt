@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,10 +55,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import commitic.composeapp.generated.resources.icon_commit
 import commitic.composeapp.generated.resources.icon_copy
 import commitic.composeapp.generated.resources.icon_save
+import commitic.composeapp.generated.resources.icon_trash_history
 import commitic.composeapp.generated.resources.icon_voice_style
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.compose.koinInject
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import org.tavioribeiro.commitic.domain.model.commit.CommitCleanupMode
 import org.tavioribeiro.commitic.domain.model.commit.CommitLanguage
 import org.tavioribeiro.commitic.domain.model.commit.CommitStyle
 import org.tavioribeiro.commitic.presentation.components.inputs.FullInput
@@ -178,14 +183,32 @@ fun CommitsTab(
                     modifier = Modifier.padding(top = 0.dp),
                     isBackgroudColorDark = true
                 )
-                Text(
-                    text = commitsTabuiState.currentBranch,
-                    color = AppTheme.colors.color7,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(start = 8.dp, top = 10.dp)
-                )
-
-
+                Row(
+                    modifier = Modifier.padding(start = 8.dp, top = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = commitsTabuiState.currentBranch,
+                        color = AppTheme.colors.color7,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (commitsTabuiState.currentBranch.isNotBlank()) {
+                        IconButton(
+                            onClick = { commitsTabviewModel.onToggleCleanupDialog() },
+                            modifier = Modifier
+                                .height(24.dp)
+                                .width(24.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.icon_trash_history),
+                                contentDescription = "Limpar Commits",
+                                tint = AppTheme.colors.color7,
+                                modifier = Modifier.height(16.dp).width(16.dp)
+                            )
+                        }
+                    }
+                }
 
                 SelectInput(
                     title = "Escolha o Modelo",
@@ -441,6 +464,16 @@ fun CommitsTab(
                     }
                 }
             }
+
+            if (commitsTabuiState.isCleanupDialogVisible) {
+                BranchCommitCleanupDialog(
+                    selectedMode = commitsTabuiState.cleanupMode,
+                    isLoading = commitsTabuiState.isCleaningCommitsLoading,
+                    onModeSelected = { commitsTabviewModel.onCleanupModeSelected(it) },
+                    onConfirm = { commitsTabviewModel.onCleanupConfirmed() },
+                    onDismiss = { commitsTabviewModel.onToggleCleanupDialog() }
+                )
+            }
         }
     }
 }
@@ -501,6 +534,76 @@ private fun CommitOptionsPopup(
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text("Fechar", color = AppTheme.colors.color7)
+            }
+        },
+        containerColor = AppTheme.colors.color3,
+        titleContentColor = AppTheme.colors.onColor2,
+        textContentColor = AppTheme.colors.onColor2
+    )
+}
+
+@Composable
+private fun BranchCommitCleanupDialog(
+    selectedMode: CommitCleanupMode,
+    isLoading: Boolean = false,
+    onModeSelected: (CommitCleanupMode) -> Unit,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Limpar Commits Salvos",
+                color = AppTheme.colors.onColor2,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
+        text = {
+            Column {
+                val cleanupModes = listOf(CommitCleanupMode.Last, CommitCleanupMode.LastTwo, CommitCleanupMode.All)
+                cleanupModes.forEach { mode ->
+                    val label = when (mode) {
+                        CommitCleanupMode.Last -> "Limpar último commit"
+                        CommitCleanupMode.LastTwo -> "Limpar último e penúltimo"
+                        CommitCleanupMode.All -> "Limpar todos os commits"
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                            .clickable { onModeSelected(mode) },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedMode == mode,
+                            onClick = { onModeSelected(mode) },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = AppTheme.colors.color7,
+                                unselectedColor = AppTheme.colors.onColor2
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = label,
+                            color = AppTheme.colors.onColor2,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            IconTextButton(
+                text = "Limpar",
+                onClick = onConfirm,
+                icon = painterResource(Res.drawable.icon_trash_history),
+                isLoading = isLoading
+            )
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar", color = AppTheme.colors.color7)
             }
         },
         containerColor = AppTheme.colors.color3,

@@ -60,13 +60,39 @@ class CommitLocalDataSource(private val db: CommitSchemaQueries) {
                 delay(800)
 
                 if(commit.id != null){
-                   // db.deleteCommitById(commit.id)
+                   db.deleteById(commit.id)
                 }
 
             }
             return "✅ "
         } catch (e: Exception) {
             throw e
+        }
+    }
+
+    suspend fun deleteCommitsByProjectIdAndBranch(projectId: Long, branchName: String, limit: Int?): String {
+        try {
+            withContext(Dispatchers.IO) {
+                delay(800)
+                if (limit != null) {
+                    db.deleteByProjectIdAndBranchNameWithLimit(projectId, branchName, limit.toLong())
+                } else {
+                    db.deleteAllByProjectIdAndBranchName(projectId, branchName)
+                }
+            }
+            return ""
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    suspend fun countCommitsByProjectIdAndBranch(projectId: Long, branchName: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                db.countByProjectIdAndBranchName(projectId, branchName).executeAsOne().toInt()
+            } catch (e: Exception) {
+                throw e
+            }
         }
     }
 }

@@ -46,3 +46,18 @@ WHERE id = ?;
 deleteAllByProjectId:
 DELETE FROM commits
 WHERE project_id = ?;
+
+deleteAllByProjectIdAndBranchName:
+DELETE FROM commits
+WHERE project_id = ? AND branch_name = ?;
+
+deleteByProjectIdAndBranchNameWithLimit:
+DELETE FROM commits
+WHERE project_id = ? AND branch_name = ?
+ORDER BY id DESC
+LIMIT ?;
+
+countByProjectIdAndBranchName:
+SELECT COUNT(*)
+FROM commits
+WHERE project_id = ? AND branch_name = ?;

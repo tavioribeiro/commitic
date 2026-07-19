@@ -5,6 +5,7 @@ import org.tavioribeiro.commitic.data.datasource.local.CommitLocalDataSource
 import org.tavioribeiro.commitic.data.repository.CommitRepositoryImpl
 import org.tavioribeiro.commitic.db.CommitSchemaQueries
 import org.tavioribeiro.commitic.domain.repository.CommitRepository
+import org.tavioribeiro.commitic.domain.usecase.commit.DeleteCommitsByBranchUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.DeleteCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
@@ -19,12 +20,14 @@ val commitModule = module {
     // domain
     factory { SaveCommitUseCase(get()) }
     factory { DeleteCommitUseCase(get()) }
+    factory { DeleteCommitsByBranchUseCase(get()) }
     factory { GenerateCommitUseCase(get(), get(), get()) }
     factory {  }
 
     // presentation
     factory {
         CommitsTabViewModel(
+            get(),
             get(),
             get(),
             get(),

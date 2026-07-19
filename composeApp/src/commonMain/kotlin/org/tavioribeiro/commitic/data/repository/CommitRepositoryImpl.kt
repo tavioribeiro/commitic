@@ -53,4 +53,24 @@ class CommitRepositoryImpl(
             RequestResult.Failure(CommitFailure.Unexpected(e))
         }
     }
+
+    override suspend fun deleteCommitsByProjectIdAndBranch(projectId: Long, branchName: String, limit: Int?): RequestResult<Unit, CommitFailure> {
+        return try {
+            localDataSource.deleteCommitsByProjectIdAndBranch(projectId, branchName, limit)
+            RequestResult.Success(Unit)
+        } catch (e: Exception) {
+            println("Erro ao deletar commits: ${e.message}")
+            RequestResult.Failure(CommitFailure.Unexpected(e))
+        }
+    }
+
+    override suspend fun countCommitsByProjectIdAndBranch(projectId: Long, branchName: String): RequestResult<Int, CommitFailure> {
+        return try {
+            val count = localDataSource.countCommitsByProjectIdAndBranch(projectId, branchName)
+            RequestResult.Success(count)
+        } catch (e: Exception) {
+            println("Erro ao contar commits: ${e.message}")
+            RequestResult.Failure(CommitFailure.Unexpected(e))
+        }
+    }
 }

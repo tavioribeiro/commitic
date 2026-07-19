@@ -11,4 +11,6 @@ interface CommitRepository {
     suspend fun saveCommit(commit: CommitDomainModel): RequestResult<Unit, CommitFailure>
     suspend fun getCommitsByProjectIdAndBranch(projectId: Long, branchName: String): RequestResult<List<CommitDomainModel>, CommitFailure>
     suspend fun deleteCommit(commit: CommitDomainModel): RequestResult<Unit, CommitFailure>
+    suspend fun deleteCommitsByProjectIdAndBranch(projectId: Long, branchName: String, limit: Int?): RequestResult<Unit, CommitFailure>
+    suspend fun countCommitsByProjectIdAndBranch(projectId: Long, branchName: String): RequestResult<Int, CommitFailure>
 }

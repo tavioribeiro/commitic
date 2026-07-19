@@ -12,6 +12,8 @@ import org.tavioribeiro.commitic.domain.model.commit.CommitLanguage
 import org.tavioribeiro.commitic.domain.model.commit.CommitStyle
 import org.tavioribeiro.commitic.domain.model.llm.LlmAvailableApis
 import org.tavioribeiro.commitic.domain.model.llm.ProgressResult
+import org.tavioribeiro.commitic.domain.model.commit.CommitCleanupMode
+import org.tavioribeiro.commitic.domain.usecase.commit.DeleteCommitsByBranchUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.GenerateCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.commit.SaveCommitUseCase
 import org.tavioribeiro.commitic.domain.usecase.console.ExecuteCommandUseCase
@@ -73,7 +75,12 @@ data class CommitsTabUiState(
 
     var isSavingCommitLoading: Boolean = false,
 
-    var isCommitGenerated: Boolean = false
+    var isCommitGenerated: Boolean = false,
+
+    var isCleaningCommitsLoading: Boolean = false,
+
+    var isCleanupDialogVisible: Boolean = false,
+    var cleanupMode: CommitCleanupMode = CommitCleanupMode.Last
 )
 
 
@@ -96,6 +103,7 @@ class CommitsTabViewModel(
     private val saveCommitLanguageUseCase: SaveCommitLanguageUseCase,
     private val getCommitStyleUseCase: GetCommitStyleUseCase,
     private val saveCommitStyleUseCase: SaveCommitStyleUseCase,
+    private val deleteCommitsByBranchUseCase: DeleteCommitsByBranchUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CommitsTabUiState())
@@ -313,6 +321,68 @@ class CommitsTabViewModel(
 
     fun onToggleOptionsPopup() {
         _uiState.update { it.copy(isOptionsPopupVisible = !it.isOptionsPopupVisible) }
+    }
+
+    fun onToggleCleanupDialog() {
+        _uiState.update { it.copy(isCleanupDialogVisible = !it.isCleanupDialogVisible) }
+    }
+
+    fun onCleanupModeSelected(mode: CommitCleanupMode) {
+        _uiState.update { it.copy(cleanupMode = mode) }
+    }
+
+    fun onCleanupConfirmed() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isCleaningCommitsLoading = true) }
+
+            val state = _uiState.value
+            val projectIndex = state.selectedProjectIndex ?: return@launch.also {
+                _uiState.update { it.copy(isCleaningCommitsLoading = false) }
+            }
+            val project = availableProjects.getOrNull(projectIndex) ?: return@launch.also {
+                _uiState.update { it.copy(isCleaningCommitsLoading = false) }
+            }
+            val projectId = project.id ?: return@launch.also {
+                _uiState.update { it.copy(isCleaningCommitsLoading = false) }
+            }
+            val branchName = state.currentBranch
+
+            if (branchName.isBlank()) {
+                _uiState.update { it.copy(isCleaningCommitsLoading = false) }
+                toastViewModel.showToast(
+                    ToastUiModel(
+                        title = "Erro",
+                        message = "Nenhuma branch selecionada.",
+                        type = ToastType.ERROR
+                    )
+                )
+                return@launch
+            }
+
+            when (val result = deleteCommitsByBranchUseCase(projectId, branchName, state.cleanupMode)) {
+                is RequestResult.Success -> {
+                    _uiState.update { it.copy(isCleanupDialogVisible = false, isCleaningCommitsLoading = false) }
+                    toastViewModel.showToast(
+                        ToastUiModel(
+                            title = "Sucesso",
+                            message = "Commits limpos com sucesso",
+                            type = ToastType.SUCCESS
+                        )
+                    )
+                }
+
+                is RequestResult.Failure -> {
+                    _uiState.update { it.copy(isCleaningCommitsLoading = false) }
+                    toastViewModel.showToast(
+                        ToastUiModel(
+                            title = "Erro",
+                            message = "Falha ao limpar commits",
+                            type = ToastType.ERROR
+                        )
+                    )
+                }
+            }
+        }
     }
 
     fun onGenerateCommitClicked(projectIndex: Int, llmIndex: Int) {
